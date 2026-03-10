@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 <body>
   <div class="wrap">
     <h1>Got it.</h1>
-    <p>Your message came through, ${firstName}. I care deeply about the craft — and that includes responding to the people who take the time to reach out. I'll be in touch.</p>
+    <p>Your message came through, ${firstName}. I care deeply about the craft, and that includes responding to the people who take the time to reach out. I'll be in touch.</p>
     <div class="label">Inquiry</div>
     <div class="value">${inquiry_type}</div>
     <div class="label">Your Message</div>
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     to: email,
     subject: `Got your message, ${firstName}.`,
     html,
-    text: `Got it.\n\nYour message came through, ${firstName}. I care deeply about the craft — and that includes responding to the people who take the time to reach out. I'll be in touch.\n\nInquiry: ${inquiry_type}\n\nYour Message:\n${message}\n\nMichael Rodriguez — Software Engineer`,
+    text: `Got it.\n\nYour message came through, ${firstName}. I care deeply about the craft, and that includes responding to the people who take the time to reach out. I'll be in touch.\n\nInquiry: ${inquiry_type}\n\nYour Message:\n${message}\n\nMichael Rodriguez — Software Engineer`,
   });
 
   return NextResponse.json({ success: true });
