@@ -26,9 +26,9 @@ export async function POST(req: Request) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Message Received</title>
   <style>
-    body { background: #000; color: #fff; font-family: Georgia, serif; margin: 0; padding: 0; }
+    body { background: #000; color: #fff; font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
     .wrap { max-width: 560px; margin: 0 auto; padding: 48px 32px; }
-    h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 32px; }
+    h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 32px; font-family: 'Cormorant Garamond', 'Cormorant', Georgia, serif; }
     p { font-size: 14px; line-height: 1.8; opacity: 0.8; margin: 0 0 20px; }
     .label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; margin-bottom: 4px; margin-top: 32px; }
     .value { font-size: 14px; }
@@ -39,8 +39,8 @@ export async function POST(req: Request) {
 </head>
 <body>
   <div class="wrap">
-    <h1>Message Received</h1>
-    <p>Thank you for reaching out, ${firstName}. I have received your message and will be in touch shortly.</p>
+    <h1>Got it.</h1>
+    <p>Your message came through, ${firstName}. I care deeply about the craft — and that includes responding to the people who take the time to reach out. I'll be in touch.</p>
     <div class="label">Inquiry</div>
     <div class="value">${inquiry_type}</div>
     <div class="label">Your Message</div>
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     to: email,
     subject: `Got your message, ${firstName}.`,
     html,
-    text: `Thank you for reaching out, ${firstName}. I have received your message and will be in touch shortly.\n\nInquiry: ${inquiry_type}\n\nYour Message:\n${message}\n\nMichael Rodriguez — Software Engineer`,
+    text: `Got it.\n\nYour message came through, ${firstName}. I care deeply about the craft — and that includes responding to the people who take the time to reach out. I'll be in touch.\n\nInquiry: ${inquiry_type}\n\nYour Message:\n${message}\n\nMichael Rodriguez — Software Engineer`,
   });
 
   return NextResponse.json({ success: true });
