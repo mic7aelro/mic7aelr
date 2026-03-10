@@ -52,6 +52,6 @@ export const PROJECTS: Project[] = [
     tags: ['Next.js', 'MongoDB', 'TypeScript', 'Iron-session', 'GSAP', 'Tailwind CSS v4'],
     year: '2024',
     url: 'https://obsidianbymarla.vercel.app/',
-    github: 'https://github.com/mic7aelro/obdisianbymarla/',
+    github: 'https://github.com/mic7aelro/obsidianbymarla/',
   },
 ];
