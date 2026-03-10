@@ -18,7 +18,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  cursor: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none;
+  }
 }
 
 html {
@@ -109,6 +114,12 @@ a {
 }
 
 /* ─── Custom Cursor ─────────────────────────────────────── */
+@media (hover: none), (pointer: coarse) {
+  .cursor, .cursor-follower {
+    display: none;
+  }
+}
+
 .cursor {
   position: fixed;
   top: 0;
@@ -140,6 +151,12 @@ a {
 .reveal-wrap {
   overflow: hidden;
   display: block;
+}
+
+/* ─── Project mobile spacing ────────────────────────────── */
+@media (max-width: 639px) {
+  .project-links-gap { margin-bottom: 22.5px; }
+  .project-desc-gap  { margin-bottom: 22.5px; }
 }
 
 /* ─── Project card ──────────────────────────────────────── */

@@ -56,13 +56,13 @@ export function Projects() {
                 </span>
               </div>
 
-              {/* Title + arrow */}
-              <div className="flex justify-between items-start mb-4">
+              {/* Title + links */}
+              <div className="project-links-gap flex flex-col gap-5 sm:mb-4 sm:flex-row sm:justify-between sm:items-start sm:gap-0">
                 <h3 className="font-[family-name:var(--font-cormorant)] font-light leading-none"
                   style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>
                   {project.title}
                 </h3>
-                <div className="flex gap-3 shrink-0 ml-6 mt-1">
+                <div className="flex gap-4 sm:shrink-0 sm:ml-6 sm:mt-1">
                   {project.github && (
                     <a
                       href={project.github}
@@ -89,7 +89,7 @@ export function Projects() {
               </div>
 
               {/* Description */}
-              <p className="text-sm leading-relaxed text-[#888] group-hover:text-[#555] transition-colors duration-300 max-w-2xl mb-6 font-[family-name:var(--font-dm-sans)]">
+              <p className="project-desc-gap text-sm leading-relaxed text-[#888] group-hover:text-[#555] transition-colors duration-300 max-w-2xl sm:mb-6 font-[family-name:var(--font-dm-sans)]">
                 {project.description}
               </p>
 

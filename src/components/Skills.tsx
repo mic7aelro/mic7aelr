@@ -60,7 +60,7 @@ export function Skills() {
       <div className="container">
         <SectionHeading label="02 — Skills" heading="Tools of the trade." />
 
-        <div ref={gridRef} className="grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-4" style={{ marginTop: '0.5rem' }}>
+        <div ref={gridRef} className="grid grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-x-12 sm:gap-y-6 lg:grid-cols-4" style={{ marginTop: '0.5rem' }}>
           {SKILLS.map((category) => (
             <div key={category.label} className="skill-category">
               <h3 className="text-xs uppercase tracking-widest text-[#555] mb-5 font-[family-name:var(--font-dm-sans)]">
