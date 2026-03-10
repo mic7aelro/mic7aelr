@@ -18,5 +18,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error }, { status: 500 });
   }
 
+  await resend.emails.send({
+    from: 'Michael Rodriguez <noreply@mic7aelr.com>',
+    to: email,
+    subject: `Got your message, ${name.split(' ')[0]}.`,
+    text: `Hey ${name.split(' ')[0]},\n\nThanks for reaching out — I received your message and will get back to you shortly.\n\nFor reference, here's what you sent:\n\n"${message}"\n\n— Michael`,
+  });
+
   return NextResponse.json({ success: true });
 }
