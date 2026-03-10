@@ -51,7 +51,7 @@ export const PROJECTS: Project[] = [
       'Luxury fashion portfolio for stylist and creative director Marla McLeod. Full admin portal with image curation, collection management, and inquiry/event tracking.',
     tags: ['Next.js', 'MongoDB', 'TypeScript', 'Iron-session', 'GSAP', 'Tailwind CSS v4'],
     year: '2024',
-    url: 'https://obsidianbymarla.vercel.app/',
+    url: 'https://www.obsidianbymarla.com/',
     github: 'https://github.com/mic7aelro/obsidianbymarla/',
   },
 ];
