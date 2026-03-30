@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type Track = 'ml' | 'astro';
+type Track = 'ml' | 'astro' | 'aws';
 
 type Phase = {
   id: number;
@@ -28,6 +28,7 @@ type Phase = {
 const TC: Record<Track, { primary: string; glow: string; text: string }> = {
   ml:    { primary: '#4dd0e1', glow: 'rgba(77,208,225,0.55)',  text: 'ML Pathway'   },
   astro: { primary: '#ce93d8', glow: 'rgba(206,147,216,0.55)', text: 'Astrophysics' },
+  aws:   { primary: '#FF9900', glow: 'rgba(255,153,0,0.55)',   text: 'AWS'          },
 };
 
 // ─── Phase data ──────────────────────────────────────────────────────────────
@@ -112,6 +113,47 @@ const PHASES: Phase[] = [
     resources: ['An Introduction to Modern Astrophysics — Carroll & Ostlie', 'Cosmos — Carl Sagan', 'Feynman Lectures on Physics (feynmanlectures.caltech.edu)'],
     topics: ['Stellar structure & evolution', 'White dwarfs, neutron stars, black holes', 'Galactic structure & dynamics', 'Cosmology — Big Bang, dark matter, dark energy', 'Gravitational waves', 'Exoplanets & planetary formation'],
     goal: "You can read an astrophysics paper on arXiv and follow the argument. The universe becomes a set of physical systems you actually understand.",
+  },
+  // ── AWS ──
+  {
+    id: 11, name: 'Developer Associate', subtitle: 'DVA-C02 · $150 · 720/1000',
+    duration: '4–6 weeks', track: 'aws',
+    description: "Build the foundation. This is where you learn how to actually build things on AWS — Lambda, API Gateway, DynamoDB, S3, SQS, CI/CD pipelines. If you're a software engineer this is your natural entry point.",
+    resources: ['Stephane Maarek — AWS Developer Associate (Udemy)', 'AWS Official Practice Exam — DVA-C02'],
+    topics: ['Lambda, API Gateway, SAM', 'CodeCommit, CodeBuild, CodeDeploy, CodePipeline', 'DynamoDB, SQS, SNS, EventBridge, Step Functions', 'IAM, KMS, Secrets Manager, Cognito', 'CloudWatch and X-Ray'],
+    goal: 'You can build and deploy serverless applications on AWS. CI/CD pipelines, IAM, and the core developer services feel natural.',
+  },
+  {
+    id: 12, name: 'Solutions Architect Associate', subtitle: 'SAA-C03 · $150 · 720/1000',
+    duration: '3–5 weeks', track: 'aws',
+    description: "Zoom out. Where the Developer cert is about building apps, this is about designing systems — secure, resilient, high-performing, and cost-optimized. Heavy overlap with DVA-C02, so taking it second cuts study time significantly.",
+    resources: ['Stephane Maarek — AWS Solutions Architect Associate (Udemy)', 'AWS Official Practice Exam — SAA-C03'],
+    topics: ['VPC design, ELB, Auto Scaling, Route 53, CloudFront', 'RDS, Aurora, DynamoDB, ElastiCache, Redshift', 'ECS, EKS, Fargate patterns', 'S3 storage classes, lifecycle policies, cross-region replication', 'Well-Architected Framework in practice'],
+    goal: 'You can design secure, resilient, and cost-optimized architectures on AWS. The Well-Architected Framework makes practical sense.',
+  },
+  {
+    id: 13, name: 'Generative AI Professional', subtitle: 'AIP-C01 · $300 · 750/1000',
+    duration: '6–8 weeks', track: 'aws',
+    description: "The most forward-looking cert in the path. Goes well beyond prompting — it's about building production-grade generative AI applications on Amazon Bedrock. RAG pipelines, AI safety, evaluation, and optimization.",
+    resources: ['AWS Skill Builder — Generative AI Learning Plan', 'AWS Official Practice Exam — AIP-C01'],
+    topics: ['Amazon Bedrock — model selection, invocation, fine-tuning, RAG', 'Prompt engineering at production depth', 'Knowledge Bases with OpenSearch & Aurora', 'Guardrails — content filtering & PII redaction', 'Bedrock Agents and multi-step orchestration', 'LLMOps: model drift, versioning, cost monitoring'],
+    goal: 'You can build and operate production GenAI applications on Bedrock. RAG, agents, safety, and evaluation all make sense end-to-end.',
+  },
+  {
+    id: 14, name: 'ML Engineer Associate', subtitle: 'MLA-C01 · $150 · 720/1000',
+    duration: '6–8 weeks', track: 'aws',
+    description: "The engineering and operations cert. About deploying, scaling, monitoring, and maintaining ML systems in production. Heavy on SageMaker infrastructure, MLOps pipelines, and model drift. The math you're building makes you a significantly better engineer here, even if the exam doesn't test it.",
+    resources: ['AWS Skill Builder — Machine Learning Learning Plan', 'AWS Official Practice Exam — MLA-C01'],
+    topics: ['SageMaker infrastructure & pipelines', 'Data preparation & feature stores', 'Model deployment & orchestration', 'MLOps, monitoring & model drift detection', 'Security & compliance for ML systems'],
+    goal: 'You can build and operate end-to-end ML pipelines on AWS. SageMaker, feature stores, and MLOps feel practical, not abstract.',
+  },
+  {
+    id: 15, name: 'Solutions Architect Professional', subtitle: 'SAP-C02 · $300 · 750/1000',
+    duration: '8–12 weeks', track: 'aws',
+    description: "The hardest cert in this path. Every question is a long scenario with tradeoffs — the exam doesn't test facts, it tests judgement. You need 2+ years of real AWS experience to make this feel reasonable. Completes the arc from 'I can build on AWS' to 'I can design anything on AWS.'",
+    resources: ['Stephane Maarek — AWS Solutions Architect Professional (Udemy)', 'AWS Official Practice Exam — SAP-C02'],
+    topics: ['Multi-account architecture — Organizations, Control Tower, landing zones', 'Complex networking — Direct Connect, Transit Gateway, hybrid multi-region', 'Large-scale migration planning — Migration Hub, DMS, DataSync', 'Cost and performance optimization at org scale', 'Well-Architected Framework across all five pillars in real scenarios'],
+    goal: "You can design anything on AWS. Tradeoffs, multi-account patterns, and org-scale architecture all feel grounded in real judgement.",
   },
 ];
 
@@ -228,12 +270,24 @@ const TREES: TreeDef[] = [
   {
     id: 'aws',
     label: 'AWS',
-    description: 'Cloud architecture and infrastructure — coming soon.',
-    tracks: [],
-    nodes: [],
-    edges: [],
-    phases: [],
-    labelLines: [],
+    description: 'A structured progression from cloud developer fundamentals through professional-level architecture and generative AI — learned one certification at a time.',
+    tracks: ['aws'],
+    nodes: [
+      { idx: 0, x: 100, y: 280 },
+      { idx: 1, x: 340, y: 280 },
+      { idx: 2, x: 620, y: 145 },
+      { idx: 3, x: 620, y: 415 },
+      { idx: 4, x: 900, y: 280 },
+    ],
+    edges: [[0,1],[1,2],[1,3],[2,4],[3,4]],
+    phases: PHASES.slice(10, 15),
+    labelLines: [
+      ['Dev', 'Associate'],
+      ['SA', 'Associate'],
+      ['Gen AI', 'Professional'],
+      ['ML Engineer', 'Associate'],
+      ['SA', 'Professional'],
+    ],
   },
 ];
 
@@ -531,11 +585,11 @@ export function Discovery() {
                     />
                     <div
                       style={{
-                        position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 99,
-                        background: 'rgba(0,5,22,0.62)', backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
-                        border: '1px solid #1a2535',
-                        minWidth: 180, padding: '4px 0',
+                        position: 'absolute', top: 'calc(100% + 5px)', right: 0, zIndex: 99,
+                        background: 'rgba(0,5,22,0.08)', backdropFilter: 'blur(12px)',
+                        WebkitBackdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(26,37,53,0.6)',
+                        width: 'max-content', padding: '4px 0',
                         fontSize: '1rem',
                       }}
                     >
@@ -546,14 +600,14 @@ export function Discovery() {
                           data-cursor-grow
                           style={{
                             display: 'block', width: '100%', background: 'none', border: 'none',
-                            cursor: tree.id === 'aws' ? 'default' : 'pointer',
+                            cursor: 'pointer',
                             padding: '8px 16px', textAlign: 'left',
-                            opacity: tree.id === 'aws' ? 0.3 : activeTreeId === tree.id ? 1 : 0.55,
+                            opacity: activeTreeId === tree.id ? 1 : 0.55,
                             transition: 'opacity 0.2s ease',
                           }}
-                          onMouseEnter={e => { if (tree.id !== 'aws') e.currentTarget.style.opacity = '1'; }}
+                          onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.opacity = tree.id === 'aws' ? '0.3' : activeTreeId === tree.id ? '1' : '0.55';
+                            e.currentTarget.style.opacity = activeTreeId === tree.id ? '1' : '0.55';
                           }}
                         >
                           <span
@@ -600,7 +654,7 @@ export function Discovery() {
             style={{ display: 'block', overflow: 'visible' }}
           >
             <defs>
-              {(['ml', 'astro'] as Track[]).map((t) => (
+              {(['ml', 'astro', 'aws'] as Track[]).map((t) => (
                 <filter key={t} id={`glow-${t}`} x="-60%" y="-60%" width="220%" height="220%">
                   <feGaussianBlur stdDeviation="5" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
@@ -777,9 +831,10 @@ export function Discovery() {
         {prereqOpen && activeTree.prerequisites && (
           <div
             className="prereq-panel"
+            data-lenis-prevent
             style={{
-              width: SIDEBAR_W,
-              height: '100%',
+              position: 'absolute',
+              inset: 0,
               overflowY: 'auto',
               scrollbarWidth: 'none',
               background: 'transparent',
@@ -868,9 +923,10 @@ export function Discovery() {
           <div
             ref={panelRef}
             className="discovery-panel"
+            data-lenis-prevent
             style={{
-              width: SIDEBAR_W,
-              height: '100%',
+              position: 'absolute',
+              inset: 0,
               overflowY: 'auto',
               scrollbarWidth: 'thin',
               background: 'rgba(0,2,16,0.94)',

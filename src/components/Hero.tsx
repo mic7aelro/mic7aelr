@@ -96,12 +96,6 @@ export function Hero() {
               {item}
             </a>
           ))}
-          <a
-            href="/discovery"
-            className="underline-anim text-xs uppercase tracking-widest text-[#888] hover:text-white transition-colors duration-300 font-[family-name:var(--font-dm-sans)]"
-          >
-            Discovery
-          </a>
         </nav>
       </div>
 
