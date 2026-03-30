@@ -228,3 +228,20 @@ a {
 ::-webkit-scrollbar-thumb {
   background: #333;
 }
+
+/* ─── Discovery prereq panel — hide scrollbar (content fills height) ── */
+.prereq-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Discovery node detail panel — thin visible scrollbar ─────────── */
+.discovery-panel::-webkit-scrollbar {
+  width: 2px;
+}
+.discovery-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.discovery-panel::-webkit-scrollbar-thumb {
+  background: #1e2a3a;
+  border-radius: 1px;
+}
