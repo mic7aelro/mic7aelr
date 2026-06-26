@@ -405,11 +405,10 @@
   font-family: var(--f-display);
   font-size: 52px;
   line-height: 0.9;
-  background: linear-gradient(180deg, #fbe7a6 0%, var(--gold) 48%, var(--gold-dim) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 2px 7px rgba(240, 189, 62, 0.22));
+  /* Solid gold — same mechanism as the rest of the page. No background-clip:text,
+     which rendered dark on real GPU-accelerated Chrome/Firefox/Safari. */
+  color: var(--gold);
+  text-shadow: 0 2px 8px rgba(240, 189, 62, 0.22); /* glow — safe on solid text */
 }
 .trophy .t {
   font-family: var(--f-cond);
