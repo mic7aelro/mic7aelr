@@ -7,6 +7,11 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Module-level handle so other components (e.g. the Liverpool hub's tab switch)
+// can drive Lenis directly — native window.scrollTo is overridden by its RAF loop.
+let lenisInstance: Lenis | null = null;
+export const getLenis = () => lenisInstance;
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
@@ -18,6 +23,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     });
 
     lenisRef.current = lenis;
+    lenisInstance = lenis;
 
     lenis.on('scroll', ScrollTrigger.update);
 
@@ -29,6 +35,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     return () => {
       lenis.destroy();
+      lenisInstance = null;
       gsap.ticker.remove((time) => lenis.raf(time * 1000));
     };
   }, []);
