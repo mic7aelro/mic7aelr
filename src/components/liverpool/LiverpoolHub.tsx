@@ -131,13 +131,13 @@ function Flashcards() {
       >
         <div className={styles.fcInner}>
           <div className={`${styles.fcFace} ${styles.fcFront}`}>
-            <div className="num">{p.n}</div>
-            <div className="name">{p.name}</div>
-            <div className="hint">Tap to flip</div>
+            <div className={styles.num}>{p.n}</div>
+            <div className={styles.name}>{p.name}</div>
+            <div className={styles.hint}>Tap to flip</div>
           </div>
           <div className={`${styles.fcFace} ${styles.fcBack}`}>
-            <div className="role">{p.posName}</div>
-            <div className="meta">
+            <div className={styles.role}>{p.posName}</div>
+            <div className={styles.meta}>
               <b>{p.nat}</b> · signed from <b>{p.from}</b>
               <br />
               Fee <b>{p.fee}</b> · joined {p.when}
@@ -250,7 +250,7 @@ function Quiz() {
 
       {done ? (
         <div className={styles.qResult}>
-          <div className="big">{score}/{pool.length}</div>
+          <div className={styles.big}>{score}/{pool.length}</div>
           <p>{message} ({pct}%)</p>
           <button className={`${styles.qNext} ${styles.qNextOn}`} onClick={restart} data-cursor-grow>
             Play again
@@ -638,7 +638,7 @@ export function LiverpoolHub() {
                 heading to Madrid, and <Jump to="transfers">£417m of new signings</Jump> still searching for their best form.
               </p>
               <div className={styles.verdict}>
-                <span className="dot" />
+                <span className={styles.dot} />
                 <span className={styles.verdictLabel}>
                   Champions League secured on the final day — barely
                 </span>
@@ -688,7 +688,7 @@ export function LiverpoolHub() {
 
             <div className={styles.eyebrow}>In memory</div>
             <div className={styles.memorial} data-reveal>
-              <div className="twenty">20</div>
+              <div className={styles.twenty}>20</div>
               <div>
                 <h3>Diogo Jota · 1996–2025</h3>
                 <p>The forward died in a car accident on 3 July 2025, days after his wedding. On 11 July the club retired his No. 20 across every level — the first squad number Liverpool has ever retired. The season was played in his shadow, and his teammates carried it with them.</p>
@@ -719,9 +719,9 @@ export function LiverpoolHub() {
             <div className={styles.honours}>
               {trophies.map((t) => (
                 <div className={styles.trophy} key={t.t} data-reveal>
-                  <div className="n">{t.n}</div>
-                  <div className="t">{t.t}</div>
-                  <div className="sub">{t.sub}</div>
+                  <div className={styles.n}>{t.n}</div>
+                  <div className={styles.t}>{t.t}</div>
+                  <div className={styles.sub}>{t.sub}</div>
                 </div>
               ))}
             </div>
