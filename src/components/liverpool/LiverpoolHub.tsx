@@ -17,6 +17,7 @@ import {
   titleYears,
   verdictStats,
   xi,
+  greats,
   TABS,
   NAT,
   type TabId,
@@ -309,6 +310,49 @@ function TransferRow({ name, pos, sub, fee, tag, tagLabel }: {
       </span>
       <span className={styles.fee}>{fee}</span>
       <span className={`${styles.tag} ${tag}`}>{tagLabel}</span>
+    </div>
+  );
+}
+
+// ─── Top 100 — accordion list ────────────────────────────────────────────────
+
+function Top100() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <div className={styles.t100}>
+      {greats.map((g) => {
+        const isOpen = open === g.rank;
+        return (
+          <div className={`${styles.t100Row} ${g.predicted ? styles.t100Pred : ''}`} key={g.rank}>
+            <button
+              className={styles.t100Head}
+              onClick={() => setOpen(isOpen ? null : g.rank)}
+              aria-expanded={isOpen}
+              aria-controls={`great-${g.rank}`}
+              data-cursor-grow
+            >
+              <span className={styles.t100Rank}>{g.rank}</span>
+              <span className={styles.t100Name}>
+                <b>{g.name}</b>
+                {g.predicted && <span className={styles.t100Tag}>Predicted</span>}
+              </span>
+              <span className={styles.posflag}>{g.posName}</span>
+              <Nat code={g.nat} />
+              <span className={styles.t100Chev} aria-hidden="true">{isOpen ? '–' : '+'}</span>
+            </button>
+            {isOpen && (
+              <div className={styles.t100Body} id={`great-${g.rank}`} role="region" aria-label={g.name}>
+                <div className={styles.t100Meta}>
+                  <div><span>Position</span>{g.posName}</div>
+                  <div><span>Nationality</span>{NAT[g.nat] ?? g.nat}</div>
+                  <div><span>Liverpool years</span>{g.era}</div>
+                </div>
+                <p>{g.note}</p>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -778,6 +822,23 @@ export function LiverpoolHub() {
                   <p>{l.d}</p>
                 </div>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* ====================== TOP 100 ====================== */}
+        {active === 'top100' && (
+          <section role="tabpanel" id="lv-panel-top100" aria-labelledby="lv-tab-top100" tabIndex={0}>
+            <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Liverpool&apos;s Greatest · 2026</div>
+            <h2 className={styles.section} data-reveal>The Top 100</h2>
+            <p className={styles.lede} data-reveal>
+              The club&apos;s official all-time ranking, voted by ~1.4m fans plus former players, journalists and a club panel. Positions <b>100–14</b> have been revealed; the <b>top 13</b> drop in the live finale in early July. Tap any name for the details.
+            </p>
+            <p className={styles.lede} data-reveal style={{ marginTop: 8 }}>
+              <span className={styles.t100Note}>The top 13 below are an editorial prediction</span> — eight names appeared on every ballot and are locked into this tier (Dalglish, Gerrard, Rush, Salah, Barnes, Souness, Van Dijk, Hansen); the exact order is ours, not yet official.
+            </p>
+            <div data-reveal>
+              <Top100 />
             </div>
           </section>
         )}

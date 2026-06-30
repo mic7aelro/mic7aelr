@@ -19,6 +19,23 @@ export const NAT: Record<string, string> = {
   ARG: 'Argentina',
   EGY: 'Egypt',
   SWE: 'Sweden',
+  WAL: 'Wales',
+  IRL: 'Republic of Ireland',
+  ESP: 'Spain',
+  POR: 'Portugal',
+  URU: 'Uruguay',
+  SEN: 'Senegal',
+  COL: 'Colombia',
+  BEL: 'Belgium',
+  NOR: 'Norway',
+  DEN: 'Denmark',
+  FIN: 'Finland',
+  POL: 'Poland',
+  CZE: 'Czech Republic',
+  CMR: 'Cameroon',
+  ZIM: 'Zimbabwe',
+  AUS: 'Australia',
+  RSA: 'South Africa',
 };
 
 export type Player = {
@@ -186,9 +203,133 @@ export const xi: XISpot[] = [
   { n: 22, nm: 'Ekitike', ps: 'ST', x: 50, y: 16 },
 ];
 
+// ─── Liverpool's Greatest — official 100 (2026 fan + panel vote) ──────────────
+// Ranks 14–100 are the officially-revealed positions (source: liverpoolfc.com).
+// Ranks 1–13 are NOT yet revealed (top-five/winner reveal in early July 2026):
+// the eight names that appeared on every ballot are locked into this tier, and
+// the order shown for 1–13 is an editorial prediction, flagged `predicted`.
+
+export type Great = {
+  rank: number;
+  name: string;
+  pos: Pos;
+  posName: string;
+  nat: string;
+  era: string;
+  note: string;
+  predicted?: boolean; // true = top-13 placement is inferred, not yet revealed
+};
+
+export const greats: Great[] = [
+  // ── Top 13 — inferred order, official reveal early July 2026 ──
+  { rank: 1, name: 'Kenny Dalglish', pos: 'FW', posName: 'Forward', nat: 'SCO', era: '1977–1990', note: "'King Kenny' — the club's greatest icon, then title-winning player-manager.", predicted: true },
+  { rank: 2, name: 'Steven Gerrard', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1998–2015', note: 'One-club captain, 710 games. Dragged the team to Istanbul 2005.', predicted: true },
+  { rank: 3, name: 'Ian Rush', pos: 'FW', posName: 'Striker', nat: 'WAL', era: '1980–1996', note: "Record goalscorer with 346 — the deadliest finisher of the dynasty.", predicted: true },
+  { rank: 4, name: 'Mohamed Salah', pos: 'FW', posName: 'Right winger', nat: 'EGY', era: '2017–2026', note: '2nd all-time scorer (257). Talisman of the 2020 & 2025 titles.', predicted: true },
+  { rank: 5, name: 'Graeme Souness', pos: 'MF', posName: 'Midfielder', nat: 'SCO', era: '1978–1984', note: 'The midfield general of the European Cup years.', predicted: true },
+  { rank: 6, name: 'John Barnes', pos: 'FW', posName: 'Winger', nat: 'ENG', era: '1987–1997', note: 'Mesmeric winger; two titles and the 1988 FWA & PFA awards.', predicted: true },
+  { rank: 7, name: 'Billy Liddell', pos: 'FW', posName: 'Winger / forward', nat: 'SCO', era: '1938–1961', note: "'Liddellpool' — the post-war one-club great.", predicted: true },
+  { rank: 8, name: 'Virgil van Dijk', pos: 'DF', posName: 'Centre-back', nat: 'NED', era: '2018–', note: 'The captain; arguably the best defender of his generation.', predicted: true },
+  { rank: 9, name: 'Alan Hansen', pos: 'DF', posName: 'Centre-back', nat: 'SCO', era: '1977–1991', note: 'Elegant, ball-playing centre-half of the dominant sides.', predicted: true },
+  { rank: 10, name: 'Robbie Fowler', pos: 'FW', posName: 'Striker', nat: 'ENG', era: '1993–2007', note: "'God' to the Kop — a natural-born goalscorer.", predicted: true },
+  { rank: 11, name: 'Roger Hunt', pos: 'FW', posName: 'Striker', nat: 'ENG', era: '1959–1969', note: "'Sir Roger' — record league scorer and a 1966 World Cup winner.", predicted: true },
+  { rank: 12, name: 'Ray Clemence', pos: 'GK', posName: 'Goalkeeper', nat: 'ENG', era: '1967–1981', note: 'Three European Cups; one of the club’s greatest keepers.', predicted: true },
+  { rank: 13, name: 'Ian Callaghan', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1960–1978', note: 'Club-record 857 appearances over 18 years.', predicted: true },
+
+  // ── 14–100 — officially revealed ──
+  { rank: 14, name: 'Kevin Keegan', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1971–1977', note: 'Two-time European Cup talisman; later a double Ballon d’Or winner.' },
+  { rank: 15, name: 'Luis Suárez', pos: 'FW', posName: 'Striker', nat: 'URU', era: '2011–2014', note: 'Brilliant and controversial; 31 goals nearly won the 2014 title.' },
+  { rank: 16, name: 'Alisson Becker', pos: 'GK', posName: 'Goalkeeper', nat: 'BRA', era: '2018–', note: 'World-class keeper; pivotal to the 2019 CL & 2020 league.' },
+  { rank: 17, name: 'Emlyn Hughes', pos: 'DF', posName: 'Defender', nat: 'ENG', era: '1967–1979', note: "'Crazy Horse' — lifted two European Cups as captain." },
+  { rank: 18, name: 'Phil Neal', pos: 'DF', posName: 'Right-back', nat: 'ENG', era: '1974–1985', note: "The most decorated English player; four European Cups." },
+  { rank: 19, name: 'Sadio Mané', pos: 'FW', posName: 'Winger', nat: 'SEN', era: '2016–2022', note: 'Pace and goals on the left of Klopp’s front three.' },
+  { rank: 20, name: 'Ian St John', pos: 'FW', posName: 'Forward', nat: 'SCO', era: '1961–1971', note: "Shankly signing; scored the 1965 FA Cup final winner." },
+  { rank: 21, name: 'Phil Thompson', pos: 'DF', posName: 'Centre-back', nat: 'ENG', era: '1971–1985', note: 'Local European Cup-winning captain.' },
+  { rank: 22, name: 'Roberto Firmino', pos: 'FW', posName: 'Forward', nat: 'BRA', era: '2015–2023', note: 'Selfless false-nine; the heartbeat of the front three.' },
+  { rank: 23, name: 'Jamie Carragher', pos: 'DF', posName: 'Centre-back', nat: 'ENG', era: '1996–2013', note: '737 games of pure commitment; now the voice of the club.' },
+  { rank: 24, name: 'Michael Owen', pos: 'FW', posName: 'Striker', nat: 'ENG', era: '1996–2004', note: 'Teen prodigy; 2001 Ballon d’Or and the FA Cup final double.' },
+  { rank: 25, name: 'Jordan Henderson', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '2011–2023', note: 'The captain who lifted the Champions League and Premier League.' },
+  { rank: 26, name: 'Andy Robertson', pos: 'DF', posName: 'Left-back', nat: 'SCO', era: '2017–', note: 'Record-setting attacking full-back.' },
+  { rank: 27, name: 'Ron Yeats', pos: 'DF', posName: 'Centre-back', nat: 'SCO', era: '1961–1971', note: "'The Colossus' — Shankly’s rock and captain." },
+  { rank: 28, name: 'Trent Alexander-Arnold', pos: 'DF', posName: 'Right-back', nat: 'ENG', era: '2016–2025', note: 'Local creative right-back; left for Real Madrid in 2025.' },
+  { rank: 29, name: 'Sami Hyypiä', pos: 'DF', posName: 'Centre-back', nat: 'FIN', era: '1999–2009', note: 'Commanding centre-half of the 2001 treble side.' },
+  { rank: 30, name: 'Steve Heighway', pos: 'FW', posName: 'Winger', nat: 'IRL', era: '1970–1981', note: 'Flying winger; later a hugely influential academy director.' },
+  { rank: 31, name: 'Gordon Hodgson', pos: 'FW', posName: 'Forward', nat: 'RSA', era: '1925–1936', note: 'Prolific inter-war goalscorer.' },
+  { rank: 32, name: 'Elisha Scott', pos: 'GK', posName: 'Goalkeeper', nat: 'NIR', era: '1912–1934', note: 'Legendary, long-serving keeper of the 1920s sides.' },
+  { rank: 33, name: 'Ronnie Whelan', pos: 'MF', posName: 'Midfielder', nat: 'IRL', era: '1981–1994', note: 'Dependable, trophy-laden midfielder.' },
+  { rank: 34, name: 'Terry McDermott', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1974–1982', note: 'Goalscoring midfielder; 1980 PFA Player of the Year.' },
+  { rank: 35, name: 'Mark Lawrenson', pos: 'DF', posName: 'Centre-back', nat: 'IRL', era: '1981–1988', note: 'Elegant centre-back alongside Hansen.' },
+  { rank: 36, name: 'Ray Kennedy', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1974–1982', note: 'A striker reinvented as a brilliant left midfielder.' },
+  { rank: 37, name: 'Tommy Smith', pos: 'DF', posName: 'Defender', nat: 'ENG', era: '1962–1978', note: "'The Anfield Iron'; scored in the 1977 European Cup final." },
+  { rank: 38, name: 'Steve McManaman', pos: 'MF', posName: 'Winger', nat: 'ENG', era: '1990–1999', note: 'Dribbling, match-winning wide midfielder.' },
+  { rank: 39, name: 'Alan Kennedy', pos: 'DF', posName: 'Left-back', nat: 'ENG', era: '1978–1985', note: 'Scored European Cup final winners in 1981 and 1984.' },
+  { rank: 40, name: 'Harry Chambers', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1915–1928', note: 'Forward in the early-1920s back-to-back title sides.' },
+  { rank: 41, name: 'Steve Nicol', pos: 'DF', posName: 'Defender', nat: 'SCO', era: '1981–1995', note: 'Versatile defender; 1989 FWA Player of the Year.' },
+  { rank: 42, name: 'Bruce Grobbelaar', pos: 'GK', posName: 'Goalkeeper', nat: 'ZIM', era: '1981–1994', note: 'Eccentric keeper; the spaghetti-legs of Rome 1984.' },
+  { rank: 43, name: 'Jan Mølby', pos: 'MF', posName: 'Midfielder', nat: 'DEN', era: '1984–1996', note: 'Cultured passer and a deadly penalty taker.' },
+  { rank: 44, name: 'Fernando Torres', pos: 'FW', posName: 'Striker', nat: 'ESP', era: '2007–2011', note: "'El Niño' — electric, lethal centre-forward." },
+  { rank: 45, name: 'Chris Lawler', pos: 'DF', posName: 'Right-back', nat: 'ENG', era: '1960–1975', note: 'Goalscoring full-back of the Shankly era.' },
+  { rank: 46, name: 'Steve McMahon', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1985–1991', note: 'Combative, driving central midfielder.' },
+  { rank: 47, name: 'Alex Raisbeck', pos: 'DF', posName: 'Centre-half', nat: 'SCO', era: '1898–1909', note: 'Pioneering centre-half of the first title-winning side.' },
+  { rank: 48, name: 'James Milner', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '2015–2023', note: 'Relentless utility man; CL and PL winner.' },
+  { rank: 49, name: 'Jimmy Case', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1975–1981', note: 'Tough, rocket-shooting midfielder; three European Cups.' },
+  { rank: 50, name: 'John Toshack', pos: 'FW', posName: 'Striker', nat: 'WAL', era: '1970–1978', note: 'Aerial target man; telepathic partnership with Keegan.' },
+  { rank: 51, name: 'Jack Balmer', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1935–1952', note: '1947 title forward; once scored three straight hat-tricks.' },
+  { rank: 52, name: 'Donald MacKinlay', pos: 'DF', posName: 'Full-back', nat: 'SCO', era: '1910–1929', note: 'Long-serving full-back and title-winning captain.' },
+  { rank: 53, name: 'Peter Beardsley', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1987–1991', note: 'Creative forward of the swashbuckling 1988 side.' },
+  { rank: 54, name: 'Xabi Alonso', pos: 'MF', posName: 'Midfielder', nat: 'ESP', era: '2004–2009', note: 'Deep-lying playmaker; scored in the 2005 CL comeback.' },
+  { rank: 55, name: 'Divock Origi', pos: 'FW', posName: 'Striker', nat: 'BEL', era: '2014–2022', note: 'Cult hero; decisive goals in the 2019 Champions League run.' },
+  { rank: 56, name: 'Jamie Redknapp', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1991–2002', note: 'Stylish, passing midfielder and captain.' },
+  { rank: 57, name: 'Diogo Jota', pos: 'FW', posName: 'Forward', nat: 'POR', era: '2020–2025', note: 'Sharp forward; his No. 20 was retired after his death in 2025.' },
+  { rank: 58, name: 'Bob Paisley', pos: 'DF', posName: 'Wing-half', nat: 'ENG', era: '1939–1954', note: 'Title-winning wing-half before becoming the legendary manager.' },
+  { rank: 59, name: 'Sammy Lee', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1978–1986', note: 'Energetic local midfielder of the European Cup years.' },
+  { rank: 60, name: 'Ephraim Longworth', pos: 'DF', posName: 'Full-back', nat: 'ENG', era: '1910–1928', note: 'Title-winning full-back and captain.' },
+  { rank: 61, name: 'Craig Johnston', pos: 'MF', posName: 'Midfielder', nat: 'AUS', era: '1981–1988', note: 'Energetic midfielder; later invented the Predator boot.' },
+  { rank: 62, name: 'Peter Thompson', pos: 'FW', posName: 'Winger', nat: 'ENG', era: '1963–1973', note: 'Dazzling, direct winger of the 1960s.' },
+  { rank: 63, name: 'John Arne Riise', pos: 'DF', posName: 'Left-back', nat: 'NOR', era: '2001–2008', note: 'Thunderbolt left-foot from full-back.' },
+  { rank: 64, name: 'Pepe Reina', pos: 'GK', posName: 'Goalkeeper', nat: 'ESP', era: '2005–2013', note: 'Reliable, sweeping keeper; multiple Golden Gloves.' },
+  { rank: 65, name: 'John Aldridge', pos: 'FW', posName: 'Striker', nat: 'IRL', era: '1987–1989', note: 'Prolific finisher who replaced Rush seamlessly.' },
+  { rank: 66, name: 'Joe Gomez', pos: 'DF', posName: 'Defender', nat: 'ENG', era: '2015–', note: 'Versatile, pacey defender and long servant.' },
+  { rank: 67, name: 'David Fairclough', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1975–1983', note: "The original 'Supersub'." },
+  { rank: 68, name: 'Fabinho', pos: 'MF', posName: 'Defensive mid', nat: 'BRA', era: '2018–2023', note: "'The Lighthouse' — the screen in front of the defence." },
+  { rank: 69, name: 'Georginio Wijnaldum', pos: 'MF', posName: 'Midfielder', nat: 'NED', era: '2016–2021', note: 'Big-game midfielder; two goals in the 2019 Barcelona comeback.' },
+  { rank: 70, name: 'Albert Stubbins', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1946–1953', note: '1947 title-winning centre-forward.' },
+  { rank: 71, name: 'Emile Heskey', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '2000–2004', note: 'Powerful forward of the 2001 treble side.' },
+  { rank: 72, name: 'Joel Matip', pos: 'DF', posName: 'Centre-back', nat: 'CMR', era: '2016–2024', note: 'Ball-carrying centre-back; CL and PL winner.' },
+  { rank: 73, name: 'Tom Bromilow', pos: 'MF', posName: 'Wing-half', nat: 'ENG', era: '1919–1930', note: 'Cultured half-back of the 1920s champions.' },
+  { rank: 74, name: 'Dietmar Hamann', pos: 'MF', posName: 'Defensive mid', nat: 'GER', era: '1999–2006', note: 'Holding midfielder; his half-time intro turned Istanbul.' },
+  { rank: 75, name: "Alan A'Court", pos: 'FW', posName: 'Winger', nat: 'ENG', era: '1952–1964', note: 'Loyal winger across the Second and First Division years.' },
+  { rank: 76, name: 'Luis Díaz', pos: 'FW', posName: 'Winger', nat: 'COL', era: '2022–2025', note: 'Dynamic, direct winger; left for Bayern in 2025.' },
+  { rank: 77, name: 'Ronnie Moran', pos: 'DF', posName: 'Full-back', nat: 'ENG', era: '1952–1965', note: 'Full-back, then a Boot Room cornerstone for decades.' },
+  { rank: 78, name: 'Tommy Lawrence', pos: 'GK', posName: 'Goalkeeper', nat: 'SCO', era: '1958–1971', note: "'The Flying Pig' — sweeper-keeper of the 1960s." },
+  { rank: 79, name: 'Daniel Sturridge', pos: 'FW', posName: 'Striker', nat: 'ENG', era: '2013–2019', note: 'Clinical striker; the SAS partnership with Suárez.' },
+  { rank: 80, name: 'Ray Houghton', pos: 'MF', posName: 'Midfielder', nat: 'IRL', era: '1987–1992', note: 'Busy wide midfielder of the 1988 & 1990 sides.' },
+  { rank: 81, name: 'Dirk Kuyt', pos: 'FW', posName: 'Forward', nat: 'NED', era: '2006–2012', note: 'Tireless forward; a derby hat-trick hero.' },
+  { rank: 82, name: 'Matt Busby', pos: 'MF', posName: 'Wing-half', nat: 'SCO', era: '1936–1939', note: 'Wing-half before becoming the great Manchester United manager.' },
+  { rank: 83, name: 'Vladimír Šmicer', pos: 'MF', posName: 'Midfielder', nat: 'CZE', era: '1999–2005', note: 'Scored in the 2005 Champions League final comeback.' },
+  { rank: 84, name: 'Gerry Byrne', pos: 'DF', posName: 'Full-back', nat: 'ENG', era: '1955–1969', note: 'Played the 1965 FA Cup final with a broken collarbone.' },
+  { rank: 85, name: 'Phil Taylor', pos: 'MF', posName: 'Wing-half', nat: 'ENG', era: '1936–1954', note: 'Wing-half and captain; later the manager.' },
+  { rank: 86, name: 'Jerzy Dudek', pos: 'GK', posName: 'Goalkeeper', nat: 'POL', era: '2001–2007', note: 'The double-save and the spaghetti legs of Istanbul.' },
+  { rank: 87, name: 'Philippe Coutinho', pos: 'MF', posName: 'Attacking mid', nat: 'BRA', era: '2013–2018', note: 'The magician; a then-record sale to Barcelona.' },
+  { rank: 88, name: 'Sam Raybould', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1900–1907', note: 'Prolific early-1900s goalscorer.' },
+  { rank: 89, name: 'Jack Parkinson', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1902–1914', note: 'Local goalscorer of the Edwardian era.' },
+  { rank: 90, name: 'David Johnson', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1976–1982', note: 'Two-spell forward and title winner.' },
+  { rank: 91, name: 'Danny Murphy', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '1997–2004', note: 'Midfielder famed for winning derbies at Old Trafford.' },
+  { rank: 92, name: 'Dick Forshaw', pos: 'FW', posName: 'Inside-forward', nat: 'ENG', era: '1919–1927', note: 'Inside-forward of the back-to-back 1920s champions.' },
+  { rank: 93, name: 'Curtis Jones', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '2019–', note: 'Local academy graduate and rotation midfielder.' },
+  { rank: 94, name: 'Lucas Leiva', pos: 'MF', posName: 'Defensive mid', nat: 'BRA', era: '2007–2017', note: 'Holding midfielder and much-loved long servant.' },
+  { rank: 95, name: 'Adam Lallana', pos: 'MF', posName: 'Midfielder', nat: 'ENG', era: '2014–2020', note: 'Press-leading, creative midfielder under Klopp.' },
+  { rank: 96, name: 'Bobby Robinson', pos: 'FW', posName: 'Forward', nat: 'ENG', era: '1904–1912', note: 'Forward of the early-1900s sides.' },
+  { rank: 97, name: 'Jack Cox', pos: 'FW', posName: 'Winger', nat: 'ENG', era: '1898–1909', note: 'Outside-left of the first title-winning teams.' },
+  { rank: 98, name: 'Luis García', pos: 'FW', posName: 'Forward', nat: 'ESP', era: '2004–2007', note: "Scored the 'ghost goal' that sent Liverpool to Istanbul." },
+  { rank: 99, name: 'Dominik Szoboszlai', pos: 'MF', posName: 'Midfielder', nat: 'HUN', era: '2023–', note: 'Dynamic, hard-running central midfielder.' },
+  { rank: 100, name: 'Alexis Mac Allister', pos: 'MF', posName: 'Midfielder', nat: 'ARG', era: '2023–', note: 'World Cup winner anchoring the midfield rebuild.' },
+];
+
 export const TABS = [
   { v: 'now', label: 'The Verdict' },
   { v: 'history', label: 'History' },
+  { v: 'top100', label: 'Top 100' },
   { v: 'squad', label: 'Squad & XI' },
   { v: 'transfers', label: 'Transfers' },
   { v: 'club', label: 'Club & Rivals' },
