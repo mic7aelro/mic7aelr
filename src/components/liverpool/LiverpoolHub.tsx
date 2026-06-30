@@ -109,14 +109,53 @@ function SquadTable({ pos, onSelect }: { pos: Player['pos']; onSelect: (p: Playe
   );
 }
 
+// ─── Study decks (squad 25/26 + all-time legends) ────────────────────────────
+
+type StudySrc = 'squad' | 'legends';
+
+type StudyCard = { key: string; lead: string; name: string; role: string; meta: React.ReactNode; note?: string };
+
+function buildDeck(src: StudySrc): StudyCard[] {
+  if (src === 'legends') {
+    return greats.map((g) => ({
+      key: `g${g.rank}`,
+      lead: `#${g.rank}`,
+      name: g.name,
+      role: g.posName,
+      meta: (<><b>{NAT[g.nat] ?? g.nat}</b> · Liverpool {g.era}</>),
+      note: g.note,
+    }));
+  }
+  return squad
+    .filter((p) => p.from !== 'Academy' || p.apps > 10)
+    .map((p) => ({
+      key: `s${p.n}`,
+      lead: String(p.n),
+      name: p.name,
+      role: p.posName,
+      meta: (
+        <>
+          <b>{NAT[p.nat] ?? p.nat}</b> · signed from <b>{p.from}</b>
+          <br />
+          Fee <b>{p.fee}</b> · joined {p.when}
+        </>
+      ),
+      note: p.note,
+    }));
+}
+
 // ─── Flashcards ──────────────────────────────────────────────────────────────
 
-function Flashcards() {
+function Flashcards({ src }: { src: StudySrc }) {
   // Deterministic deck (no randomness → no hydration mismatch)
-  const deck = useMemo(() => squad.filter((p) => p.from !== 'Academy' || p.apps > 10), []);
+  const deck = useMemo(() => buildDeck(src), [src]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const p = deck[index];
+
+  // Reset to the first card when switching pools
+  useEffect(() => { setIndex(0); setFlipped(false); }, [src]);
+
+  const p = deck[index] ?? deck[0];
 
   const go = (dir: number) => {
     setFlipped(false);
@@ -132,16 +171,14 @@ function Flashcards() {
       >
         <div className={styles.fcInner}>
           <div className={`${styles.fcFace} ${styles.fcFront}`}>
-            <div className={styles.num}>{p.n}</div>
+            <div className={styles.num}>{p.lead}</div>
             <div className={styles.name}>{p.name}</div>
             <div className={styles.hint}>Tap to flip</div>
           </div>
           <div className={`${styles.fcFace} ${styles.fcBack}`}>
-            <div className={styles.role}>{p.posName}</div>
+            <div className={styles.role}>{p.role}</div>
             <div className={styles.meta}>
-              <b>{p.nat}</b> · signed from <b>{p.from}</b>
-              <br />
-              Fee <b>{p.fee}</b> · joined {p.when}
+              {p.meta}
               {p.note && <><br /><span className={styles.fcNote}>{p.note}</span></>}
             </div>
           </div>
@@ -149,7 +186,7 @@ function Flashcards() {
       </div>
       <div className={styles.fcNav}>
         <button onClick={() => go(-1)} data-cursor-grow>‹ Prev</button>
-        <span className={styles.fcCount}>{index + 1} / {deck.length}</span>
+        <span className={styles.fcCount}>{Math.min(index, deck.length - 1) + 1} / {deck.length}</span>
         <button onClick={() => go(1)} data-cursor-grow>Next ›</button>
       </div>
     </div>
@@ -174,13 +211,40 @@ function uniqueWrong(field: 'posName' | 'from' | 'fee', correct: string, n: numb
   return shuffle(vals).slice(0, n);
 }
 
+// Distractors drawn from the legends pool (position or full nationality).
+function legendWrong(field: 'pos' | 'nat', correct: string, n: number): string[] {
+  const vals = [...new Set(
+    greats.map((g) => (field === 'pos' ? g.posName : (NAT[g.nat] ?? g.nat))).filter((v) => v && v !== correct)
+  )];
+  return shuffle(vals).slice(0, n);
+}
+
 // Guarantee exactly 4 distinct options with the correct answer included.
 function makeOpts(correct: string, wrong: string[]): string[] {
   const opts = [...new Set([correct, ...wrong])].slice(0, 4);
   return shuffle(opts);
 }
 
-function buildQuestions(): Question[] {
+function buildQuestions(src: StudySrc): Question[] {
+  if (src === 'legends') {
+    // Position + nationality only — clean, unambiguous distractors.
+    return shuffle(greats).slice(0, 10).map((g) => {
+      if (Math.random() < 0.5) {
+        return {
+          q: <>What position did <b>{g.name}</b> play?</>,
+          opts: makeOpts(g.posName, legendWrong('pos', g.posName, 3)),
+          ans: g.posName,
+        };
+      }
+      const nat = NAT[g.nat] ?? g.nat;
+      return {
+        q: <>Which country did <b>{g.name}</b> represent?</>,
+        opts: makeOpts(nat, legendWrong('nat', nat, 3)),
+        ans: nat,
+      };
+    });
+  }
+
   const pool = squad.filter((p) => p.fee !== '—');
   return shuffle(pool).slice(0, 10).map((p) => {
     const type = Math.floor(Math.random() * 3);
@@ -206,19 +270,27 @@ function buildQuestions(): Question[] {
   });
 }
 
-function Quiz() {
+function Quiz({ src }: { src: StudySrc }) {
   // Built lazily on the client (event-driven) → no hydration mismatch
-  const [pool, setPool] = useState<Question[]>(() => buildQuestions());
+  const [pool, setPool] = useState<Question[]>(() => buildQuestions(src));
   const [pos, setPos] = useState(0);
   const [score, setScore] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
 
   const restart = () => {
-    setPool(buildQuestions());
+    setPool(buildQuestions(src));
     setPos(0);
     setScore(0);
     setPicked(null);
   };
+
+  // Rebuild when switching pools
+  useEffect(() => {
+    setPool(buildQuestions(src));
+    setPos(0);
+    setScore(0);
+    setPicked(null);
+  }, [src]);
 
   const done = pos >= pool.length;
   const item = pool[pos];
@@ -542,6 +614,7 @@ function PlayerModal({ player, onClose }: { player: Player | null; onClose: () =
 export function LiverpoolHub() {
   const [active, setActive] = useState<TabId>('now');
   const [studyMode, setStudyMode] = useState<'cards' | 'quiz'>('cards');
+  const [studySrc, setStudySrc] = useState<StudySrc>('squad');
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const tablistRef = useRef<HTMLDivElement>(null);
@@ -1020,9 +1093,26 @@ export function LiverpoolHub() {
         {/* ====================== STUDY ====================== */}
         {active === 'study' && (
           <section role="tabpanel" id="lv-panel-study" aria-labelledby="lv-tab-study" tabIndex={0}>
-            <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Learn the squad cold</div>
+            <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Learn the squad &amp; the legends cold</div>
             <h2 className={styles.section} data-reveal>Study Mode</h2>
-            <p className={styles.lede} data-reveal>Quizlet-style. Flip cards to drill each player&apos;s position and details, then test yourself.</p>
+            <p className={styles.lede} data-reveal>Quizlet-style. Drill the current squad or the all-time greats — flip cards for each player&apos;s details, then test yourself.</p>
+
+            <div className={styles.studySwitch} data-reveal>
+              <button
+                className={`${styles.sbtn} ${studySrc === 'squad' ? styles.sbtnActive : ''}`}
+                onClick={() => setStudySrc('squad')}
+                data-cursor-grow
+              >
+                Squad 25/26
+              </button>
+              <button
+                className={`${styles.sbtn} ${studySrc === 'legends' ? styles.sbtnActive : ''}`}
+                onClick={() => setStudySrc('legends')}
+                data-cursor-grow
+              >
+                Top 100 Legends
+              </button>
+            </div>
 
             <div className={styles.studySwitch} data-reveal>
               <button
@@ -1042,7 +1132,7 @@ export function LiverpoolHub() {
             </div>
 
             <div data-reveal>
-              {studyMode === 'cards' ? <Flashcards /> : <Quiz />}
+              {studyMode === 'cards' ? <Flashcards src={studySrc} /> : <Quiz src={studySrc} />}
             </div>
           </section>
         )}
