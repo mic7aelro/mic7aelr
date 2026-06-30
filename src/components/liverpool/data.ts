@@ -118,7 +118,7 @@ export const out2526: TransferOut[] = [
   { p: 'Nat Phillips', pos: 'CB', to: 'West Brom', fee: '£3m', when: '23 Jun 2025' },
 ];
 
-export type SummerMove = { p: string; pos: string; mv: string; fee: string; type: 'in' | 'out' | 'rumor'; when: string };
+export type SummerMove = { p: string; pos: string; mv: string; fee: string; type: 'in' | 'out' | 'rumor' | 'miss'; when: string };
 
 export const summer26: SummerMove[] = [
   { p: 'Víctor Munoz', pos: 'LW', mv: 'Osasuna', fee: '€40m', type: 'in', when: 'Confirmed signing' },
@@ -126,7 +126,7 @@ export const summer26: SummerMove[] = [
   { p: 'Ibrahima Konaté', pos: 'CB', mv: 'Real Madrid', fee: 'Free', type: 'out', when: 'Closing on move' },
   { p: 'Andy Robertson', pos: 'LB', mv: 'Exit expected', fee: '—', type: 'out', when: 'Leaving in rebuild' },
   { p: 'Bradley Barcola', pos: 'W', mv: 'PSG', fee: '~€80m+', type: 'rumor', when: 'Shortlisted · Arsenal rivalling' },
-  { p: 'Yan Diomande', pos: 'RW', mv: 'RB Leipzig', fee: '~€100–130m', type: 'rumor', when: 'Top wing target' },
+  { p: 'Yan Diomande', pos: 'RW', mv: 'Signed for PSG (from RB Leipzig)', fee: '~€100m', type: 'miss', when: 'Liverpool missed out' },
   { p: 'Eduardo Camavinga', pos: 'CM', mv: 'Real Madrid', fee: 'TBD', type: 'rumor', when: 'Midfield target · contact made' },
   { p: 'Ayyoub Bouaddi', pos: 'CM', mv: 'Lille', fee: 'TBD', type: 'rumor', when: 'Young midfield option' },
 ];

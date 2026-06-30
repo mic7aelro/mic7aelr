@@ -703,7 +703,7 @@ export function LiverpoolHub() {
               </div>
               <div className={styles.card} data-reveal>
                 <h3>What to watch next</h3>
-                <p>Iraola wants a faster, high-pressing side. Spain winger <b>Víctor Munoz</b> is in from Osasuna. <b>Bradley Barcola</b> (PSG) and <b>Yan Diomande</b> (Leipzig) head a long wing shortlist. Midfield is the other rebuild priority. Pre-season starts after the 2026 World Cup. <Jump to="transfers">Track the rebuild →</Jump></p>
+                <p>Iraola wants a faster, high-pressing side. Spain winger <b>Víctor Munoz</b> is in from Osasuna. <b>Bradley Barcola</b> (PSG) now heads the wing shortlist after top target <b>Yan Diomande</b> joined PSG. Midfield is the other rebuild priority. Pre-season starts after the 2026 World Cup. <Jump to="transfers">Track the rebuild →</Jump></p>
               </div>
             </div>
           </section>
@@ -876,15 +876,15 @@ export function LiverpoolHub() {
                   pos={t.pos}
                   sub={`${t.mv} · ${t.when}`}
                   fee={t.fee}
-                  tag={t.type === 'in' ? styles.tagIn : t.type === 'out' ? styles.tagOut : styles.tagRumor}
-                  tagLabel={t.type === 'in' ? 'In' : t.type === 'out' ? 'Out' : 'Rumor'}
+                  tag={t.type === 'in' ? styles.tagIn : t.type === 'out' ? styles.tagOut : t.type === 'miss' ? styles.tagMiss : styles.tagRumor}
+                  tagLabel={t.type === 'in' ? 'In' : t.type === 'out' ? 'Out' : t.type === 'miss' ? 'Missed' : 'Rumor'}
                 />
               ))}
             </div>
 
             <div className={`${styles.card} ${styles.cardGoldAccent}`} style={{ marginTop: 18 }} data-reveal>
               <h3>The Barcola situation, explained</h3>
-              <p><b>Bradley Barcola</b> (23, PSG winger) is the marquee name. Per Fabrizio Romano he was on Liverpool&apos;s shortlist in 2025 and remains there in 2026, with his PSG contract talks &quot;completely on standby.&quot; He&apos;s stuck behind Kvaratskhelia in Luis Enrique&apos;s biggest games. <b>Arsenal</b> are reportedly in too with an opening ~€80m bid. French reports say Barcola is &quot;thrilled&quot; by an Anfield move — but PSG rate him highly and it&apos;s &quot;absolutely open.&quot; Liverpool view him partly as an alternative to top target Yan Diomande.</p>
+              <p><b>Bradley Barcola</b> (23, PSG winger) is the marquee name. Per Fabrizio Romano he was on Liverpool&apos;s shortlist in 2025 and remains there in 2026, with his PSG contract talks &quot;completely on standby.&quot; He&apos;s stuck behind Kvaratskhelia in Luis Enrique&apos;s biggest games. <b>Arsenal</b> are reportedly in too with an opening ~€80m bid. French reports say Barcola is &quot;thrilled&quot; by an Anfield move — but PSG rate him highly and it&apos;s &quot;absolutely open.&quot; He was viewed partly as an alternative to top target <b>Yan Diomande</b> — but with Diomande now signed by PSG, Barcola moves to the front of the wing queue. Ironically, PSG&apos;s own wing logjam could make him easier to prise away.</p>
             </div>
           </section>
         )}
