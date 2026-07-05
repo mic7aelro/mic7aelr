@@ -905,10 +905,7 @@ export function LiverpoolHub() {
             <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Liverpool&apos;s Greatest · 2026</div>
             <h2 className={styles.section} data-reveal>The Top 100</h2>
             <p className={styles.lede} data-reveal>
-              The club&apos;s official all-time ranking, voted by ~1.4m fans plus former players, journalists and a club panel. Positions <b>100–11</b> have been revealed; the <b>top 10</b> drop in the live finale in early July. Tap any name for the details.
-            </p>
-            <p className={styles.lede} data-reveal style={{ marginTop: 8 }}>
-              <span className={styles.t100Note}>The top 10 below are an editorial prediction</span> — these ten are the only Anfield greats absent from the revealed 100–11, so the tier is locked; the exact order is ours, not yet official.
+              The club&apos;s official all-time ranking, voted by ~1.4m fans plus former players, journalists and a club panel — with <b>Steven Gerrard</b> crowned Liverpool&apos;s greatest ever, just ahead of Kenny Dalglish. Tap any name for the details.
             </p>
             <div data-reveal>
               <Top100 />
