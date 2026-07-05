@@ -18,10 +18,12 @@ import {
   verdictStats,
   xi,
   greats,
+  careers,
   TABS,
   NAT,
   type TabId,
   type Player,
+  type CareerRow,
 } from './data';
 
 // Respect the user's reduced-motion preference (SSR-safe).
@@ -445,6 +447,45 @@ type WikiSummary = {
   content_urls?: { desktop?: { page?: string } };
 };
 
+// ─── Career table — senior / international, apps & goals ─────────────────────
+
+function CareerTable({ title, rows }: { title: string; rows: CareerRow[] }) {
+  const apps = rows.reduce((s, r) => s + r.apps, 0);
+  const goals = rows.reduce((s, r) => s + r.goals, 0);
+  return (
+    <div className={styles.career}>
+      <div className={styles.careerHead}>{title}</div>
+      <table className={styles.careerTable}>
+        <thead>
+          <tr>
+            <th>Years</th>
+            <th>Team</th>
+            <th className={styles.careerNum}>Apps</th>
+            <th className={styles.careerNum}>Gls</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={i} className={r.loan ? styles.careerLoan : undefined}>
+              <td>{r.years}</td>
+              <td>{r.loan ? `→ ${r.team.replace(' (loan)', '')}` : r.team}</td>
+              <td className={styles.careerNum}>{r.apps}</td>
+              <td className={styles.careerNum}>{r.goals}</td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={2}>Total</td>
+            <td className={styles.careerNum}>{apps}</td>
+            <td className={styles.careerNum}>{goals}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  );
+}
+
 // ─── Player modal — Wikipedia photo + bio, in-page, on-brand ─────────────────
 
 function PlayerModal({ player, onClose }: { player: Player | null; onClose: () => void }) {
@@ -601,6 +642,14 @@ function PlayerModal({ player, onClose }: { player: Player | null; onClose: () =
               <p>{player.note ? <><b>{player.note}.</b> </> : null}A {player.posName.toLowerCase()} for Liverpool, signed from {player.from} in {player.when}.</p>
             )}
           </div>
+
+          {careers[player.name] && (
+            <div className={styles.careerWrap}>
+              <CareerTable title="Senior career" rows={careers[player.name].senior} />
+              <CareerTable title="International career" rows={careers[player.name].intl} />
+              <p className={styles.careerFoot}>Domestic-league appearances &amp; goals. Source: Wikipedia.</p>
+            </div>
+          )}
 
           <a className={styles.modalLink} href={wikiPage} target="_blank" rel="noopener noreferrer" data-cursor-grow>
             Read full article on Wikipedia ↗

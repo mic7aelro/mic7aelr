@@ -83,6 +83,120 @@ export const squad: Player[] = [
   { n: 73, name: 'Rio Ngumoha', pos: 'FW', posName: 'Winger', nat: 'ENG', from: 'Academy', fee: '—', when: 'Academy', apps: 26, note: 'Youngest-ever scorer' },
 ];
 
+// ─── Full career records (Wikipedia infobox: domestic-league apps & goals) ───
+// Only for players who are both in the current squad AND the all-time Top 100.
+export type CareerRow = { years: string; team: string; apps: number; goals: number; loan?: boolean };
+export type Career = { senior: CareerRow[]; intl: CareerRow[] };
+
+export const careers: Record<string, Career> = {
+  'Mohamed Salah': {
+    senior: [
+      { years: '2010–2012', team: 'Al Mokawloon', apps: 40, goals: 11 },
+      { years: '2012–2014', team: 'Basel', apps: 47, goals: 9 },
+      { years: '2014–2016', team: 'Chelsea', apps: 13, goals: 2 },
+      { years: '2015', team: 'Fiorentina (loan)', apps: 16, goals: 6, loan: true },
+      { years: '2015–2016', team: 'Roma (loan)', apps: 34, goals: 14, loan: true },
+      { years: '2016–2017', team: 'Roma', apps: 31, goals: 15 },
+      { years: '2017–2026', team: 'Liverpool', apps: 315, goals: 191 },
+    ],
+    intl: [
+      { years: '2010–2011', team: 'Egypt U20', apps: 11, goals: 3 },
+      { years: '2011–2012', team: 'Egypt U23', apps: 11, goals: 4 },
+      { years: '2011–', team: 'Egypt', apps: 120, goals: 68 },
+    ],
+  },
+  'Virgil van Dijk': {
+    senior: [
+      { years: '2011–2013', team: 'Groningen', apps: 62, goals: 7 },
+      { years: '2013–2015', team: 'Celtic', apps: 76, goals: 9 },
+      { years: '2015–2018', team: 'Southampton', apps: 67, goals: 4 },
+      { years: '2018–', team: 'Liverpool', apps: 272, goals: 27 },
+    ],
+    intl: [
+      { years: '2011', team: 'Netherlands U19', apps: 1, goals: 0 },
+      { years: '2011–2013', team: 'Netherlands U21', apps: 3, goals: 0 },
+      { years: '2015–', team: 'Netherlands', apps: 96, goals: 13 },
+    ],
+  },
+  'Alisson Becker': {
+    senior: [
+      { years: '2013–2016', team: 'Internacional', apps: 80, goals: 0 },
+      { years: '2016–2018', team: 'Roma', apps: 37, goals: 0 },
+      { years: '2018–', team: 'Liverpool', apps: 255, goals: 1 },
+    ],
+    intl: [
+      { years: '2009', team: 'Brazil U17', apps: 3, goals: 0 },
+      { years: '2013', team: 'Brazil U20', apps: 5, goals: 0 },
+      { years: '2015–', team: 'Brazil', apps: 82, goals: 0 },
+    ],
+  },
+  'Andy Robertson': {
+    senior: [
+      { years: '2012–2013', team: "Queen's Park", apps: 34, goals: 2 },
+      { years: '2013–2014', team: 'Dundee United', apps: 36, goals: 3 },
+      { years: '2014–2017', team: 'Hull City', apps: 99, goals: 3 },
+      { years: '2017–', team: 'Liverpool', apps: 275, goals: 11 },
+    ],
+    intl: [
+      { years: '2013–2015', team: 'Scotland U21', apps: 4, goals: 0 },
+      { years: '2014–', team: 'Scotland', apps: 97, goals: 4 },
+    ],
+  },
+  'Joe Gomez': {
+    senior: [
+      { years: '2014–2015', team: 'Charlton Athletic', apps: 21, goals: 0 },
+      { years: '2015–', team: 'Liverpool', apps: 170, goals: 0 },
+    ],
+    intl: [
+      { years: '2012', team: 'England U16', apps: 2, goals: 0 },
+      { years: '2013–2014', team: 'England U17', apps: 19, goals: 0 },
+      { years: '2014–2015', team: 'England U19', apps: 4, goals: 0 },
+      { years: '2015–2017', team: 'England U21', apps: 7, goals: 0 },
+      { years: '2017–2024', team: 'England', apps: 15, goals: 0 },
+    ],
+  },
+  'Curtis Jones': {
+    senior: [
+      { years: '2018–', team: 'Liverpool', apps: 153, goals: 11 },
+    ],
+    intl: [
+      { years: '2016–2017', team: 'England U16', apps: 4, goals: 1 },
+      { years: '2017', team: 'England U17', apps: 3, goals: 0 },
+      { years: '2018–2019', team: 'England U18', apps: 11, goals: 1 },
+      { years: '2019', team: 'England U19', apps: 4, goals: 0 },
+      { years: '2020–2023', team: 'England U21', apps: 20, goals: 5 },
+      { years: '2024–', team: 'England', apps: 6, goals: 1 },
+    ],
+  },
+  'Dominik Szoboszlai': {
+    senior: [
+      { years: '2017–2018', team: 'FC Liefering', apps: 42, goals: 16 },
+      { years: '2018–2021', team: 'Red Bull Salzburg', apps: 56, goals: 16 },
+      { years: '2021–2023', team: 'RB Leipzig', apps: 62, goals: 12 },
+      { years: '2023–', team: 'Liverpool', apps: 105, goals: 15 },
+    ],
+    intl: [
+      { years: '2016–2017', team: 'Hungary U17', apps: 10, goals: 3 },
+      { years: '2016–2018', team: 'Hungary U19', apps: 5, goals: 2 },
+      { years: '2017–2018', team: 'Hungary U21', apps: 8, goals: 2 },
+      { years: '2019–', team: 'Hungary', apps: 65, goals: 18 },
+    ],
+  },
+  'Alexis Mac Allister': {
+    senior: [
+      { years: '2016–2019', team: 'Argentinos Juniors', apps: 56, goals: 8 },
+      { years: '2019–2023', team: 'Brighton & Hove Albion', apps: 98, goals: 16 },
+      { years: '2019', team: 'Argentinos Juniors (loan)', apps: 10, goals: 2, loan: true },
+      { years: '2019–2020', team: 'Boca Juniors (loan)', apps: 13, goals: 1, loan: true },
+      { years: '2023–', team: 'Liverpool', apps: 105, goals: 12 },
+    ],
+    intl: [
+      { years: '2020–2021', team: 'Argentina U23', apps: 9, goals: 5 },
+      { years: '2019–', team: 'Argentina', apps: 50, goals: 6 },
+    ],
+  },
+};
+
 export type CLFinal = { y: string; r: string; city: string; mgr: string };
 
 export const clFinals: CLFinal[] = [
