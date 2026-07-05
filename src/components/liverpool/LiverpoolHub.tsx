@@ -89,7 +89,7 @@ function SquadTable({ pos, onSelect }: { pos: Player['pos']; onSelect: (p: Playe
               }}
               role="button"
               tabIndex={0}
-              aria-label={`${p.name} — view details`}
+              aria-label={`${p.name} - view details`}
               data-cursor-grow
             >
               <td><span className={styles.numBadge}>{p.n}</span></td>
@@ -209,7 +209,7 @@ function shuffle<T>(a: T[]): T[] {
 }
 
 function uniqueWrong(field: 'posName' | 'from' | 'fee', correct: string, n: number): string[] {
-  const vals = [...new Set(squad.map((p) => p[field]).filter((v) => v && v !== correct && v !== '—'))];
+  const vals = [...new Set(squad.map((p) => p[field]).filter((v) => v && v !== correct && v !== '-'))];
   return shuffle(vals).slice(0, n);
 }
 
@@ -229,7 +229,7 @@ function makeOpts(correct: string, wrong: string[]): string[] {
 
 function buildQuestions(src: StudySrc): Question[] {
   if (src === 'legends') {
-    // Position + nationality only — clean, unambiguous distractors.
+    // Position + nationality only - clean, unambiguous distractors.
     return shuffle(greats).slice(0, 10).map((g) => {
       if (Math.random() < 0.5) {
         return {
@@ -247,7 +247,7 @@ function buildQuestions(src: StudySrc): Question[] {
     });
   }
 
-  const pool = squad.filter((p) => p.fee !== '—');
+  const pool = squad.filter((p) => p.fee !== '-');
   return shuffle(pool).slice(0, 10).map((p) => {
     const type = Math.floor(Math.random() * 3);
     if (type === 0) {
@@ -314,7 +314,7 @@ function Quiz({ src }: { src: StudySrc }) {
   const message =
     pct === 100 ? "Flawless. You're a proper Kopite."
     : pct >= 70 ? 'Strong. You know this squad.'
-    : pct >= 40 ? 'Getting there — hit the flashcards.'
+    : pct >= 40 ? 'Getting there - hit the flashcards.'
     : 'Back to the flashcards, lad.';
 
   return (
@@ -388,7 +388,7 @@ function TransferRow({ name, pos, sub, fee, tag, tagLabel }: {
   );
 }
 
-// ─── Top 100 — accordion list ────────────────────────────────────────────────
+// ─── Top 100 - accordion list ────────────────────────────────────────────────
 
 function Top100() {
   const [open, setOpen] = useState<number | null>(null);
@@ -412,7 +412,7 @@ function Top100() {
               </span>
               <span className={styles.posflag}>{g.posName}</span>
               <Nat code={g.nat} />
-              <span className={styles.t100Chev} aria-hidden="true">{isOpen ? '–' : '+'}</span>
+              <span className={styles.t100Chev} aria-hidden="true">{isOpen ? '-' : '+'}</span>
             </button>
             {isOpen && (
               <div className={styles.t100Body} id={`great-${g.rank}`} role="region" aria-label={g.name}>
@@ -433,7 +433,7 @@ function Top100() {
 
 // ─── Main hub ────────────────────────────────────────────────────────────────
 
-// Full name (for Wikipedia links) keyed by squad number — the pitch uses short names.
+// Full name (for Wikipedia links) keyed by squad number - the pitch uses short names.
 const squadByNumber: Record<number, Player> = Object.fromEntries(squad.map((p) => [p.n, p]));
 
 function wikiTitle(name: string) {
@@ -447,7 +447,7 @@ type WikiSummary = {
   content_urls?: { desktop?: { page?: string } };
 };
 
-// ─── Career table — senior / international, apps & goals ─────────────────────
+// ─── Career table - senior / international, apps & goals ─────────────────────
 
 function CareerTable({ title, rows }: { title: string; rows: CareerRow[] }) {
   const apps = rows.reduce((s, r) => s + r.apps, 0);
@@ -486,7 +486,7 @@ function CareerTable({ title, rows }: { title: string; rows: CareerRow[] }) {
   );
 }
 
-// ─── Player modal — Wikipedia photo + bio, in-page, on-brand ─────────────────
+// ─── Player modal - Wikipedia photo + bio, in-page, on-brand ─────────────────
 
 function PlayerModal({ player, onClose }: { player: Player | null; onClose: () => void }) {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -553,7 +553,7 @@ function PlayerModal({ player, onClose }: { player: Player | null; onClose: () =
     };
   }, [player, onClose]);
 
-  // Entrance animation (skipped under reduced-motion — elements just appear)
+  // Entrance animation (skipped under reduced-motion - elements just appear)
   useGSAP(() => {
     if (!player) return;
     if (prefersReducedMotion()) {
@@ -570,7 +570,7 @@ function PlayerModal({ player, onClose }: { player: Player | null; onClose: () =
 
   if (!player) return null;
 
-  // Use the API's canonical thumbnail as-is — arbitrary width upscales 400 on some files.
+  // Use the API's canonical thumbnail as-is - arbitrary width upscales 400 on some files.
   const photo = !imgError ? summary?.thumbnail?.source : undefined;
   const wikiPage = summary?.content_urls?.desktop?.page ?? `https://en.wikipedia.org/wiki/${wikiTitle(player.name)}`;
 
@@ -675,7 +675,7 @@ export function LiverpoolHub() {
   };
 
   // Roving-tabindex keyboard nav (manual activation: arrows move focus,
-  // Enter/Space activates — so arrowing through tabs never yanks scroll).
+  // Enter/Space activates - so arrowing through tabs never yanks scroll).
   const onTabKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const nav = ['ArrowRight', 'ArrowLeft', 'Home', 'End'];
     if (!nav.includes(e.key)) return;
@@ -698,7 +698,7 @@ export function LiverpoolHub() {
       const root = contentRef.current;
       if (!root) return;
 
-      // Reduced motion: skip the tweens but still write final state — the count-up
+      // Reduced motion: skip the tweens but still write final state - the count-up
       // cells render a literal "0" and would otherwise stay stuck at zero.
       if (prefersReducedMotion()) {
         root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
@@ -796,17 +796,17 @@ export function LiverpoolHub() {
           <section role="tabpanel" id="lv-panel-now" aria-labelledby="lv-tab-now" tabIndex={0}>
             <div className={styles.hero} data-reveal>
               <div className={styles.heroTag}>Where things stand · June 2026</div>
-              <h2>A title defence that <em>fell apart</em>.</h2>
+              <h2>A title defence that <em>fell apart.</em></h2>
               <p>
                 One year after Arne Slot won the league at a canter, Liverpool collapsed from late
                 September on, finished <b>5th</b>, won <b>nothing</b>, and sacked the manager on the
-                final weekend. Andoni Iraola now inherits a squad in transition — <Jump to="squad">Salah gone</Jump>, Konaté
+                final weekend. Andoni Iraola now inherits a squad in transition - <Jump to="squad">Salah gone</Jump>, Konaté
                 heading to Madrid, and <Jump to="transfers">£417m of new signings</Jump> still searching for their best form.
               </p>
               <div className={styles.verdict}>
                 <span className={styles.dot} />
                 <span className={styles.verdictLabel}>
-                  Champions League secured on the final day — barely
+                  Champions League secured on the final day - barely
                 </span>
               </div>
             </div>
@@ -815,7 +815,7 @@ export function LiverpoolHub() {
               <li>
                 <span className={styles.tldrTag}>The 60-second version</span>
               </li>
-              <li>Finished <b>5th</b>, won <b>nothing</b>, sacked Slot — Iraola in to rebuild.</li>
+              <li>Finished <b>5th</b>, won <b>nothing</b>, sacked Slot - Iraola in to rebuild.</li>
               <li><b>£417m</b> on Wirtz, Isak &amp; Ekitike. <Jump to="transfers">See every transfer →</Jump></li>
               <li>Salah &amp; Konaté gone; a squad in flux. <Jump to="squad">Meet the squad →</Jump></li>
               <li>Still England&apos;s most decorated club. <Jump to="history">20 titles, 6 European Cups →</Jump></li>
@@ -840,15 +840,15 @@ export function LiverpoolHub() {
             <div className={`${styles.grid} ${styles.g3}`}>
               <div className={styles.card} data-reveal>
                 <h3>Slot out, Iraola in</h3>
-                <p>Arne Slot was dismissed on 30 May 2026 after a trophyless second season. Five days later, <b>Andoni Iraola</b> — fresh off taking Bournemouth to 6th and into Europe — signed a two-year deal, tasked with restoring Klopp-style &quot;heavy metal&quot; football.</p>
+                <p>Arne Slot was dismissed on 30 May 2026 after a trophyless second season. Five days later, <b>Andoni Iraola</b> - fresh off taking Bournemouth to 6th and into Europe - signed a two-year deal, tasked with restoring Klopp-style &quot;heavy metal&quot; football.</p>
               </div>
               <div className={styles.card} data-reveal>
                 <h3>Salah&apos;s farewell</h3>
-                <p>After 440 games and 257 goals, <b>Mohamed Salah</b> left at the end of the season — the second-highest scorer in the club&apos;s history. His form dipped sharply from his record 24/25, and his relationship with Slot soured.</p>
+                <p>After 440 games and 257 goals, <b>Mohamed Salah</b> left at the end of the season - the second-highest scorer in the club&apos;s history. His form dipped sharply from his record 24/25, and his relationship with Slot soured.</p>
               </div>
               <div className={styles.card} data-reveal>
                 <h3>British record broken</h3>
-                <p>Liverpool smashed the British transfer record twice in one window — <b>Florian Wirtz</b> (£100m) then <b>Alexander Isak</b> (£125m) — on top of Ekitike, Kerkez and Frimpong. Total outlay: <b>£417m+</b>.</p>
+                <p>Liverpool smashed the British transfer record twice in one window - <b>Florian Wirtz</b> (£100m) then <b>Alexander Isak</b> (£125m) - on top of Ekitike, Kerkez and Frimpong. Total outlay: <b>£417m+</b>.</p>
               </div>
             </div>
 
@@ -856,8 +856,8 @@ export function LiverpoolHub() {
             <div className={styles.memorial} data-reveal>
               <div className={styles.twenty}>20</div>
               <div>
-                <h3>Diogo Jota · 1996–2025</h3>
-                <p>The forward died in a car accident on 3 July 2025, days after his wedding. On 11 July the club retired his No. 20 across every level — the first squad number Liverpool has ever retired. The season was played in his shadow, and his teammates carried it with them.</p>
+                <h3>Diogo Jota · 1996-2025</h3>
+                <p>The forward died in a car accident on 3 July 2025, days after his wedding. On 11 July the club retired his No. 20 across every level - the first squad number Liverpool has ever retired. The season was played in his shadow, and his teammates carried it with them.</p>
               </div>
             </div>
 
@@ -954,7 +954,7 @@ export function LiverpoolHub() {
             <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Liverpool&apos;s Greatest · 2026</div>
             <h2 className={styles.section} data-reveal>The Top 100</h2>
             <p className={styles.lede} data-reveal>
-              The club&apos;s official all-time ranking, voted by ~1.4m fans plus former players, journalists and a club panel — with <b>Steven Gerrard</b> crowned Liverpool&apos;s greatest ever, just ahead of Kenny Dalglish. Tap any name for the details.
+              The club&apos;s official all-time ranking, voted by ~1.4m fans plus former players, journalists and a club panel - with <b>Steven Gerrard</b> crowned Liverpool&apos;s greatest ever, just ahead of Kenny Dalglish. Tap any name for the details.
             </p>
             <div data-reveal>
               <Top100 />
@@ -983,7 +983,7 @@ export function LiverpoolHub() {
                     key={s.n}
                     type="button"
                     onClick={() => player && setSelectedPlayer(player)}
-                    title={`${player?.name ?? s.nm} — details`}
+                    title={`${player?.name ?? s.nm} - details`}
                     className={`${styles.spot} ${styles.clickable} ${s.gk ? styles.spotGk : ''}`}
                     style={{ left: `${s.x}%`, top: `${s.y}%`, background: 'none', border: 0, padding: 0 }}
                     data-shirt
@@ -1014,7 +1014,7 @@ export function LiverpoolHub() {
             <div className={`${styles.grid} ${styles.g2}`}>
               <div className={styles.card} data-reveal>
                 <h3>Out on loan (25/26)</h3>
-                <p>Kostas Tsimikas (Roma), Harvey Elliott (Aston Villa), Lewis Koumas (Hull), Calum Scanlon (Cardiff), Luca Stephenson (Dundee Utd), Vítězslav Jaroš (Ajax), Fabian Mrozek (FC Cincinnati) and more — the standard Liverpool loan army gaining minutes.</p>
+                <p>Kostas Tsimikas (Roma), Harvey Elliott (Aston Villa), Lewis Koumas (Hull), Calum Scanlon (Cardiff), Luca Stephenson (Dundee Utd), Vítězslav Jaroš (Ajax), Fabian Mrozek (FC Cincinnati) and more - the standard Liverpool loan army gaining minutes.</p>
               </div>
               <div className={styles.card} data-reveal>
                 <h3>Ones to watch (academy)</h3>
@@ -1028,7 +1028,7 @@ export function LiverpoolHub() {
         {active === 'transfers' && (
           <section role="tabpanel" id="lv-panel-transfers" aria-labelledby="lv-tab-transfers" tabIndex={0}>
             <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>A £417m gamble</div>
-            <h2 className={styles.section} data-reveal>Transfers In — 25/26</h2>
+            <h2 className={styles.section} data-reveal>Transfers In - 25/26</h2>
             <p className={styles.lede} data-reveal>The biggest single-window spend in the club&apos;s history. It didn&apos;t deliver a trophy.</p>
             <div className={styles.rows}>
               {in2526.map((t) => (
@@ -1036,7 +1036,7 @@ export function LiverpoolHub() {
               ))}
             </div>
 
-            <div className={styles.eyebrow}>Out the door — 25/26</div>
+            <div className={styles.eyebrow}>Out the door - 25/26</div>
             <h2 className={styles.section} data-reveal>Departures</h2>
             <p className={styles.lede} data-reveal>£190m+ recouped, but losing Trent, Díaz and Núñez reshaped the spine.</p>
             <div className={styles.rows}>
@@ -1046,8 +1046,8 @@ export function LiverpoolHub() {
             </div>
 
             <div className={styles.eyebrow}>The Iraola rebuild begins</div>
-            <h2 className={styles.section} data-reveal>Summer 2026 — Done &amp; Rumored</h2>
-            <p className={styles.lede} data-reveal>Window opened 15 June, closes 1 September. The new manager wants pace and pressing. Rumors below are not confirmed — treat them as live links, not done deals.</p>
+            <h2 className={styles.section} data-reveal>Summer 2026 - Done &amp; Rumored</h2>
+            <p className={styles.lede} data-reveal>Window opened 15 June, closes 1 September. The new manager wants pace and pressing. Rumors below are not confirmed - treat them as live links, not done deals.</p>
             <div className={styles.rows}>
               {summer26.map((t) => (
                 <TransferRow
@@ -1064,7 +1064,7 @@ export function LiverpoolHub() {
 
             <div className={`${styles.card} ${styles.cardGoldAccent}`} style={{ marginTop: 18 }} data-reveal>
               <h3>The Barcola situation, explained</h3>
-              <p><b>Bradley Barcola</b> (23, PSG winger) is the marquee name. Per Fabrizio Romano he was on Liverpool&apos;s shortlist in 2025 and remains there in 2026, with his PSG contract talks &quot;completely on standby.&quot; He&apos;s stuck behind Kvaratskhelia in Luis Enrique&apos;s biggest games. <b>Arsenal</b> are reportedly in too with an opening ~€80m bid. French reports say Barcola is &quot;thrilled&quot; by an Anfield move — but PSG rate him highly and it&apos;s &quot;absolutely open.&quot; He was viewed partly as an alternative to top target <b>Yan Diomande</b> — but with Diomande now signed by PSG, Barcola moves to the front of the wing queue. Ironically, PSG&apos;s own wing logjam could make him easier to prise away.</p>
+              <p><b>Bradley Barcola</b> (23, PSG winger) is the marquee name. Per Fabrizio Romano he was on Liverpool&apos;s shortlist in 2025 and remains there in 2026, with his PSG contract talks &quot;completely on standby.&quot; He&apos;s stuck behind Kvaratskhelia in Luis Enrique&apos;s biggest games. <b>Arsenal</b> are reportedly in too with an opening ~€80m bid. French reports say Barcola is &quot;thrilled&quot; by an Anfield move - but PSG rate him highly and it&apos;s &quot;absolutely open.&quot; He was viewed partly as an alternative to top target <b>Yan Diomande</b> - but with Diomande now signed by PSG, Barcola moves to the front of the wing queue. Ironically, PSG&apos;s own wing logjam could make him easier to prise away.</p>
             </div>
           </section>
         )}
@@ -1083,7 +1083,7 @@ export function LiverpoolHub() {
               <div className={styles.card} data-reveal>
                 <h3 className={styles.spineRole}>Vice-captain (25/26)</h3>
                 <p className={styles.spineName}>Andy Robertson <span>· #26</span></p>
-                <p style={{ marginTop: 6 }}>Left-back, Scotland — though he&apos;s expected to leave in the summer 2026 rebuild.</p>
+                <p style={{ marginTop: 6 }}>Left-back, Scotland - though he&apos;s expected to leave in the summer 2026 rebuild.</p>
               </div>
               <div className={styles.card} data-reveal>
                 <h3 className={styles.spineRole}>Head coach</h3>
@@ -1093,22 +1093,22 @@ export function LiverpoolHub() {
             </div>
             <div className={styles.card} style={{ marginTop: 14 }} data-reveal>
               <h3>Leadership group &amp; ownership</h3>
-              <p>The wider captaincy order in 25/26 ran <b>Van Dijk → Robertson → Alisson (3rd) → Salah (4th) → Gomez (5th)</b>. The club is owned by <b>Fenway Sports Group (FSG)</b>, chaired by <b>Tom Werner</b>, with <b>Richard Hughes</b> as sporting director — the man who brought Iraola to Anfield, having hired him at Bournemouth.</p>
+              <p>The wider captaincy order in 25/26 ran <b>Van Dijk → Robertson → Alisson (3rd) → Salah (4th) → Gomez (5th)</b>. The club is owned by <b>Fenway Sports Group (FSG)</b>, chaired by <b>Tom Werner</b>, with <b>Richard Hughes</b> as sporting director - the man who brought Iraola to Anfield, having hired him at Bournemouth.</p>
             </div>
 
             <div className={styles.eyebrow}>Three derbies that define the season</div>
             <h2 className={styles.section} data-reveal>The Rivalries</h2>
             <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16 }}>
               <div className={`${styles.card} ${styles.rivalCard}`} data-reveal>
-                <h3>Everton — Merseyside Derby</h3>
+                <h3>Everton - Merseyside Derby</h3>
                 <p>The local one, and the most-played top-flight fixture in English football. Everton moved to the new <b>Hill Dickinson Stadium</b> in 2025 after leaving Goodison Park. Fierce, family-splitting, and never short of red cards.</p>
               </div>
               <div className={`${styles.card} ${styles.rivalCard}`} data-reveal>
-                <h3>Manchester United — North West Derby</h3>
+                <h3>Manchester United - North West Derby</h3>
                 <p>The biggest rivalry in English football: the two most successful clubs, <b>20 league titles each</b>. Decades of bragging rights over who&apos;s England&apos;s No. 1. Carrick&apos;s United are rebuilding too.</p>
               </div>
               <div className={`${styles.card} ${styles.rivalCard}`} data-reveal>
-                <h3>Manchester City — Modern Title Rivals</h3>
+                <h3>Manchester City - Modern Title Rivals</h3>
                 <p>Forged in the Klopp-vs-Guardiola years when the two traded record points totals. With Pep gone from City and a new era at both clubs, the next chapter is wide open.</p>
               </div>
             </div>
@@ -1141,7 +1141,7 @@ export function LiverpoolHub() {
           <section role="tabpanel" id="lv-panel-study" aria-labelledby="lv-tab-study" tabIndex={0}>
             <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Learn the squad &amp; the legends cold</div>
             <h2 className={styles.section} data-reveal>Study Mode</h2>
-            <p className={styles.lede} data-reveal>Quizlet-style. Drill the current squad or the all-time greats — flip cards for each player&apos;s details, then test yourself.</p>
+            <p className={styles.lede} data-reveal>Quizlet-style. Drill the current squad or the all-time greats - flip cards for each player&apos;s details, then test yourself.</p>
 
             <div className={styles.studySwitch} data-reveal>
               <button
