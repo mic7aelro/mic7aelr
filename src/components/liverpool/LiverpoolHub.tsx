@@ -21,6 +21,7 @@ import {
   careers,
   TABS,
   NAT,
+  GLOSSARY,
   type TabId,
   type Player,
   type CareerRow,
@@ -34,6 +35,14 @@ const prefersReducedMotion = () =>
 // Nationality code with a country-name tooltip for screen readers + hover.
 function Nat({ code }: { code: string }) {
   return <abbr className={styles.nat} title={NAT[code] ?? code}>{code}</abbr>;
+}
+
+// Jargon/position-code term with a plain-English definition on hover/tap.
+// Falls back to plain text if the term isn't in the glossary.
+function Term({ term, children }: { term: string; children: React.ReactNode }) {
+  const def = GLOSSARY[term];
+  if (!def) return <>{children}</>;
+  return <abbr className={styles.term} title={def}>{children}</abbr>;
 }
 
 // ─── Crest (signature SVG from the original) ─────────────────────────────────
@@ -378,7 +387,7 @@ function TransferRow({ name, pos, sub, fee, tag, tagLabel }: {
   return (
     <div className={styles.row} style={{ gridTemplateColumns: '1fr auto auto' }} data-reveal>
       <span className={styles.rowMain}>
-        <b>{name}</b> <span className={styles.posflag}>{pos}</span>
+        <b>{name}</b> <span className={styles.posflag}><Term term={pos}>{pos}</Term></span>
         <br />
         <span className={styles.rowSub}>{sub}</span>
       </span>
@@ -677,6 +686,20 @@ export function LiverpoolHub() {
   const contentRef = useRef<HTMLDivElement>(null);
   const tablistRef = useRef<HTMLDivElement>(null);
 
+  // First-time visitors land on "Start Here" instead of the current-season
+  // recap, which assumes you already follow the club. Returning visitors
+  // keep the normal default.
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem('lfc_visited')) {
+        setActive('start');
+        localStorage.setItem('lfc_visited', '1');
+      }
+    } catch {
+      // localStorage unavailable (private browsing etc.) - just skip the redirect.
+    }
+  }, []);
+
   const switchTab = (v: TabId) => {
     if (v === active) return;
     setActive(v);
@@ -800,6 +823,110 @@ export function LiverpoolHub() {
       </nav>
 
       <main className={styles.main} ref={contentRef}>
+        {/* ====================== START HERE ====================== */}
+        {active === 'start' && (
+          <section role="tabpanel" id="lv-panel-start" aria-labelledby="lv-tab-start" tabIndex={0}>
+            <div className={styles.hero} data-reveal>
+              <div className={styles.heroTag}>New here? Start with this</div>
+              <h2>Know the players from <em>FIFA</em>? Good start.</h2>
+              <p>
+                This hub assumes nothing else. Whether you recognise these names from a game or you&apos;ve never
+                watched a match, here&apos;s the five-minute primer that makes everything on this page make sense -
+                then a path to the rest of the site.
+              </p>
+            </div>
+
+            <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>No seasons, no servers</div>
+            <h2 className={styles.section} data-reveal>How The League Actually Works</h2>
+            <p className={styles.lede} data-reveal>FIFA&apos;s Career Mode simplifies a lot. Real English football runs on a few rules that explain almost everything else on this site.</p>
+            <div className={`${styles.grid} ${styles.g2}`} style={{ marginTop: 16 }}>
+              <div className={styles.card} data-reveal>
+                <h3>Promotion &amp; relegation</h3>
+                <p>There&apos;s no reset between seasons. Finish in the bottom three of the Premier League and you&apos;re relegated to a lower division the next year - real jeopardy that Ultimate Team never simulates. Liverpool have played in the top flight since 1962.</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3>Cups run alongside the league</h3>
+                <p>The league table isn&apos;t the only competition. The FA Cup and League Cup are separate knockout tournaments played in parallel across the same season, plus a European competition for the top finishers. A club can chase four trophies at once.</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3>Why the <Term term="topsix">top six</Term> matters</h3>
+                <p>Finishing in the top four (sometimes five) sends you to next season&apos;s Champions League, English football&apos;s richest and most prestigious prize. A handful of clubs, Liverpool among them, compete for those places nearly every year.</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3>What makes a match &quot;big&quot;</h3>
+                <p>Not every game carries equal weight. A <Term term="derby">derby</Term> against a local rival, a six-pointer between top-six sides, a cup final, or a European knockout night all carry more stakes than a routine midweek fixture.</p>
+              </div>
+            </div>
+
+            <div className={styles.eyebrow}>Jargon you&apos;ll see everywhere</div>
+            <h2 className={styles.section} data-reveal>Learn The Language</h2>
+            <p className={styles.lede} data-reveal>Any underlined term on this site (like this one) can be hovered or tapped for a plain-English definition. Here are the ones that come up constantly.</p>
+            <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16 }}>
+              <div className={styles.card} data-reveal>
+                <h3><Term term="kop">The Kop</Term></h3>
+                <p>{GLOSSARY.kop}</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3><Term term="bootroom">The Boot Room</Term></h3>
+                <p>{GLOSSARY.bootroom}</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3><Term term="ynwa">You&apos;ll Never Walk Alone</Term></h3>
+                <p>{GLOSSARY.ynwa}</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3><Term term="treble">The treble</Term></h3>
+                <p>{GLOSSARY.treble}</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3><Term term="derby">Derby</Term></h3>
+                <p>{GLOSSARY.derby}</p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3><Term term="topsix">Top six</Term></h3>
+                <p>{GLOSSARY.topsix}</p>
+              </div>
+            </div>
+
+            <div className={styles.eyebrow}>Reading a squad list</div>
+            <h2 className={styles.section} data-reveal>Position Codes, Decoded</h2>
+            <p className={styles.lede} data-reveal>The Squad, Transfers and pitch diagram all use short position codes. Hover any of them on this site for the plain name - or check the quick reference below.</p>
+            <div className={`${styles.grid} ${styles.g4}`} style={{ marginTop: 16 }}>
+              {['GK', 'CB', 'LB', 'RB', 'RWB', 'DM', 'CM', 'AM', 'LW', 'RW', 'W', 'ST'].map((code) => (
+                <div className={styles.card} key={code} data-reveal style={{ padding: '16px 18px' }}>
+                  <b style={{ color: '#fff', fontFamily: 'var(--f-cond)', letterSpacing: '1px' }}>{code}</b>
+                  <p style={{ marginTop: 4 }}>{GLOSSARY[code]}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.eyebrow}>Where to go next</div>
+            <h2 className={styles.section} data-reveal>Your Path To Hero Status</h2>
+            <div className={`${styles.grid} ${styles.g4}`} style={{ marginTop: 16 }}>
+              <div className={styles.card} data-reveal>
+                <h3>1. History</h3>
+                <p>The trophy haul, explained trophy by trophy, plus every European Cup final.</p>
+                <p style={{ marginTop: 10 }}><Jump to="history">See the trophy cabinet →</Jump></p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3>2. Top 100</h3>
+                <p>The club&apos;s official all-time greatest players, fan-voted, with full career stats.</p>
+                <p style={{ marginTop: 10 }}><Jump to="top100">Meet the legends →</Jump></p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3>3. Squad &amp; XI</h3>
+                <p>The current 25/26 squad, formation, and every player&apos;s career so far.</p>
+                <p style={{ marginTop: 10 }}><Jump to="squad">Meet this year&apos;s squad →</Jump></p>
+              </div>
+              <div className={styles.card} data-reveal>
+                <h3>4. Study Mode</h3>
+                <p>Flashcards and a quiz to turn everything above into knowledge that sticks.</p>
+                <p style={{ marginTop: 10 }}><Jump to="study">Test yourself →</Jump></p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ====================== NOW ====================== */}
         {active === 'now' && (
           <section role="tabpanel" id="lv-panel-now" aria-labelledby="lv-tab-now" tabIndex={0}>
@@ -1001,7 +1128,7 @@ export function LiverpoolHub() {
                   >
                     <div className={styles.shirt}>{s.n}</div>
                     <div className={styles.spotNm}>{s.nm}</div>
-                    <div className={styles.spotPs}>{s.ps}</div>
+                    <div className={styles.spotPs}><Term term={s.ps}>{s.ps}</Term></div>
                   </button>
                 );
               })}
@@ -1127,11 +1254,11 @@ export function LiverpoolHub() {
             <h2 className={styles.section} data-reveal>Anfield &amp; The Culture</h2>
             <div className={`${styles.grid} ${styles.g2}`} style={{ marginTop: 16 }}>
               <div className={styles.card} data-reveal>
-                <h3>Anfield &amp; The Kop</h3>
+                <h3>Anfield &amp; <Term term="kop">The Kop</Term></h3>
                 <p>Home since 1892, now ~61,000 after the Anfield Road End expansion. The famous <b>Spion Kop</b> stand is the spiritual heart. Average home league crowd in 25/26: 60,390.</p>
               </div>
               <div className={styles.card} data-reveal>
-                <h3>You&apos;ll Never Walk Alone</h3>
+                <h3><Term term="ynwa">You&apos;ll Never Walk Alone</Term></h3>
                 <p>The Rodgers &amp; Hammerstein anthem, adopted via Gerry &amp; The Pacemakers in the &apos;60s, sung before every home game. The <b>Shankly Gates</b> bear its name; it&apos;s printed on the crest.</p>
               </div>
               <div className={styles.card} data-reveal>
@@ -1140,7 +1267,7 @@ export function LiverpoolHub() {
               </div>
               <div className={styles.card} data-reveal>
                 <h3>The managers&apos; lineage</h3>
-                <p>Shankly built it; Paisley &amp; Fagan conquered Europe; Dalglish, Benítez (Istanbul 2005), then <b>Klopp</b> (2019 CL, 2020 league) restored the dynasty. Slot won 2025. Now Iraola.</p>
+                <p>Shankly built it and founded the <Term term="bootroom">Boot Room</Term>; Paisley &amp; Fagan conquered Europe; Dalglish, Benítez (Istanbul 2005), then <b>Klopp</b> (2019 CL, 2020 league) restored the dynasty. Slot won 2025. Now Iraola.</p>
               </div>
             </div>
           </section>

@@ -1639,6 +1639,7 @@ export const greats: Great[] = [
 ];
 
 export const TABS = [
+  { v: 'start', label: 'Start Here' },
   { v: 'now', label: 'The Verdict' },
   { v: 'history', label: 'History' },
   { v: 'top100', label: 'Top 100' },
@@ -1649,3 +1650,30 @@ export const TABS = [
 ] as const;
 
 export type TabId = (typeof TABS)[number]['v'];
+
+// ─── Sitewide glossary ────────────────────────────────────────────────────────
+// Slugs (kop, bootroom, ...) are used for jargon wrapped in prose; the 2-3
+// letter keys (GK, CB, RWB, ...) are the position codes used in Transfers/XI.
+export const GLOSSARY: Record<string, string> = {
+  kop: "The Kop - Anfield's home end and the loudest source of noise in the stadium. Named after Spion Kop, a hill in South Africa where a defining Boer War battle took place in 1900; English grounds later borrowed the name for their steepest terraces.",
+  bootroom: "The Boot Room - a small, plain room at Anfield where Bill Shankly's coaching staff met to plan training and tactics over tea. It became shorthand for Liverpool's habit of promoting from within, passing knowledge from one manager to the next instead of starting over.",
+  ynwa: "You'll Never Walk Alone (YNWA) - Liverpool's anthem, sung by the crowd before every home match. Adapted from a Rodgers and Hammerstein show tune, it was popularised by local band Gerry and the Pacemakers in the 1960s and adopted by the Kop soon after.",
+  topsix: "Top six - the small group of clubs, usually Liverpool, Manchester United, Manchester City, Arsenal, Chelsea and Tottenham, that most years compete for the four places that qualify for the following season's Champions League.",
+  derby: "Derby - a match against a local rival. Liverpool's derby is against Everton, based barely a mile away in the same city, making it one of the most-played fixtures in English top-flight history.",
+  treble: "The treble - winning three major trophies in one season. Liverpool have never won the outright treble (league, FA Cup, Champions League) but did win a cup treble - the FA Cup, League Cup and UEFA Cup - in 2001.",
+  GK: 'Goalkeeper.',
+  CB: 'Centre-back - a central defender.',
+  LB: 'Left-back - a defender on the left side.',
+  RB: 'Right-back - a defender on the right side.',
+  RWB: 'Right wing-back - a right-back who pushes further forward to support attacks.',
+  DF: 'Defender (general).',
+  DM: 'Defensive midfielder, screening the back line.',
+  CM: 'Central midfielder.',
+  AM: 'Attacking midfielder, playing just behind the strikers.',
+  MF: 'Midfielder (general).',
+  LW: 'Left winger.',
+  RW: 'Right winger.',
+  W: 'Winger (general).',
+  ST: 'Striker - the furthest-forward attacking position.',
+  FW: 'Forward (general).',
+};
