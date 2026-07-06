@@ -1180,6 +1180,197 @@ export const careers: Record<string, Career> = {
       { years: '2001-2003', team: 'England', apps: 9, goals: 1 },
     ],
   },
+  'Giorgi Mamardashvili': {
+    senior: [
+      { years: '2019', team: 'Rustavi (loan)', apps: 28, goals: 0, loan: true },
+      { years: '2020-2021', team: 'Locomotive Tbilisi (loan)', apps: 29, goals: 0, loan: true },
+      { years: '2021-2025', team: 'Valencia', apps: 127, goals: 0 },
+      { years: '2025-', team: 'Liverpool', apps: 10, goals: 0 },
+    ],
+    intl: [
+      { years: '2019-2023', team: 'Georgia U21', apps: 7, goals: 0 },
+      { years: '2021-', team: 'Georgia', apps: 38, goals: 0 },
+    ],
+  },
+  'Freddie Woodman': {
+    senior: [
+      { years: '2014-2022', team: 'Newcastle United', apps: 4, goals: 0 },
+      { years: '2015', team: 'Crawley Town (loan)', apps: 11, goals: 0, loan: true },
+      { years: '2017', team: 'Kilmarnock (loan)', apps: 14, goals: 0, loan: true },
+      { years: '2018', team: 'Aberdeen (loan)', apps: 5, goals: 0, loan: true },
+      { years: '2019-2021', team: 'Swansea City (loan)', apps: 88, goals: 0, loan: true },
+      { years: '2022-2025', team: 'Preston North End', apps: 127, goals: 0 },
+      { years: '2025-', team: 'Liverpool', apps: 3, goals: 0 },
+    ],
+    intl: [
+      { years: '2016-2018', team: 'England U21', apps: 6, goals: 0 },
+    ],
+  },
+  'Ármin Pécsi': {
+    senior: [
+      { years: '2022-2025', team: 'Puskás Akadémia', apps: 46, goals: 0 },
+      { years: '2022-2023', team: 'Csákvár', apps: 18, goals: 0 },
+      { years: '2025-', team: 'Liverpool', apps: 0, goals: 0 },
+    ],
+    intl: [
+      { years: '2024-', team: 'Hungary U21', apps: 9, goals: 0 },
+      { years: '2026-', team: 'Hungary', apps: 1, goals: 0 },
+    ],
+  },
+  'Ibrahima Konaté': {
+    senior: [
+      { years: '2017', team: 'Sochaux', apps: 12, goals: 1 },
+      { years: '2017-2021', team: 'RB Leipzig', apps: 66, goals: 2 },
+      { years: '2021-2026', team: 'Liverpool', apps: 118, goals: 2 },
+      { years: '2026-', team: 'Real Madrid', apps: 0, goals: 0 },
+    ],
+    intl: [
+      { years: '2019-2021', team: 'France U21', apps: 13, goals: 0 },
+      { years: '2022-', team: 'France', apps: 29, goals: 0 },
+    ],
+  },
+  'Milos Kerkez': {
+    senior: [
+      { years: '2020-2021', team: 'Győr', apps: 16, goals: 0 },
+      { years: '2022-2023', team: 'AZ', apps: 33, goals: 3 },
+      { years: '2023-2025', team: 'Bournemouth', apps: 66, goals: 2 },
+      { years: '2025-', team: 'Liverpool', apps: 34, goals: 2 },
+    ],
+    intl: [
+      { years: '2021-2022', team: 'Hungary U21', apps: 8, goals: 0 },
+      { years: '2022-', team: 'Hungary', apps: 32, goals: 0 },
+    ],
+  },
+  'Conor Bradley': {
+    senior: [
+      { years: '2021-', team: 'Liverpool', apps: 45, goals: 1 },
+      { years: '2022-2023', team: 'Bolton Wanderers (loan)', apps: 41, goals: 5, loan: true },
+    ],
+    intl: [
+      { years: '2021-', team: 'Northern Ireland', apps: 30, goals: 4 },
+    ],
+  },
+  'Giovanni Leoni': {
+    senior: [
+      { years: '2023-2024', team: 'Padova', apps: 1, goals: 0 },
+      { years: '2024', team: 'Sampdoria (loan)', apps: 12, goals: 1, loan: true },
+      { years: '2024-2025', team: 'Parma', apps: 17, goals: 1 },
+      { years: '2025-', team: 'Liverpool', apps: 0, goals: 0 },
+    ],
+    intl: [
+      { years: '2024-', team: 'Italy U19', apps: 7, goals: 0 },
+    ],
+  },
+  'Jeremie Frimpong': {
+    senior: [
+      { years: '2019-2021', team: 'Celtic', apps: 36, goals: 3 },
+      { years: '2021-2025', team: 'Bayer Leverkusen', apps: 133, goals: 23 },
+      { years: '2025-', team: 'Liverpool', apps: 21, goals: 0 },
+    ],
+    intl: [
+      { years: '2021-2022', team: 'Netherlands U21', apps: 6, goals: 7 },
+      { years: '2023-', team: 'Netherlands', apps: 15, goals: 1 },
+    ],
+  },
+  'Wataru Endo': {
+    senior: [
+      { years: '2010-2015', team: 'Shonan Bellmare', apps: 158, goals: 23 },
+      { years: '2016-2018', team: 'Urawa Red Diamonds', apps: 75, goals: 5 },
+      { years: '2018-2020', team: 'Sint-Truiden', apps: 29, goals: 2 },
+      { years: '2019-2020', team: 'VfB Stuttgart (loan)', apps: 21, goals: 1, loan: true },
+      { years: '2020-2023', team: 'VfB Stuttgart', apps: 99, goals: 12 },
+      { years: '2023-', team: 'Liverpool', apps: 57, goals: 1 },
+    ],
+    intl: [
+      { years: '2015-', team: 'Japan', apps: 73, goals: 4 },
+    ],
+  },
+  'Florian Wirtz': {
+    senior: [
+      { years: '2020-2025', team: 'Bayer Leverkusen', apps: 140, goals: 35 },
+      { years: '2025-', team: 'Liverpool', apps: 33, goals: 5 },
+    ],
+    intl: [
+      { years: '2020-2021', team: 'Germany U21', apps: 6, goals: 2 },
+      { years: '2021-', team: 'Germany', apps: 45, goals: 11 },
+    ],
+  },
+  'Ryan Gravenberch': {
+    senior: [
+      { years: '2018-2022', team: 'Ajax', apps: 72, goals: 7 },
+      { years: '2022-2023', team: 'Bayern Munich', apps: 25, goals: 0 },
+      { years: '2023-', team: 'Liverpool', apps: 99, goals: 6 },
+    ],
+    intl: [
+      { years: '2020-2023', team: 'Netherlands U21', apps: 11, goals: 1 },
+      { years: '2021-', team: 'Netherlands', apps: 31, goals: 1 },
+    ],
+  },
+  'Trey Nyoni': {
+    senior: [
+      { years: '2023-', team: 'Liverpool', apps: 6, goals: 0 },
+    ],
+    intl: [
+      { years: '2024-', team: 'England U19', apps: 13, goals: 1 },
+    ],
+  },
+  'Alexander Isak': {
+    senior: [
+      { years: '2016-2017', team: 'AIK', apps: 24, goals: 10 },
+      { years: '2017-2019', team: 'Borussia Dortmund', apps: 5, goals: 0 },
+      { years: '2019', team: 'Willem II (loan)', apps: 16, goals: 13, loan: true },
+      { years: '2019-2022', team: 'Real Sociedad', apps: 105, goals: 33 },
+      { years: '2022-2025', team: 'Newcastle United', apps: 86, goals: 54 },
+      { years: '2025-', team: 'Liverpool', apps: 14, goals: 3 },
+    ],
+    intl: [
+      { years: '2017-', team: 'Sweden', apps: 62, goals: 18 },
+    ],
+  },
+  'Federico Chiesa': {
+    senior: [
+      { years: '2016-2022', team: 'Fiorentina', apps: 137, goals: 26 },
+      { years: '2020-2022', team: 'Juventus (loan)', apps: 44, goals: 10, loan: true },
+      { years: '2022-2024', team: 'Juventus', apps: 54, goals: 11 },
+      { years: '2024-', team: 'Liverpool', apps: 32, goals: 2 },
+    ],
+    intl: [
+      { years: '2018-', team: 'Italy', apps: 51, goals: 7 },
+    ],
+  },
+  'Cody Gakpo': {
+    senior: [
+      { years: '2018-2023', team: 'PSV Eindhoven', apps: 106, goals: 36 },
+      { years: '2023-', team: 'Liverpool', apps: 127, goals: 32 },
+    ],
+    intl: [
+      { years: '2019-2021', team: 'Netherlands U21', apps: 13, goals: 7 },
+      { years: '2021-', team: 'Netherlands', apps: 54, goals: 24 },
+    ],
+  },
+  'Hugo Ekitike': {
+    senior: [
+      { years: '2020-2023', team: 'Reims', apps: 26, goals: 10 },
+      { years: '2021', team: 'Vejle Boldklub (loan)', apps: 11, goals: 3, loan: true },
+      { years: '2022-2023', team: 'Paris Saint-Germain (loan)', apps: 25, goals: 3, loan: true },
+      { years: '2023-2024', team: 'Paris Saint-Germain', apps: 1, goals: 0 },
+      { years: '2024', team: 'Eintracht Frankfurt (loan)', apps: 14, goals: 4, loan: true },
+      { years: '2024-2025', team: 'Eintracht Frankfurt', apps: 33, goals: 15 },
+      { years: '2025-', team: 'Liverpool', apps: 28, goals: 11 },
+    ],
+    intl: [
+      { years: '2025-', team: 'France', apps: 8, goals: 2 },
+    ],
+  },
+  'Rio Ngumoha': {
+    senior: [
+      { years: '2024-', team: 'Liverpool', apps: 19, goals: 2 },
+    ],
+    intl: [
+      { years: '2025-', team: 'England U19', apps: 11, goals: 1 },
+      { years: '2026-', team: 'England', apps: 1, goals: 0 },
+    ],
+  },
 };
 
 export type CLFinal = { y: string; r: string; city: string; mgr: string };
