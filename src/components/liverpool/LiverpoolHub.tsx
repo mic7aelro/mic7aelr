@@ -897,6 +897,7 @@ export function LiverpoolHub() {
                   <div className={styles.n}>{t.n}</div>
                   <div className={styles.t}>{t.t}</div>
                   <div className={styles.sub}>{t.sub}</div>
+                  <p className={styles.trophyDesc}>{t.desc}</p>
                 </div>
               ))}
             </div>

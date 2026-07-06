@@ -1438,17 +1438,41 @@ export const summer26: SummerMove[] = [
   { p: 'Ayyoub Bouaddi', pos: 'CM', mv: 'Lille', fee: 'TBD', type: 'rumor', when: 'Young midfield option' },
 ];
 
-export type Trophy = { n: string; t: string; sub: string };
+export type Trophy = { n: string; t: string; sub: string; desc: string };
 
 export const trophies: Trophy[] = [
-  { n: '20', t: 'League Titles', sub: 'Joint English record · last in 2024-25' },
-  { n: '6', t: 'European Cups', sub: "English record · '77 '78 '81 '84 '05 '19" },
-  { n: '8', t: 'FA Cups', sub: 'Last in 2022' },
-  { n: '10', t: 'League Cups', sub: 'English record · last in 2024' },
-  { n: '3', t: 'UEFA Cups', sub: "'73 '76 '01 · English record" },
-  { n: '4', t: 'UEFA Super Cups', sub: 'English record' },
-  { n: '1', t: 'Club World Cup', sub: '2019' },
-  { n: '16', t: 'Community Shields', sub: 'Shared & outright' },
+  {
+    n: '20', t: 'League Titles', sub: 'Joint English record · last in 2024-25',
+    desc: "England's top-flight championship: 18 First Division titles (1901-1990) plus 2 Premier League titles (2020, 2025) since the top division was rebranded in 1992.",
+  },
+  {
+    n: '6', t: 'European Cups', sub: "English record · '77 '78 '81 '84 '05 '19",
+    desc: "Europe's top club competition, running since 1955 and renamed the UEFA Champions League in 1992. All 6 Liverpool wins came under this one trophy, old name and new.",
+  },
+  {
+    n: '8', t: 'FA Cups', sub: 'Last in 2022',
+    desc: "The world's oldest football competition, first contested in 1871. A single-elimination knockout open to clubs across every level of the English game.",
+  },
+  {
+    n: '10', t: 'League Cups', sub: 'English record · last in 2024',
+    desc: "England's secondary knockout cup, founded in 1960. Has carried various sponsor names over the years, including the Milk Cup, Coca-Cola Cup, Carling Cup and Carabao Cup.",
+  },
+  {
+    n: '3', t: 'UEFA Cups', sub: "'73 '76 '01 · English record",
+    desc: "A separate, second-tier European competition, distinct from the European Cup/Champions League. Ran from 1971 to 2009, when it was renamed the UEFA Europa League.",
+  },
+  {
+    n: '4', t: 'UEFA Super Cups', sub: 'English record',
+    desc: "A one-off match each August between the reigning European Cup/Champions League winners and the Cup Winners' Cup, later Europa League, winners.",
+  },
+  {
+    n: '1', t: 'Club World Cup', sub: '2019',
+    desc: "FIFA's global club competition, contested by champions from each continent. Liverpool's only title came in 2019, beating Brazil's Flamengo in the final.",
+  },
+  {
+    n: '16', t: 'Community Shields', sub: 'Shared & outright',
+    desc: 'The traditional curtain-raiser to the English season, between the reigning league champions and FA Cup holders. Known as the Charity Shield until it was renamed in 2002.',
+  },
 ];
 
 export type RecordCard = { big: string; title: string; body: string };

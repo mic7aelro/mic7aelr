@@ -477,6 +477,15 @@
   color: var(--muted);
   margin-top: 6px;
 }
+.trophyDesc {
+  text-align: left;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
 
 /* ─── Rows / list ───────────────────────────────────────── */
 .rows {
