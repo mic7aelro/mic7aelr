@@ -1384,6 +1384,63 @@ export const clFinals: CLFinal[] = [
   { y: '2019', r: '2-0 v Tottenham Hotspur', city: 'Madrid', mgr: 'Jürgen Klopp' },
 ];
 
+export type ManagerEra = { years: string; name: string; note: string };
+
+export const managerEras: ManagerEra[] = [
+  { years: '1959-1974', name: 'Bill Shankly', note: 'Rebuilt a Second Division club from scratch, founded the Boot Room coaching culture, and won 3 league titles, 2 FA Cups and the UEFA Cup - the foundation everything since is built on.' },
+  { years: '1974-1983', name: 'Bob Paisley', note: "The most decorated manager in English football history: 6 league titles, 3 European Cups, 3 League Cups and a UEFA Cup in nine seasons, promoted from within Shankly's Boot Room." },
+  { years: '1983-1985', name: 'Joe Fagan', note: 'Won the league, League Cup and European Cup all in his very first season, 1983-84 - the only English manager ever to sweep three major trophies in a debut year.' },
+  { years: '1985-1991', name: 'Kenny Dalglish', note: 'Player-manager who won the league and FA Cup double in his first season, 1986, plus two more league titles. Resigned in 1991, citing the emotional toll of the Hillsborough disaster\'s aftermath.' },
+  { years: '1991-1994', name: 'Graeme Souness', note: 'A difficult transition. Won the 1992 FA Cup, but results and dressing-room unrest marked the start of the club\'s 1990s title drought.' },
+  { years: '1994-1998', name: 'Roy Evans', note: 'The "Spice Boys" era: entertaining, attacking football and a League Cup in 1995, but no league title.' },
+  { years: '1998-2004', name: 'Gérard Houllier', note: 'Restored discipline and won an astonishing five trophies in the calendar year 2001 alone: the FA Cup, League Cup, UEFA Cup, UEFA Super Cup and Charity Shield.' },
+  { years: '2004-2010', name: 'Rafael Benítez', note: 'Delivered the Istanbul miracle: 3-0 down to AC Milan at half-time in the 2005 Champions League final, Liverpool won on penalties. Also won the 2006 FA Cup.' },
+  { years: '2010-2011', name: 'Roy Hodgson', note: 'A brief, difficult spell, replaced within the season by the returning Dalglish.' },
+  { years: '2011-2012', name: 'Kenny Dalglish', note: "Won the 2012 League Cup in his second spell, but couldn't halt the club's league form; left at the end of the season." },
+  { years: '2012-2015', name: 'Brendan Rodgers', note: 'Came agonisingly close to a first league title in 24 years in 2013-14, with Luis Suárez in career-best form, before finishing runner-up.' },
+  { years: '2015-2024', name: 'Jürgen Klopp', note: "Built an all-conquering, high-pressing side he called \"heavy metal football\": the 2019 Champions League, the 2020 league title (ending a 30-year wait), and a 2022 domestic cup double." },
+  { years: '2024-2026', name: 'Arne Slot', note: 'Won a joint-record 20th league title in his very first season, 2025 - then a collapse to 5th and the sack a year later.' },
+  { years: '2026-', name: 'Andoni Iraola', note: 'Hired from Bournemouth to lead the rebuild.' },
+];
+
+export type Rivalry = { name: string; tag: string; summary: string; history: string; moments: string[]; current: string };
+
+export const rivalries: Rivalry[] = [
+  {
+    name: 'Everton',
+    tag: 'Merseyside Derby',
+    summary: 'The local one, and the most-played top-flight fixture in English football.',
+    history: "The two clubs share a stranger origin than most rivalries: Everton played at Anfield first, from 1884 to 1892, before a rent dispute with their own club president and landlord, John Houlding, forced them out. Everton moved a mile away to Goodison Park; Houlding, left holding an empty stadium, founded Liverpool FC to fill it. The rivalry was born from a breakup, not a distance.",
+    moments: [
+      'Everton moved into the new Hill Dickinson Stadium in 2025, ending 133 years at Goodison Park.',
+      'Historically nicknamed "the friendly derby" for the mixed families and shared streets on both sides, though the fixture has grown needlier in the Premier League era.',
+    ],
+    current: 'Everton now play at the Hill Dickinson Stadium. Fierce, family-splitting, and never short of red cards.',
+  },
+  {
+    name: 'Manchester United',
+    tag: 'North West Derby',
+    summary: "The biggest rivalry in English football: the country's two most successful clubs.",
+    history: "The enmity predates football, rooted in a 19th-century economic rivalry between the two cities (Manchester built its own ship canal in the 1890s partly to bypass Liverpool's docks). On the pitch, it's a straight fight over who is England's most decorated club.",
+    moments: [
+      'Alex Ferguson\'s defining line: asked in 2002 if a slow start was United\'s toughest test, he said his "greatest challenge" had been "knocking Liverpool right off their perch."',
+      "United have been stuck on 20 league titles since 2013; Liverpool's 2025 title finally drew them level.",
+    ],
+    current: "20 league titles each. Both clubs are rebuilding under new management, with bragging rights over who's England's No. 1 as contested as ever.",
+  },
+  {
+    name: 'Manchester City',
+    tag: 'Modern Title Rivals',
+    summary: 'Forged in the Klopp-vs-Guardiola years, when the two clubs traded record points totals season after season.',
+    history: 'Financially transformed since a 2008 takeover, City became the fiercest modern rival once Jürgen Klopp arrived in 2015, the same year Pep Guardiola took over at City. From 2018 to 2022 the two clubs finished 1st and 2nd in the league four times between them, repeatedly breaking the all-time Premier League points record trying to beat each other.',
+    moments: [
+      'City set the Premier League record of 100 points in 2017-18; Liverpool responded with 97 the year after, still not enough for the title, then 99 points the year after that, finally enough to win it.',
+      "Liverpool eliminated City 5-1 on aggregate in the 2018 Champions League quarter-final, the heaviest defeat of Guardiola's City reign at the time.",
+    ],
+    current: 'With Pep gone from City and a new era at both clubs, the next chapter of the rivalry is wide open.',
+  },
+];
+
 export type Legend = { n: string; d: string };
 
 export const legends: Legend[] = [

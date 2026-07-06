@@ -8,6 +8,8 @@ import styles from './Liverpool.module.css';
 import {
   squad,
   clFinals,
+  managerEras,
+  rivalries,
   legends,
   in2526,
   out2526,
@@ -1045,6 +1047,22 @@ export function LiverpoolHub() {
               ))}
             </div>
 
+            <div className={styles.eyebrow}>From the Boot Room to today</div>
+            <h2 className={styles.section} data-reveal>Every Manager, Explained</h2>
+            <p className={styles.lede} data-reveal>Fourteen permanent managers since 1959, in plain language. This is the "why" behind every trophy above.</p>
+            <div className={styles.rows} data-reveal>
+              {managerEras.map((m, i) => (
+                <div className={styles.row} style={{ gridTemplateColumns: '104px 1fr' }} key={`${m.name}-${i}`} data-reveal>
+                  <span className="y" style={{ fontFamily: 'var(--f-cond)', fontWeight: 600, color: 'var(--gold)', letterSpacing: '1px' }}>{m.years}</span>
+                  <span className={styles.rowMain}>
+                    <b>{m.name}</b>
+                    <br />
+                    <span className={styles.rowSub}>{m.note}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+
             <div className={styles.eyebrow}>All 20 of them</div>
             <h2 className={styles.section} data-reveal>League Title Years</h2>
             <div className={styles.card} style={{ marginTop: 16 }} data-reveal>
@@ -1093,6 +1111,10 @@ export function LiverpoolHub() {
             <p className={styles.lede} data-reveal>
               The club&apos;s official all-time ranking, voted by ~1.4m fans plus former players, journalists and a club panel - with <b>Steven Gerrard</b> crowned Liverpool&apos;s greatest ever, just ahead of Kenny Dalglish. Tap any name for the details.
             </p>
+            <div className={`${styles.card} ${styles.cardGoldAccent}`} style={{ marginTop: 16, marginBottom: 4 }} data-reveal>
+              <h3>Why some low-stat names outrank the spreadsheet</h3>
+              <p>This isn&apos;t a FIFA rating list. <b>Divock Origi</b> (No. 55) managed only 22 goals in 8 years, but three of them (a 96th-minute derby winner, a lightning-quick corner against Barcelona, the clincher in the 2019 final) are among the biggest in the club&apos;s modern history. <b>Dirk Kuyt</b> (No. 81) was never prolific, but a derby hat-trick and relentless effort made him adored anyway. Being a legend here is about what a moment meant to Anfield, not just what it added to a stat sheet.</p>
+            </div>
             <div data-reveal>
               <Top100 />
             </div>
@@ -1235,19 +1257,21 @@ export function LiverpoolHub() {
 
             <div className={styles.eyebrow}>Three derbies that define the season</div>
             <h2 className={styles.section} data-reveal>The Rivalries</h2>
+            <p className={styles.lede} data-reveal>Not just modern grudges. Here&apos;s where each one actually comes from, and why it still matters.</p>
             <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16 }}>
-              <div className={`${styles.card} ${styles.rivalCard}`} data-reveal>
-                <h3>Everton - Merseyside Derby</h3>
-                <p>The local one, and the most-played top-flight fixture in English football. Everton moved to the new <b>Hill Dickinson Stadium</b> in 2025 after leaving Goodison Park. Fierce, family-splitting, and never short of red cards.</p>
-              </div>
-              <div className={`${styles.card} ${styles.rivalCard}`} data-reveal>
-                <h3>Manchester United - North West Derby</h3>
-                <p>The biggest rivalry in English football: the two most successful clubs, <b>20 league titles each</b>. Decades of bragging rights over who&apos;s England&apos;s No. 1. Carrick&apos;s United are rebuilding too.</p>
-              </div>
-              <div className={`${styles.card} ${styles.rivalCard}`} data-reveal>
-                <h3>Manchester City - Modern Title Rivals</h3>
-                <p>Forged in the Klopp-vs-Guardiola years when the two traded record points totals. With Pep gone from City and a new era at both clubs, the next chapter is wide open.</p>
-              </div>
+              {rivalries.map((r) => (
+                <div className={`${styles.card} ${styles.rivalCard}`} key={r.name} data-reveal>
+                  <h3>{r.name} - <Term term="derby">{r.tag}</Term></h3>
+                  <p><b>{r.summary}</b></p>
+                  <p style={{ marginTop: 10 }}>{r.history}</p>
+                  <ul style={{ marginTop: 10, paddingLeft: 18, color: 'var(--muted)', fontSize: 14 }}>
+                    {r.moments.map((m, i) => (
+                      <li key={i} style={{ marginTop: i > 0 ? 6 : 0 }}>{m}</li>
+                    ))}
+                  </ul>
+                  <p style={{ marginTop: 10 }}>{r.current}</p>
+                </div>
+              ))}
             </div>
 
             <div className={styles.eyebrow}>The cathedral</div>
