@@ -1425,6 +1425,7 @@ export const rivalries: Rivalry[] = [
     moments: [
       'Alex Ferguson\'s defining line: asked in 2002 if a slow start was United\'s toughest test, he said his "greatest challenge" had been "knocking Liverpool right off their perch."',
       "United have been stuck on 20 league titles since 2013; Liverpool's 2025 title finally drew them level.",
+      "Bill Shankly and Matt Busby, the two men who shaped each club's post-war identity, were genuinely close friends off the pitch despite building the rivalry between them.",
     ],
     current: "20 league titles each. Both clubs are rebuilding under new management, with bragging rights over who's England's No. 1 as contested as ever.",
   },

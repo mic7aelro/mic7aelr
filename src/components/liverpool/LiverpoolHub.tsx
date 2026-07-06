@@ -1258,15 +1258,18 @@ export function LiverpoolHub() {
             <div className={styles.eyebrow}>Three derbies that define the season</div>
             <h2 className={styles.section} data-reveal>The Rivalries</h2>
             <p className={styles.lede} data-reveal>Not just modern grudges. Here&apos;s where each one actually comes from, and why it still matters.</p>
-            <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16, alignItems: 'start' }}>
+            <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16 }}>
               {rivalries.map((r) => (
                 <div className={`${styles.card} ${styles.rivalCard}`} key={r.name} data-reveal>
                   <h3>{r.name} - <Term term="derby">{r.tag}</Term></h3>
                   <p><b>{r.summary}</b></p>
                   <p style={{ marginTop: 10 }}>{r.history}</p>
-                  <ul style={{ marginTop: 10, paddingLeft: 18, color: 'var(--muted)', fontSize: 14 }}>
+                  <ul style={{ marginTop: 10, listStyle: 'none', padding: 0, display: 'grid', gap: 6, color: 'var(--muted)', fontSize: 14 }}>
                     {r.moments.map((m, i) => (
-                      <li key={i} style={{ marginTop: i > 0 ? 6 : 0 }}>{m}</li>
+                      <li key={i} style={{ position: 'relative', paddingLeft: 14 }}>
+                        <span style={{ position: 'absolute', left: 0, color: 'var(--gold)' }}>·</span>
+                        {m}
+                      </li>
                     ))}
                   </ul>
                   <p style={{ marginTop: 10 }}>{r.current}</p>
