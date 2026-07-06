@@ -238,6 +238,67 @@ function makeOpts(correct: string, wrong: string[]): string[] {
   return shuffle(opts);
 }
 
+// ─── Deterministic (date-seeded) RNG, for the daily challenge ────────────────
+// Same seed → same sequence for everyone, all day - like Wordle.
+function mulberry32(seed: number) {
+  let s = seed;
+  return () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function seededShuffle<T>(a: T[], rng: () => number): T[] {
+  const arr = a.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function todayStr(d = new Date()): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function yesterdayStr(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return todayStr(d);
+}
+
+function todaySeed(): number {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+
+type DailyQuestion = { rank: number; name: string; era: string; q: React.ReactNode; opts: string[]; ans: string };
+
+// Deterministic per calendar day: same legend, same question, same option order for every visitor.
+function buildDailyQuestion(): DailyQuestion {
+  const rng = mulberry32(todaySeed());
+  const g = greats[Math.floor(rng() * greats.length)];
+  const askPos = rng() < 0.5;
+  const correct = askPos ? g.posName : (NAT[g.nat] ?? g.nat);
+  const pool = [...new Set(
+    greats.map((x) => (askPos ? x.posName : (NAT[x.nat] ?? x.nat))).filter((v) => v && v !== correct)
+  )];
+  const wrong = seededShuffle(pool, rng).slice(0, 3);
+  const opts = seededShuffle([correct, ...wrong], rng);
+  return {
+    rank: g.rank,
+    name: g.name,
+    era: g.era,
+    q: askPos
+      ? <>What position did <b>{g.name}</b> (No. {g.rank}) play?</>
+      : <>Which country did <b>{g.name}</b> (No. {g.rank}) represent?</>,
+    opts,
+    ans: correct,
+  };
+}
+
 function buildQuestions(src: StudySrc): Question[] {
   if (src === 'legends') {
     // Position + nationality only - clean, unambiguous distractors.
@@ -399,24 +460,220 @@ function TransferRow({ name, pos, sub, fee, tag, tagLabel }: {
   );
 }
 
+// ─── Bridge Mode - head-to-head, any legend vs any current squad player ──────
+
+function Bridge() {
+  const [legendName, setLegendName] = useState(greats[0].name);
+  const [playerName, setPlayerName] = useState(squad[0].name);
+
+  const legend = greats.find((g) => g.name === legendName) ?? greats[0];
+  const player = squad.find((p) => p.name === playerName) ?? squad[0];
+
+  const legendLiv = careers[legend.name]?.senior.find((r) => r.team === 'Liverpool');
+  const playerLiv = careers[player.name]?.senior.find((r) => r.team === 'Liverpool');
+  const playerAsLegend = greats.find((g) => g.name === player.name);
+
+  const rows: [string, React.ReactNode, React.ReactNode][] = [
+    ['Position', legend.posName, player.posName],
+    ['Nationality', NAT[legend.nat] ?? legend.nat, NAT[player.nat] ?? player.nat],
+    ['Liverpool years', legend.era, `${player.when}-`],
+    ['Liverpool apps (league)', legendLiv?.apps ?? '?', playerLiv?.apps ?? '?'],
+    ['Liverpool goals (league)', legendLiv?.goals ?? '?', playerLiv?.goals ?? '?'],
+    ['Top 100 rank', `No. ${legend.rank}`, playerAsLegend ? `No. ${playerAsLegend.rank}` : 'Not yet ranked'],
+  ];
+
+  return (
+    <div className={styles.fcStage}>
+      <div className={`${styles.grid} ${styles.g2}`}>
+        <select
+          className={styles.bridgeSelect}
+          value={legendName}
+          onChange={(e) => setLegendName(e.target.value)}
+          aria-label="Choose a Top 100 legend"
+        >
+          {greats.map((g) => (
+            <option key={g.rank} value={g.name}>No. {g.rank} - {g.name}</option>
+          ))}
+        </select>
+        <select
+          className={styles.bridgeSelect}
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+          aria-label="Choose a current squad player"
+        >
+          {squad.map((p) => (
+            <option key={p.n} value={p.name}>#{p.n} - {p.name}</option>
+          ))}
+        </select>
+      </div>
+      <div style={{ marginTop: 18 }}>
+        <table className={styles.bridgeTable}>
+          <thead>
+            <tr>
+              <th></th>
+              <th>{legend.name}</th>
+              <th>{player.name}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(([label, a, b]) => (
+              <tr key={label}>
+                <td className={styles.bridgeLabel}>{label}</td>
+                <td>{a}</td>
+                <td>{b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className={styles.careerFoot} style={{ marginTop: 10 }}>League appearances &amp; goals only, via Wikipedia. Pick any legend and any current squad player to compare.</p>
+    </div>
+  );
+}
+
+// ─── Kop Quiz of the Day - one deterministic question, shared by everyone ────
+
+function DailyChallenge() {
+  const question = useMemo(() => buildDailyQuestion(), []);
+  const [answered, setAnswered] = useState<string | null>(null);
+  const [streak, setStreak] = useState(0);
+  const [ready, setReady] = useState(false);
+
+  // Client-only: read today's state from localStorage after mount (SSR-safe).
+  useEffect(() => {
+    try {
+      const lastDate = localStorage.getItem('lfc_daily_date');
+      const savedStreak = Number(localStorage.getItem('lfc_daily_streak') ?? '0');
+      if (lastDate === todayStr()) {
+        setAnswered(localStorage.getItem('lfc_daily_choice'));
+      }
+      setStreak(savedStreak);
+    } catch {
+      // localStorage unavailable - the widget still works, just without persistence.
+    }
+    setReady(true);
+  }, []);
+
+  const choose = (opt: string) => {
+    if (answered) return;
+    setAnswered(opt);
+    const correct = opt === question.ans;
+    try {
+      const lastDate = localStorage.getItem('lfc_daily_date');
+      const prevStreak = Number(localStorage.getItem('lfc_daily_streak') ?? '0');
+      const nextStreak = correct ? (lastDate === yesterdayStr() ? prevStreak + 1 : 1) : 0;
+      localStorage.setItem('lfc_daily_date', todayStr());
+      localStorage.setItem('lfc_daily_choice', opt);
+      localStorage.setItem('lfc_daily_streak', String(nextStreak));
+      setStreak(nextStreak);
+    } catch {
+      // Skip persistence; the question itself still works for this visit.
+    }
+  };
+
+  if (!ready) return <div className={`${styles.card} ${styles.cardGoldAccent}`} style={{ marginBottom: 24, minHeight: 168 }} />;
+
+  const dayLabel = new Date().toLocaleDateString('en-GB', { weekday: 'long', month: 'short', day: 'numeric' });
+
+  return (
+    <div className={`${styles.card} ${styles.cardGoldAccent}`} style={{ marginBottom: 24 }} data-reveal>
+      <div className={styles.eyebrowSmall} style={{ color: 'var(--gold)', fontFamily: 'var(--f-cond)', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase' }}>
+        Kop Quiz of the Day · {dayLabel}
+      </div>
+      <div className={styles.qText} style={{ marginTop: 10 }}>{question.q}</div>
+      <div className={styles.qOpts} style={{ marginTop: 12 }}>
+        {question.opts.map((o) => {
+          const cls = [styles.opt];
+          if (answered && o === question.ans) cls.push(styles.optCorrect);
+          else if (answered && o === answered) cls.push(styles.optWrong);
+          return (
+            <button key={o} className={cls.join(' ')} disabled={!!answered} onClick={() => choose(o)} data-cursor-grow>
+              {o}
+            </button>
+          );
+        })}
+      </div>
+      {answered && (
+        <p style={{ marginTop: 14, color: 'var(--muted)', fontSize: 13.5 }}>
+          {answered === question.ans ? 'Correct. ' : 'Not quite. '}
+          <b style={{ color: '#fff' }}>{question.name}</b> - No. {question.rank}, Liverpool {question.era}.
+          {' '}{streak > 0 && <>Current streak: <b style={{ color: 'var(--gold)' }}>{streak} day{streak === 1 ? '' : 's'}</b>. </>}
+          Come back tomorrow for a new one.
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ─── Top 100 - accordion list ────────────────────────────────────────────────
+
+const MASTERY_KEY = 'lfc_top100_seen';
+
+function loadSeen(): Set<number> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(MASTERY_KEY) ?? '[]'));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveSeen(seen: Set<number>) {
+  try {
+    localStorage.setItem(MASTERY_KEY, JSON.stringify([...seen]));
+  } catch {
+    // Private browsing or similar - progress just won't persist this session.
+  }
+}
 
 function Top100() {
   const [open, setOpen] = useState<number | null>(null);
+  const [seen, setSeen] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    setSeen(loadSeen());
+  }, []);
+
+  const toggle = (rank: number) => {
+    const isOpen = open === rank;
+    setOpen(isOpen ? null : rank);
+    if (!isOpen) {
+      setSeen((prev) => {
+        if (prev.has(rank)) return prev;
+        const next = new Set(prev);
+        next.add(rank);
+        saveSeen(next);
+        return next;
+      });
+    }
+  };
+
   return (
-    <div className={styles.t100}>
+    <>
+      <div className={styles.card} style={{ marginBottom: 16 }} data-reveal>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+          <span style={{ fontFamily: 'var(--f-cond)', fontWeight: 600, letterSpacing: '1px', color: '#fff', fontSize: 13 }}>Legends explored</span>
+          <span style={{ fontFamily: 'var(--f-cond)', fontWeight: 600, color: 'var(--gold)', fontSize: 14 }}>{seen.size} / 100</span>
+        </div>
+        <div className={styles.qProgress}>
+          <i className={styles.qBar} style={{ width: `${seen.size}%` }} />
+        </div>
+      </div>
+      <div className={styles.t100}>
       {greats.map((g) => {
         const isOpen = open === g.rank;
         return (
           <div className={`${styles.t100Row} ${g.predicted ? styles.t100Pred : ''}`} key={g.rank}>
             <button
               className={styles.t100Head}
-              onClick={() => setOpen(isOpen ? null : g.rank)}
+              onClick={() => toggle(g.rank)}
               aria-expanded={isOpen}
               aria-controls={`great-${g.rank}`}
               data-cursor-grow
             >
-              <span className={styles.t100Rank}>{g.rank}</span>
+              <span className={styles.t100Rank}>
+                {g.rank}
+                {seen.has(g.rank) && <span style={{ display: 'block', fontSize: 9, color: 'var(--green)', lineHeight: 1 }}>seen</span>}
+              </span>
               <span className={styles.t100Name}>
                 <b>{g.name}</b>
                 {g.predicted && <span className={styles.t100Tag}>Predicted</span>}
@@ -447,7 +704,8 @@ function Top100() {
           </div>
         );
       })}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -682,7 +940,7 @@ function PlayerModal({ player, onClose }: { player: Player | null; onClose: () =
 
 export function LiverpoolHub() {
   const [active, setActive] = useState<TabId>('now');
-  const [studyMode, setStudyMode] = useState<'cards' | 'quiz'>('cards');
+  const [studyMode, setStudyMode] = useState<'cards' | 'quiz' | 'compare'>('cards');
   const [studySrc, setStudySrc] = useState<StudySrc>('squad');
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -1305,24 +1563,28 @@ export function LiverpoolHub() {
           <section role="tabpanel" id="lv-panel-study" aria-labelledby="lv-tab-study" tabIndex={0}>
             <div className={`${styles.eyebrow} ${styles.eyebrowFirst}`}>Learn the squad &amp; the legends cold</div>
             <h2 className={styles.section} data-reveal>Study Mode</h2>
-            <p className={styles.lede} data-reveal>Quizlet-style. Drill the current squad or the all-time greats - flip cards for each player&apos;s details, then test yourself.</p>
+            <p className={styles.lede} data-reveal>Quizlet-style. Drill the current squad or the all-time greats, or compare any legend against any current player head to head. New quiz question every day.</p>
 
-            <div className={styles.studySwitch} data-reveal>
-              <button
-                className={`${styles.sbtn} ${studySrc === 'squad' ? styles.sbtnActive : ''}`}
-                onClick={() => setStudySrc('squad')}
-                data-cursor-grow
-              >
-                Squad 25/26
-              </button>
-              <button
-                className={`${styles.sbtn} ${studySrc === 'legends' ? styles.sbtnActive : ''}`}
-                onClick={() => setStudySrc('legends')}
-                data-cursor-grow
-              >
-                Top 100 Legends
-              </button>
-            </div>
+            <DailyChallenge />
+
+            {studyMode !== 'compare' && (
+              <div className={styles.studySwitch} data-reveal>
+                <button
+                  className={`${styles.sbtn} ${studySrc === 'squad' ? styles.sbtnActive : ''}`}
+                  onClick={() => setStudySrc('squad')}
+                  data-cursor-grow
+                >
+                  Squad 25/26
+                </button>
+                <button
+                  className={`${styles.sbtn} ${studySrc === 'legends' ? styles.sbtnActive : ''}`}
+                  onClick={() => setStudySrc('legends')}
+                  data-cursor-grow
+                >
+                  Top 100 Legends
+                </button>
+              </div>
+            )}
 
             <div className={styles.studySwitch} data-reveal>
               <button
@@ -1339,10 +1601,17 @@ export function LiverpoolHub() {
               >
                 Quiz
               </button>
+              <button
+                className={`${styles.sbtn} ${studyMode === 'compare' ? styles.sbtnActive : ''}`}
+                onClick={() => setStudyMode('compare')}
+                data-cursor-grow
+              >
+                Compare
+              </button>
             </div>
 
             <div data-reveal>
-              {studyMode === 'cards' ? <Flashcards src={studySrc} /> : <Quiz src={studySrc} />}
+              {studyMode === 'cards' ? <Flashcards src={studySrc} /> : studyMode === 'quiz' ? <Quiz src={studySrc} /> : <Bridge />}
             </div>
           </section>
         )}

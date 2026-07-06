@@ -1241,6 +1241,58 @@
   color: var(--muted2);
   margin-top: 2px;
 }
+
+/* ─── Bridge Mode (legend vs current player comparison) ─────── */
+.bridgeSelect {
+  width: 100%;
+  appearance: none;
+  font-family: var(--f-body);
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.18s var(--ease);
+}
+.bridgeSelect:hover,
+.bridgeSelect:focus-visible {
+  border-color: var(--gold-dim);
+  outline: none;
+}
+.bridgeTable {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.bridgeTable th {
+  text-align: left;
+  font-family: var(--f-cond);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gold);
+  padding: 0 10px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.bridgeTable th:first-child {
+  width: 42%;
+}
+.bridgeTable td {
+  padding: 9px 10px;
+  color: var(--ink);
+  border-bottom: 1px solid rgba(42, 42, 48, 0.55);
+  vertical-align: top;
+}
+.bridgeTable tr:last-child td {
+  border-bottom: none;
+}
+.bridgeLabel {
+  color: var(--muted2);
+  font-family: var(--f-cond);
+  letter-spacing: 0.4px;
+}
 .modalLink {
   display: inline-flex;
   align-items: center;
