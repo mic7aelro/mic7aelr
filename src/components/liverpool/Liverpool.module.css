@@ -1178,9 +1178,14 @@
 }
 .careerTable {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+}
+.careerTable th:first-child,
+.careerTable td:first-child {
+  width: 100px;
 }
 .careerTable th {
   text-align: left;
@@ -1197,13 +1202,15 @@
   padding: 6px 8px;
   color: var(--ink);
   border-bottom: 1px solid rgba(42, 42, 48, 0.55);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .careerTable tbody tr:last-child td {
   border-bottom: 1px solid var(--line);
 }
 .careerNum {
   text-align: right !important;
-  width: 15%;
+  width: 58px;
   white-space: nowrap;
 }
 .careerLoan td {

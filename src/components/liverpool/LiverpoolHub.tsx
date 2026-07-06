@@ -422,6 +422,15 @@ function Top100() {
                   <div><span>Liverpool years</span>{g.era}</div>
                 </div>
                 <p>{g.note}</p>
+                {careers[g.name] && (
+                  <div className={styles.careerWrap}>
+                    <CareerTable title="Senior career" rows={careers[g.name].senior} />
+                    {careers[g.name].intl.length > 0 && (
+                      <CareerTable title="International career" rows={careers[g.name].intl} />
+                    )}
+                    <p className={styles.careerFoot}>Domestic-league appearances &amp; goals. Source: Wikipedia.</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

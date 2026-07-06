@@ -195,6 +195,991 @@ export const careers: Record<string, Career> = {
       { years: '2019-', team: 'Argentina', apps: 50, goals: 6 },
     ],
   },
+  'Steven Gerrard': {
+    senior: [
+      { years: '1998-2015', team: 'Liverpool', apps: 504, goals: 120 },
+      { years: '2015-2016', team: 'LA Galaxy', apps: 34, goals: 5 },
+    ],
+    intl: [
+      { years: '1999-2000', team: 'England U21', apps: 4, goals: 1 },
+      { years: '2000-2014', team: 'England', apps: 114, goals: 21 },
+    ],
+  },
+  'Kenny Dalglish': {
+    senior: [
+      { years: '1969-1977', team: 'Celtic', apps: 204, goals: 111 },
+      { years: '1977-1990', team: 'Liverpool', apps: 355, goals: 118 },
+    ],
+    intl: [
+      { years: '1971-1986', team: 'Scotland', apps: 102, goals: 30 },
+    ],
+  },
+  'Ian Rush': {
+    senior: [
+      { years: '1978-1980', team: 'Chester City', apps: 34, goals: 14 },
+      { years: '1980-1986', team: 'Liverpool', apps: 182, goals: 109 },
+      { years: '1986-1988', team: 'Juventus', apps: 29, goals: 7 },
+      { years: '1986-1987', team: 'Liverpool (loan)', apps: 42, goals: 30, loan: true },
+      { years: '1988-1996', team: 'Liverpool', apps: 245, goals: 90 },
+      { years: '1996-1997', team: 'Leeds United', apps: 36, goals: 3 },
+      { years: '1997-1998', team: 'Newcastle United', apps: 10, goals: 0 },
+      { years: '1998-1999', team: 'Wrexham', apps: 17, goals: 0 },
+    ],
+    intl: [
+      { years: '1980-1996', team: 'Wales', apps: 73, goals: 28 },
+    ],
+  },
+  'John Barnes': {
+    senior: [
+      { years: '1981-1987', team: 'Watford', apps: 233, goals: 65 },
+      { years: '1987-1997', team: 'Liverpool', apps: 314, goals: 84 },
+      { years: '1997-1999', team: 'Newcastle United', apps: 27, goals: 6 },
+      { years: '1999', team: 'Charlton Athletic', apps: 12, goals: 0 },
+    ],
+    intl: [
+      { years: '1983-1995', team: 'England', apps: 79, goals: 11 },
+    ],
+  },
+  'Graeme Souness': {
+    senior: [
+      { years: '1972-1978', team: 'Middlesbrough', apps: 201, goals: 22 },
+      { years: '1978-1984', team: 'Liverpool', apps: 247, goals: 38 },
+      { years: '1984-1986', team: 'Sampdoria', apps: 56, goals: 8 },
+      { years: '1986-1991', team: 'Rangers', apps: 50, goals: 3 },
+    ],
+    intl: [
+      { years: '1974-1986', team: 'Scotland', apps: 54, goals: 4 },
+    ],
+  },
+  'Alan Hansen': {
+    senior: [
+      { years: '1973-1977', team: 'Partick Thistle', apps: 86, goals: 6 },
+      { years: '1977-1991', team: 'Liverpool', apps: 434, goals: 8 },
+    ],
+    intl: [
+      { years: '1979-1987', team: 'Scotland', apps: 26, goals: 0 },
+    ],
+  },
+  'Roger Hunt': {
+    senior: [
+      { years: '1959-1969', team: 'Liverpool', apps: 404, goals: 244 },
+      { years: '1969-1972', team: 'Bolton Wanderers', apps: 76, goals: 24 },
+    ],
+    intl: [
+      { years: '1962-1969', team: 'England', apps: 34, goals: 18 },
+    ],
+  },
+  'Ian Callaghan': {
+    senior: [
+      { years: '1959-1978', team: 'Liverpool', apps: 640, goals: 49 },
+      { years: '1978', team: 'Fort Lauderdale Strikers', apps: 20, goals: 0 },
+      { years: '1978-1981', team: 'Swansea City', apps: 76, goals: 1 },
+      { years: '1981', team: 'Crewe Alexandra', apps: 15, goals: 0 },
+    ],
+    intl: [
+      { years: '1966-1977', team: 'England', apps: 4, goals: 0 },
+    ],
+  },
+  'Billy Liddell': {
+    senior: [
+      { years: '1938-1961', team: 'Liverpool', apps: 492, goals: 215 },
+    ],
+    intl: [
+      { years: '1946-1955', team: 'Scotland', apps: 28, goals: 6 },
+    ],
+  },
+  'Robbie Fowler': {
+    senior: [
+      { years: '1993-2001', team: 'Liverpool', apps: 236, goals: 120 },
+      { years: '2001-2003', team: 'Leeds United', apps: 30, goals: 14 },
+      { years: '2003-2006', team: 'Manchester City', apps: 80, goals: 21 },
+      { years: '2006-2007', team: 'Liverpool', apps: 30, goals: 8 },
+      { years: '2007-2008', team: 'Cardiff City', apps: 13, goals: 4 },
+      { years: '2009-2010', team: 'North Queensland Fury', apps: 26, goals: 9 },
+      { years: '2010-2011', team: 'Perth Glory', apps: 28, goals: 9 },
+    ],
+    intl: [
+      { years: '1996-2002', team: 'England', apps: 26, goals: 7 },
+    ],
+  },
+  'Ray Clemence': {
+    senior: [
+      { years: '1965-1967', team: 'Scunthorpe United', apps: 48, goals: 0 },
+      { years: '1967-1981', team: 'Liverpool', apps: 470, goals: 0 },
+      { years: '1981-1988', team: 'Tottenham Hotspur', apps: 240, goals: 0 },
+    ],
+    intl: [
+      { years: '1972-1983', team: 'England', apps: 61, goals: 0 },
+    ],
+  },
+  'Kevin Keegan': {
+    senior: [
+      { years: '1968-1971', team: 'Scunthorpe United', apps: 124, goals: 18 },
+      { years: '1971-1977', team: 'Liverpool', apps: 230, goals: 68 },
+      { years: '1977-1980', team: 'Hamburger SV', apps: 90, goals: 32 },
+      { years: '1980-1982', team: 'Southampton', apps: 68, goals: 37 },
+      { years: '1982-1984', team: 'Newcastle United', apps: 78, goals: 48 },
+    ],
+    intl: [
+      { years: '1972-1982', team: 'England', apps: 63, goals: 21 },
+    ],
+  },
+  'Luis Suárez': {
+    senior: [
+      { years: '2005-2006', team: 'Nacional', apps: 27, goals: 10 },
+      { years: '2006-2007', team: 'Groningen', apps: 29, goals: 10 },
+      { years: '2007-2011', team: 'Ajax', apps: 110, goals: 81 },
+      { years: '2011-2014', team: 'Liverpool', apps: 110, goals: 69 },
+      { years: '2014-2020', team: 'Barcelona', apps: 191, goals: 147 },
+      { years: '2020-2022', team: 'Atlético Madrid', apps: 67, goals: 32 },
+      { years: '2023-2024', team: 'Grêmio', apps: 45, goals: 24 },
+      { years: '2024-', team: 'Inter Miami', apps: 66, goals: 36 },
+    ],
+    intl: [
+      { years: '2007-2024', team: 'Uruguay', apps: 143, goals: 69 },
+    ],
+  },
+  'Emlyn Hughes': {
+    senior: [
+      { years: '1964-1967', team: 'Blackpool', apps: 28, goals: 0 },
+      { years: '1967-1979', team: 'Liverpool', apps: 474, goals: 35 },
+      { years: '1979-1981', team: 'Wolverhampton Wanderers', apps: 58, goals: 2 },
+      { years: '1981-1983', team: 'Rotherham United', apps: 56, goals: 6 },
+      { years: '1983-1984', team: 'Swansea City', apps: 7, goals: 0 },
+    ],
+    intl: [
+      { years: '1969-1980', team: 'England', apps: 62, goals: 1 },
+    ],
+  },
+  'Phil Neal': {
+    senior: [
+      { years: '1967-1974', team: 'Northampton Town', apps: 187, goals: 28 },
+      { years: '1974-1985', team: 'Liverpool', apps: 455, goals: 41 },
+      { years: '1985-1989', team: 'Bolton Wanderers', apps: 64, goals: 3 },
+    ],
+    intl: [
+      { years: '1976-1983', team: 'England', apps: 50, goals: 5 },
+    ],
+  },
+  'Sadio Mané': {
+    senior: [
+      { years: '2011-2012', team: 'Metz', apps: 22, goals: 2 },
+      { years: '2012-2014', team: 'Red Bull Salzburg', apps: 63, goals: 31 },
+      { years: '2014-2016', team: 'Southampton', apps: 67, goals: 21 },
+      { years: '2016-2022', team: 'Liverpool', apps: 196, goals: 90 },
+      { years: '2022-2023', team: 'Bayern Munich', apps: 25, goals: 7 },
+      { years: '2023-', team: 'Al-Nassr', apps: 89, goals: 37 },
+    ],
+    intl: [
+      { years: '2012-', team: 'Senegal', apps: 132, goals: 55 },
+    ],
+  },
+  'Ian St John': {
+    senior: [
+      { years: '1956-1961', team: 'Motherwell', apps: 113, goals: 80 },
+      { years: '1961-1971', team: 'Liverpool', apps: 336, goals: 95 },
+      { years: '1971-1972', team: 'Coventry City', apps: 18, goals: 3 },
+      { years: '1972-1973', team: 'Tranmere Rovers', apps: 9, goals: 1 },
+    ],
+    intl: [
+      { years: '1959-1965', team: 'Scotland', apps: 21, goals: 9 },
+    ],
+  },
+  'Phil Thompson': {
+    senior: [
+      { years: '1971-1984', team: 'Liverpool', apps: 340, goals: 7 },
+      { years: '1984-1986', team: 'Sheffield United', apps: 37, goals: 0 },
+    ],
+    intl: [
+      { years: '1976-1982', team: 'England', apps: 42, goals: 1 },
+    ],
+  },
+  'Roberto Firmino': {
+    senior: [
+      { years: '2009-2011', team: 'Figueirense', apps: 38, goals: 8 },
+      { years: '2011-2015', team: 'TSG Hoffenheim', apps: 140, goals: 38 },
+      { years: '2015-2023', team: 'Liverpool', apps: 256, goals: 82 },
+      { years: '2023-2025', team: 'Al-Ahli', apps: 49, goals: 14 },
+      { years: '2025-', team: 'Al-Sadd', apps: 21, goals: 13 },
+    ],
+    intl: [
+      { years: '2014-2021', team: 'Brazil', apps: 55, goals: 17 },
+    ],
+  },
+  'Jamie Carragher': {
+    senior: [
+      { years: '1996-2013', team: 'Liverpool', apps: 508, goals: 3 },
+    ],
+    intl: [
+      { years: '1999-2010', team: 'England', apps: 38, goals: 0 },
+    ],
+  },
+  'Michael Owen': {
+    senior: [
+      { years: '1996-2004', team: 'Liverpool', apps: 216, goals: 118 },
+      { years: '2004-2005', team: 'Real Madrid', apps: 36, goals: 13 },
+      { years: '2005-2009', team: 'Newcastle United', apps: 71, goals: 26 },
+      { years: '2009-2012', team: 'Manchester United', apps: 31, goals: 5 },
+      { years: '2012-2013', team: 'Stoke City', apps: 8, goals: 1 },
+    ],
+    intl: [
+      { years: '1998-2008', team: 'England', apps: 89, goals: 40 },
+    ],
+  },
+  'Jordan Henderson': {
+    senior: [
+      { years: '2008-2011', team: 'Sunderland', apps: 71, goals: 4 },
+      { years: '2009', team: 'Coventry City (loan)', apps: 10, goals: 1, loan: true },
+      { years: '2011-2023', team: 'Liverpool', apps: 360, goals: 29 },
+      { years: '2023-2024', team: 'Al-Ettifaq', apps: 17, goals: 0 },
+      { years: '2024-2025', team: 'Ajax', apps: 37, goals: 1 },
+      { years: '2025-', team: 'Brentford', apps: 32, goals: 1 },
+    ],
+    intl: [
+      { years: '2010-', team: 'England', apps: 91, goals: 3 },
+    ],
+  },
+  'Ron Yeats': {
+    senior: [
+      { years: '1957-1961', team: 'Dundee United', apps: 96, goals: 1 },
+      { years: '1961-1971', team: 'Liverpool', apps: 358, goals: 13 },
+      { years: '1971-1974', team: 'Tranmere Rovers', apps: 97, goals: 5 },
+    ],
+    intl: [
+      { years: '1964', team: 'Scotland', apps: 2, goals: 0 },
+    ],
+  },
+  'Trent Alexander-Arnold': {
+    senior: [
+      { years: '2016-2025', team: 'Liverpool', apps: 259, goals: 18 },
+      { years: '2025-', team: 'Real Madrid', apps: 21, goals: 0 },
+    ],
+    intl: [
+      { years: '2018-', team: 'England', apps: 34, goals: 4 },
+    ],
+  },
+  'Sami Hyypiä': {
+    senior: [
+      { years: '1992-1995', team: 'MyPa', apps: 96, goals: 8 },
+      { years: '1995-1999', team: 'Willem II', apps: 100, goals: 3 },
+      { years: '1999-2009', team: 'Liverpool', apps: 318, goals: 22 },
+      { years: '2009-2011', team: 'Bayer Leverkusen', apps: 53, goals: 3 },
+    ],
+    intl: [
+      { years: '1992-2010', team: 'Finland', apps: 105, goals: 5 },
+    ],
+  },
+  'Steve Heighway': {
+    senior: [
+      { years: '1970-1981', team: 'Liverpool', apps: 444, goals: 76 },
+      { years: '1981', team: 'Minnesota Kicks', apps: 26, goals: 19 },
+    ],
+    intl: [
+      { years: '1970-1981', team: 'Republic of Ireland', apps: 26, goals: 0 },
+    ],
+  },
+  'Gordon Hodgson': {
+    senior: [
+      { years: '1925-1936', team: 'Liverpool', apps: 358, goals: 233 },
+      { years: '1936-1937', team: 'Aston Villa', apps: 28, goals: 11 },
+      { years: '1937-1939', team: 'Leeds United', apps: 81, goals: 51 },
+    ],
+    intl: [
+      { years: '1924', team: 'South Africa', apps: 2, goals: 0 },
+      { years: '1930-1931', team: 'England', apps: 3, goals: 1 },
+    ],
+  },
+  'Elisha Scott': {
+    senior: [
+      { years: '1912-1915', team: 'Liverpool', apps: 28, goals: 0 },
+      { years: '1919-1934', team: 'Liverpool', apps: 402, goals: 0 },
+    ],
+    intl: [
+      { years: '1920-1936', team: 'Ireland (IFA)', apps: 31, goals: 0 },
+    ],
+  },
+  'Ronnie Whelan': {
+    senior: [
+      { years: '1977-1979', team: 'Home Farm', apps: 45, goals: 7 },
+      { years: '1979-1994', team: 'Liverpool', apps: 362, goals: 46 },
+      { years: '1994-1996', team: 'Southend United', apps: 34, goals: 1 },
+    ],
+    intl: [
+      { years: '1981-1995', team: 'Republic of Ireland', apps: 53, goals: 3 },
+    ],
+  },
+  'Terry McDermott': {
+    senior: [
+      { years: '1969-1973', team: 'Bury', apps: 90, goals: 8 },
+      { years: '1973-1974', team: 'Newcastle United', apps: 56, goals: 6 },
+      { years: '1974-1982', team: 'Liverpool', apps: 232, goals: 54 },
+      { years: '1982-1984', team: 'Newcastle United', apps: 74, goals: 12 },
+      { years: '1985-1987', team: 'APOEL', apps: 50, goals: 1 },
+    ],
+    intl: [
+      { years: '1977-1982', team: 'England', apps: 25, goals: 3 },
+    ],
+  },
+  'Mark Lawrenson': {
+    senior: [
+      { years: '1974-1977', team: 'Preston North End', apps: 73, goals: 2 },
+      { years: '1977-1981', team: 'Brighton & Hove Albion', apps: 152, goals: 5 },
+      { years: '1981-1988', team: 'Liverpool', apps: 332, goals: 11 },
+      { years: '1989', team: 'Tampa Bay Rowdies', apps: 20, goals: 3 },
+    ],
+    intl: [
+      { years: '1977-1987', team: 'Republic of Ireland', apps: 39, goals: 5 },
+    ],
+  },
+  'Ray Kennedy': {
+    senior: [
+      { years: '1968-1974', team: 'Arsenal', apps: 213, goals: 71 },
+      { years: '1974-1982', team: 'Liverpool', apps: 393, goals: 72 },
+      { years: '1982-1983', team: 'Swansea City', apps: 51, goals: 2 },
+      { years: '1983-1984', team: 'Hartlepool United', apps: 24, goals: 3 },
+    ],
+    intl: [
+      { years: '1976-1980', team: 'England', apps: 17, goals: 3 },
+    ],
+  },
+  'Tommy Smith': {
+    senior: [
+      { years: '1962-1978', team: 'Liverpool', apps: 467, goals: 36 },
+      { years: '1976', team: 'Tampa Bay Rowdies', apps: 17, goals: 0 },
+      { years: '1978-1979', team: 'Swansea City', apps: 36, goals: 2 },
+    ],
+    intl: [
+      { years: '1971', team: 'England', apps: 1, goals: 0 },
+    ],
+  },
+  'Steve McManaman': {
+    senior: [
+      { years: '1990-1999', team: 'Liverpool', apps: 272, goals: 46 },
+      { years: '1999-2003', team: 'Real Madrid', apps: 94, goals: 8 },
+      { years: '2003-2005', team: 'Manchester City', apps: 35, goals: 0 },
+    ],
+    intl: [
+      { years: '1994-2001', team: 'England', apps: 37, goals: 3 },
+    ],
+  },
+  'Alan Kennedy': {
+    senior: [
+      { years: '1972-1978', team: 'Newcastle United', apps: 158, goals: 9 },
+      { years: '1978-1986', team: 'Liverpool', apps: 251, goals: 15 },
+      { years: '1986-1987', team: 'Sunderland', apps: 54, goals: 2 },
+      { years: '1987', team: 'Wigan Athletic', apps: 22, goals: 0 },
+      { years: '1989-1990', team: 'Wrexham', apps: 16, goals: 0 },
+    ],
+    intl: [
+      { years: '1984', team: 'England', apps: 2, goals: 0 },
+    ],
+  },
+  'Harry Chambers': {
+    senior: [
+      { years: '1915-1928', team: 'Liverpool', apps: 339, goals: 151 },
+      { years: '1928-1929', team: 'West Bromwich Albion', apps: 40, goals: 4 },
+    ],
+    intl: [
+      { years: '1921-1923', team: 'England', apps: 8, goals: 5 },
+    ],
+  },
+  'Steve Nicol': {
+    senior: [
+      { years: '1979-1981', team: 'Ayr United', apps: 70, goals: 7 },
+      { years: '1981-1994', team: 'Liverpool', apps: 343, goals: 36 },
+      { years: '1994-1996', team: 'Notts County', apps: 32, goals: 2 },
+      { years: '1996-1998', team: 'Sheffield Wednesday', apps: 49, goals: 0 },
+    ],
+    intl: [
+      { years: '1984-1992', team: 'Scotland', apps: 27, goals: 0 },
+    ],
+  },
+  'Bruce Grobbelaar': {
+    senior: [
+      { years: '1979-1981', team: 'Vancouver Whitecaps', apps: 24, goals: 0 },
+      { years: '1979-1980', team: 'Crewe Alexandra (loan)', apps: 24, goals: 1, loan: true },
+      { years: '1981-1994', team: 'Liverpool', apps: 440, goals: 0 },
+      { years: '1994-1996', team: 'Southampton', apps: 32, goals: 0 },
+      { years: '1996-1997', team: 'Plymouth Argyle', apps: 36, goals: 0 },
+    ],
+    intl: [
+      { years: '1977-1998', team: 'Zimbabwe', apps: 33, goals: 0 },
+    ],
+  },
+  'Jan Mølby': {
+    senior: [
+      { years: '1981-1982', team: 'Kolding', apps: 40, goals: 0 },
+      { years: '1982-1984', team: 'Ajax', apps: 57, goals: 11 },
+      { years: '1984-1996', team: 'Liverpool', apps: 218, goals: 44 },
+      { years: '1996-1998', team: 'Swansea City', apps: 41, goals: 8 },
+    ],
+    intl: [
+      { years: '1982-1990', team: 'Denmark', apps: 33, goals: 2 },
+    ],
+  },
+  'Fernando Torres': {
+    senior: [
+      { years: '2001-2007', team: 'Atlético Madrid', apps: 214, goals: 82 },
+      { years: '2007-2011', team: 'Liverpool', apps: 102, goals: 65 },
+      { years: '2011-2015', team: 'Chelsea', apps: 110, goals: 20 },
+      { years: '2014-2015', team: 'AC Milan', apps: 10, goals: 1 },
+      { years: '2015-2018', team: 'Atlético Madrid', apps: 107, goals: 27 },
+      { years: '2018-2019', team: 'Sagan Tosu', apps: 35, goals: 5 },
+    ],
+    intl: [
+      { years: '2003-2014', team: 'Spain', apps: 110, goals: 38 },
+    ],
+  },
+  'Chris Lawler': {
+    senior: [
+      { years: '1960-1975', team: 'Liverpool', apps: 406, goals: 41 },
+      { years: '1975-1977', team: 'Portsmouth', apps: 36, goals: 0 },
+      { years: '1977-1978', team: 'Stockport County', apps: 36, goals: 3 },
+    ],
+    intl: [
+      { years: '1971', team: 'England', apps: 4, goals: 1 },
+    ],
+  },
+  'Steve McMahon': {
+    senior: [
+      { years: '1979-1983', team: 'Everton', apps: 100, goals: 11 },
+      { years: '1983-1985', team: 'Aston Villa', apps: 75, goals: 7 },
+      { years: '1985-1991', team: 'Liverpool', apps: 204, goals: 29 },
+      { years: '1991-1994', team: 'Manchester City', apps: 87, goals: 1 },
+      { years: '1994-1998', team: 'Swindon Town', apps: 42, goals: 0 },
+    ],
+    intl: [
+      { years: '1988-1990', team: 'England', apps: 17, goals: 0 },
+    ],
+  },
+  'Alex Raisbeck': {
+    senior: [
+      { years: '1896-1898', team: 'Hibernian', apps: 25, goals: 3 },
+      { years: '1898-1909', team: 'Liverpool', apps: 312, goals: 19 },
+      { years: '1909-1914', team: 'Partick Thistle', apps: 113, goals: 7 },
+    ],
+    intl: [
+      { years: '1900-1907', team: 'Scotland', apps: 8, goals: 0 },
+    ],
+  },
+  'James Milner': {
+    senior: [
+      { years: '2002-2004', team: 'Leeds United', apps: 48, goals: 5 },
+      { years: '2004-2008', team: 'Newcastle United', apps: 94, goals: 6 },
+      { years: '2005-2006', team: 'Aston Villa (loan)', apps: 27, goals: 1, loan: true },
+      { years: '2008-2010', team: 'Aston Villa', apps: 73, goals: 11 },
+      { years: '2010-2015', team: 'Manchester City', apps: 147, goals: 13 },
+      { years: '2015-2023', team: 'Liverpool', apps: 230, goals: 19 },
+      { years: '2023-', team: 'Brighton & Hove Albion', apps: 39, goals: 1 },
+    ],
+    intl: [
+      { years: '2009-2016', team: 'England', apps: 61, goals: 1 },
+    ],
+  },
+  'Jimmy Case': {
+    senior: [
+      { years: '1973-1981', team: 'Liverpool', apps: 186, goals: 23 },
+      { years: '1981-1985', team: 'Brighton & Hove Albion', apps: 127, goals: 10 },
+      { years: '1985-1991', team: 'Southampton', apps: 215, goals: 10 },
+      { years: '1991-1992', team: 'AFC Bournemouth', apps: 40, goals: 1 },
+      { years: '1992-1993', team: 'Halifax Town', apps: 21, goals: 2 },
+    ],
+    intl: [
+      { years: '1976', team: 'England U23', apps: 1, goals: 1 },
+    ],
+  },
+  'John Toshack': {
+    senior: [
+      { years: '1965-1970', team: 'Cardiff City', apps: 162, goals: 74 },
+      { years: '1970-1978', team: 'Liverpool', apps: 172, goals: 74 },
+      { years: '1978-1984', team: 'Swansea City', apps: 63, goals: 24 },
+    ],
+    intl: [
+      { years: '1969-1980', team: 'Wales', apps: 40, goals: 13 },
+    ],
+  },
+  'Jack Balmer': {
+    senior: [
+      { years: '1935-1952', team: 'Liverpool', apps: 289, goals: 98 },
+    ],
+    intl: [
+      { years: '1939', team: 'England', apps: 1, goals: 1 },
+    ],
+  },
+  'Donald MacKinlay': {
+    senior: [
+      { years: '1910-1929', team: 'Liverpool', apps: 393, goals: 34 },
+    ],
+    intl: [
+      { years: '1922', team: 'Scotland', apps: 2, goals: 0 },
+    ],
+  },
+  'Peter Beardsley': {
+    senior: [
+      { years: '1979-1982', team: 'Carlisle United', apps: 104, goals: 22 },
+      { years: '1983-1987', team: 'Newcastle United', apps: 147, goals: 61 },
+      { years: '1987-1991', team: 'Liverpool', apps: 131, goals: 46 },
+      { years: '1991-1993', team: 'Everton', apps: 81, goals: 25 },
+      { years: '1993-1997', team: 'Newcastle United', apps: 129, goals: 47 },
+      { years: '1997-1998', team: 'Bolton Wanderers', apps: 17, goals: 2 },
+    ],
+    intl: [
+      { years: '1986-1996', team: 'England', apps: 59, goals: 9 },
+    ],
+  },
+  'Xabi Alonso': {
+    senior: [
+      { years: '1999-2004', team: 'Real Sociedad', apps: 114, goals: 9 },
+      { years: '2000-2001', team: 'Eibar (loan)', apps: 14, goals: 0, loan: true },
+      { years: '2004-2009', team: 'Liverpool', apps: 143, goals: 15 },
+      { years: '2009-2014', team: 'Real Madrid', apps: 158, goals: 4 },
+      { years: '2014-2017', team: 'Bayern Munich', apps: 79, goals: 5 },
+    ],
+    intl: [
+      { years: '2003-2014', team: 'Spain', apps: 114, goals: 16 },
+    ],
+  },
+  'Divock Origi': {
+    senior: [
+      { years: '2012-2014', team: 'Lille', apps: 40, goals: 6 },
+      { years: '2014-2022', team: 'Liverpool', apps: 107, goals: 22 },
+      { years: '2014-2015', team: 'Lille (loan)', apps: 33, goals: 8, loan: true },
+      { years: '2017-2018', team: 'VfL Wolfsburg (loan)', apps: 31, goals: 6, loan: true },
+      { years: '2022-2025', team: 'AC Milan', apps: 27, goals: 2 },
+      { years: '2023-2024', team: 'Nottingham Forest (loan)', apps: 20, goals: 0, loan: true },
+    ],
+    intl: [
+      { years: '2014-2022', team: 'Belgium', apps: 32, goals: 3 },
+    ],
+  },
+  'Jamie Redknapp': {
+    senior: [
+      { years: '1990-1991', team: 'AFC Bournemouth', apps: 13, goals: 0 },
+      { years: '1991-2002', team: 'Liverpool', apps: 237, goals: 30 },
+      { years: '2002-2005', team: 'Tottenham Hotspur', apps: 48, goals: 4 },
+      { years: '2005', team: 'Southampton', apps: 16, goals: 0 },
+    ],
+    intl: [
+      { years: '1995-1999', team: 'England', apps: 17, goals: 1 },
+    ],
+  },
+  'Diogo Jota': {
+    senior: [
+      { years: '2014-2016', team: 'Paços de Ferreira', apps: 41, goals: 14 },
+      { years: '2016-2017', team: 'Porto (loan)', apps: 27, goals: 8, loan: true },
+      { years: '2017-2018', team: 'Wolverhampton Wanderers (loan)', apps: 44, goals: 17, loan: true },
+      { years: '2018-2020', team: 'Wolverhampton Wanderers', apps: 67, goals: 16 },
+      { years: '2020-2025', team: 'Liverpool', apps: 123, goals: 47 },
+    ],
+    intl: [
+      { years: '2019-2025', team: 'Portugal', apps: 49, goals: 14 },
+    ],
+  },
+  'Bob Paisley': {
+    senior: [
+      { years: '1939-1954', team: 'Liverpool', apps: 253, goals: 10 },
+    ],
+    intl: [],
+  },
+  'Sammy Lee': {
+    senior: [
+      { years: '1976-1986', team: 'Liverpool', apps: 197, goals: 13 },
+      { years: '1986-1987', team: 'Queens Park Rangers', apps: 30, goals: 0 },
+      { years: '1987-1990', team: 'Osasuna', apps: 28, goals: 0 },
+    ],
+    intl: [
+      { years: '1982-1984', team: 'England', apps: 14, goals: 2 },
+    ],
+  },
+  'Ephraim Longworth': {
+    senior: [
+      { years: '1910-1928', team: 'Liverpool', apps: 371, goals: 0 },
+    ],
+    intl: [
+      { years: '1920-1923', team: 'England', apps: 5, goals: 0 },
+    ],
+  },
+  'Craig Johnston': {
+    senior: [
+      { years: '1977-1981', team: 'Middlesbrough', apps: 64, goals: 16 },
+      { years: '1981-1988', team: 'Liverpool', apps: 190, goals: 30 },
+    ],
+    intl: [],
+  },
+  'Peter Thompson': {
+    senior: [
+      { years: '1960-1963', team: 'Preston North End', apps: 121, goals: 20 },
+      { years: '1963-1973', team: 'Liverpool', apps: 323, goals: 42 },
+      { years: '1973-1978', team: 'Bolton Wanderers', apps: 117, goals: 2 },
+    ],
+    intl: [
+      { years: '1964-1970', team: 'England', apps: 16, goals: 0 },
+    ],
+  },
+  'John Arne Riise': {
+    senior: [
+      { years: '1996-1998', team: 'Aalesund', apps: 26, goals: 5 },
+      { years: '1998-2001', team: 'Monaco', apps: 44, goals: 4 },
+      { years: '2001-2008', team: 'Liverpool', apps: 234, goals: 21 },
+      { years: '2008-2011', team: 'Roma', apps: 99, goals: 7 },
+      { years: '2011-2014', team: 'Fulham', apps: 87, goals: 0 },
+      { years: '2014-2015', team: 'APOEL', apps: 25, goals: 4 },
+    ],
+    intl: [
+      { years: '2000-2013', team: 'Norway', apps: 110, goals: 16 },
+    ],
+  },
+  'Pepe Reina': {
+    senior: [
+      { years: '2000-2002', team: 'Barcelona', apps: 30, goals: 0 },
+      { years: '2002-2005', team: 'Villarreal', apps: 109, goals: 0 },
+      { years: '2005-2013', team: 'Liverpool', apps: 285, goals: 0 },
+      { years: '2013-2018', team: 'Napoli', apps: 141, goals: 0 },
+      { years: '2020-2022', team: 'Lazio', apps: 44, goals: 0 },
+      { years: '2022-2024', team: 'Villarreal', apps: 24, goals: 0 },
+      { years: '2024-2025', team: 'Como', apps: 12, goals: 0 },
+    ],
+    intl: [
+      { years: '2005-2017', team: 'Spain', apps: 36, goals: 0 },
+    ],
+  },
+  'John Aldridge': {
+    senior: [
+      { years: '1979-1984', team: 'Newport County', apps: 170, goals: 69 },
+      { years: '1984-1987', team: 'Oxford United', apps: 114, goals: 72 },
+      { years: '1987-1989', team: 'Liverpool', apps: 83, goals: 50 },
+      { years: '1989-1991', team: 'Real Sociedad', apps: 63, goals: 33 },
+      { years: '1991-1998', team: 'Tranmere Rovers', apps: 243, goals: 138 },
+    ],
+    intl: [
+      { years: '1986-1996', team: 'Republic of Ireland', apps: 69, goals: 19 },
+    ],
+  },
+  'David Fairclough': {
+    senior: [
+      { years: '1975-1983', team: 'Liverpool', apps: 98, goals: 34 },
+      { years: '1982', team: 'Toronto Blizzard', apps: 20, goals: 4 },
+      { years: '1983-1985', team: 'Luzern', apps: 40, goals: 8 },
+      { years: '1986-1989', team: 'Beveren', apps: 70, goals: 14 },
+    ],
+    intl: [],
+  },
+  'Fabinho': {
+    senior: [
+      { years: '2013-2015', team: 'Monaco (loan)', apps: 62, goals: 1, loan: true },
+      { years: '2015-2018', team: 'Monaco', apps: 105, goals: 22 },
+      { years: '2018-2023', team: 'Liverpool', apps: 151, goals: 8 },
+      { years: '2023-', team: 'Al-Ittihad', apps: 81, goals: 4 },
+    ],
+    intl: [
+      { years: '2015-', team: 'Brazil', apps: 36, goals: 0 },
+    ],
+  },
+  'Georginio Wijnaldum': {
+    senior: [
+      { years: '2007-2011', team: 'Feyenoord', apps: 111, goals: 23 },
+      { years: '2011-2015', team: 'PSV Eindhoven', apps: 109, goals: 40 },
+      { years: '2015-2016', team: 'Newcastle United', apps: 38, goals: 11 },
+      { years: '2016-2021', team: 'Liverpool', apps: 179, goals: 16 },
+      { years: '2021-2023', team: 'Paris Saint-Germain', apps: 31, goals: 1 },
+      { years: '2022-2023', team: 'Roma (loan)', apps: 14, goals: 2, loan: true },
+      { years: '2023-', team: 'Al-Ettifaq', apps: 96, goals: 36 },
+    ],
+    intl: [
+      { years: '2011-2024', team: 'Netherlands', apps: 96, goals: 28 },
+    ],
+  },
+  'Albert Stubbins': {
+    senior: [
+      { years: '1937-1946', team: 'Newcastle United', apps: 27, goals: 5 },
+      { years: '1946-1953', team: 'Liverpool', apps: 159, goals: 75 },
+    ],
+    intl: [
+      { years: '1945', team: 'England', apps: 1, goals: 0 },
+    ],
+  },
+  'Emile Heskey': {
+    senior: [
+      { years: '1994-2000', team: 'Leicester City', apps: 154, goals: 40 },
+      { years: '2000-2004', team: 'Liverpool', apps: 150, goals: 39 },
+      { years: '2004-2006', team: 'Birmingham City', apps: 68, goals: 14 },
+      { years: '2006-2009', team: 'Wigan Athletic', apps: 82, goals: 15 },
+      { years: '2009-2012', team: 'Aston Villa', apps: 92, goals: 9 },
+      { years: '2012-2014', team: 'Newcastle Jets', apps: 42, goals: 10 },
+      { years: '2014-2016', team: 'Bolton Wanderers', apps: 45, goals: 3 },
+    ],
+    intl: [
+      { years: '1999-2010', team: 'England', apps: 62, goals: 7 },
+    ],
+  },
+  'Joel Matip': {
+    senior: [
+      { years: '2009-2016', team: 'Schalke 04', apps: 194, goals: 17 },
+      { years: '2016-2024', team: 'Liverpool', apps: 150, goals: 9 },
+    ],
+    intl: [
+      { years: '2010-2015', team: 'Cameroon', apps: 27, goals: 1 },
+    ],
+  },
+  'Tom Bromilow': {
+    senior: [
+      { years: '1919-1930', team: 'Liverpool', apps: 341, goals: 11 },
+    ],
+    intl: [
+      { years: '1921-1925', team: 'England', apps: 5, goals: 0 },
+    ],
+  },
+  'Dietmar Hamann': {
+    senior: [
+      { years: '1993-1998', team: 'Bayern Munich', apps: 105, goals: 6 },
+      { years: '1998-1999', team: 'Newcastle United', apps: 23, goals: 4 },
+      { years: '1999-2006', team: 'Liverpool', apps: 191, goals: 8 },
+      { years: '2006-2009', team: 'Manchester City', apps: 54, goals: 1 },
+    ],
+    intl: [
+      { years: '1997-2005', team: 'Germany', apps: 59, goals: 5 },
+    ],
+  },
+  "Alan A'Court": {
+    senior: [
+      { years: '1952-1964', team: 'Liverpool', apps: 354, goals: 61 },
+      { years: '1964-1966', team: 'Tranmere Rovers', apps: 50, goals: 11 },
+    ],
+    intl: [
+      { years: '1957-1958', team: 'England', apps: 5, goals: 1 },
+    ],
+  },
+  'Luis Díaz': {
+    senior: [
+      { years: '2016-2017', team: 'Barranquilla', apps: 34, goals: 3 },
+      { years: '2017-2019', team: 'Atlético Junior', apps: 67, goals: 15 },
+      { years: '2019-2022', team: 'Porto', apps: 77, goals: 26 },
+      { years: '2022-2025', team: 'Liverpool', apps: 103, goals: 29 },
+      { years: '2025-', team: 'Bayern Munich', apps: 32, goals: 15 },
+    ],
+    intl: [
+      { years: '2018-', team: 'Colombia', apps: 78, goals: 23 },
+    ],
+  },
+  'Ronnie Moran': {
+    senior: [
+      { years: '1952-1968', team: 'Liverpool', apps: 343, goals: 16 },
+    ],
+    intl: [],
+  },
+  'Daniel Sturridge': {
+    senior: [
+      { years: '2006-2009', team: 'Manchester City', apps: 21, goals: 5 },
+      { years: '2009-2013', team: 'Chelsea', apps: 63, goals: 13 },
+      { years: '2011', team: 'Bolton Wanderers (loan)', apps: 12, goals: 8, loan: true },
+      { years: '2013-2019', team: 'Liverpool', apps: 116, goals: 50 },
+      { years: '2018', team: 'West Bromwich Albion (loan)', apps: 6, goals: 0, loan: true },
+      { years: '2019-2020', team: 'Trabzonspor', apps: 11, goals: 4 },
+    ],
+    intl: [
+      { years: '2011-2017', team: 'England', apps: 26, goals: 8 },
+    ],
+  },
+  'Ray Houghton': {
+    senior: [
+      { years: '1982-1985', team: 'Fulham', apps: 129, goals: 16 },
+      { years: '1985-1987', team: 'Oxford United', apps: 83, goals: 10 },
+      { years: '1987-1992', team: 'Liverpool', apps: 153, goals: 28 },
+      { years: '1992-1995', team: 'Aston Villa', apps: 95, goals: 6 },
+      { years: '1995-1997', team: 'Crystal Palace', apps: 73, goals: 7 },
+      { years: '1997-1999', team: 'Reading', apps: 43, goals: 1 },
+    ],
+    intl: [
+      { years: '1986-1997', team: 'Republic of Ireland', apps: 73, goals: 6 },
+    ],
+  },
+  'Dirk Kuyt': {
+    senior: [
+      { years: '1998-2003', team: 'Utrecht', apps: 160, goals: 51 },
+      { years: '2003-2006', team: 'Feyenoord', apps: 101, goals: 71 },
+      { years: '2006-2012', team: 'Liverpool', apps: 208, goals: 51 },
+      { years: '2012-2015', team: 'Fenerbahçe', apps: 95, goals: 26 },
+      { years: '2015-2017', team: 'Feyenoord', apps: 63, goals: 31 },
+    ],
+    intl: [
+      { years: '2004-2014', team: 'Netherlands', apps: 104, goals: 24 },
+    ],
+  },
+  'Matt Busby': {
+    senior: [
+      { years: '1928-1936', team: 'Manchester City', apps: 204, goals: 11 },
+      { years: '1936-1945', team: 'Liverpool', apps: 115, goals: 3 },
+    ],
+    intl: [
+      { years: '1933', team: 'Scotland', apps: 1, goals: 0 },
+    ],
+  },
+  'Vladimír Šmicer': {
+    senior: [
+      { years: '1992-1996', team: 'Slavia Prague', apps: 81, goals: 26 },
+      { years: '1996-1999', team: 'Lens', apps: 91, goals: 16 },
+      { years: '1999-2005', team: 'Liverpool', apps: 121, goals: 10 },
+      { years: '2005-2007', team: 'Bordeaux', apps: 28, goals: 3 },
+      { years: '2007-2009', team: 'Slavia Prague', apps: 23, goals: 5 },
+    ],
+    intl: [
+      { years: '1994-2006', team: 'Czech Republic', apps: 80, goals: 27 },
+    ],
+  },
+  'Gerry Byrne': {
+    senior: [
+      { years: '1957-1969', team: 'Liverpool', apps: 274, goals: 2 },
+    ],
+    intl: [
+      { years: '1963-1966', team: 'England', apps: 2, goals: 0 },
+    ],
+  },
+  'Tommy Lawrence': {
+    senior: [
+      { years: '1957-1971', team: 'Liverpool', apps: 306, goals: 0 },
+      { years: '1971-1974', team: 'Tranmere Rovers', apps: 80, goals: 0 },
+    ],
+    intl: [
+      { years: '1963-1969', team: 'Scotland', apps: 3, goals: 0 },
+    ],
+  },
+  'Phil Taylor': {
+    senior: [
+      { years: '1935-1936', team: 'Bristol Rovers', apps: 21, goals: 2 },
+      { years: '1936-1954', team: 'Liverpool', apps: 312, goals: 32 },
+    ],
+    intl: [
+      { years: '1947', team: 'England', apps: 3, goals: 0 },
+    ],
+  },
+  'Jerzy Dudek': {
+    senior: [
+      { years: '1996-2001', team: 'Feyenoord', apps: 139, goals: 0 },
+      { years: '2001-2007', team: 'Liverpool', apps: 127, goals: 0 },
+      { years: '2007-2011', team: 'Real Madrid', apps: 2, goals: 0 },
+    ],
+    intl: [
+      { years: '1998-2013', team: 'Poland', apps: 60, goals: 0 },
+    ],
+  },
+  'Philippe Coutinho': {
+    senior: [
+      { years: '2008-2013', team: 'Inter Milan', apps: 28, goals: 3 },
+      { years: '2008-2010', team: 'Vasco da Gama (loan)', apps: 36, goals: 4, loan: true },
+      { years: '2012', team: 'Espanyol (loan)', apps: 16, goals: 5, loan: true },
+      { years: '2013-2018', team: 'Liverpool', apps: 152, goals: 41 },
+      { years: '2018-2022', team: 'Barcelona', apps: 76, goals: 17 },
+      { years: '2019-2020', team: 'Bayern Munich (loan)', apps: 23, goals: 8, loan: true },
+      { years: '2022-2025', team: 'Aston Villa', apps: 22, goals: 1 },
+    ],
+    intl: [
+      { years: '2010-2022', team: 'Brazil', apps: 68, goals: 21 },
+    ],
+  },
+  'Sam Raybould': {
+    senior: [
+      { years: '1899-1907', team: 'Liverpool', apps: 211, goals: 120 },
+      { years: '1907-1908', team: 'Sunderland', apps: 27, goals: 12 },
+      { years: '1908-1909', team: 'Arsenal', apps: 26, goals: 6 },
+    ],
+    intl: [],
+  },
+  'David Johnson': {
+    senior: [
+      { years: '1969-1972', team: 'Everton', apps: 49, goals: 11 },
+      { years: '1972-1976', team: 'Ipswich Town', apps: 136, goals: 35 },
+      { years: '1976-1982', team: 'Liverpool', apps: 148, goals: 55 },
+      { years: '1982-1984', team: 'Everton', apps: 40, goals: 4 },
+      { years: '1984-1985', team: 'Preston North End', apps: 24, goals: 3 },
+    ],
+    intl: [
+      { years: '1975-1980', team: 'England', apps: 8, goals: 5 },
+    ],
+  },
+  'Dick Forshaw': {
+    senior: [
+      { years: '1919-1927', team: 'Liverpool', apps: 266, goals: 117 },
+      { years: '1927-1929', team: 'Everton', apps: 42, goals: 8 },
+    ],
+    intl: [],
+  },
+  'Lucas Leiva': {
+    senior: [
+      { years: '2005-2007', team: 'Grêmio', apps: 66, goals: 9 },
+      { years: '2007-2017', team: 'Liverpool', apps: 247, goals: 1 },
+      { years: '2017-2022', team: 'Lazio', apps: 155, goals: 2 },
+      { years: '2022-2023', team: 'Grêmio', apps: 18, goals: 3 },
+    ],
+    intl: [
+      { years: '2007-2013', team: 'Brazil', apps: 24, goals: 0 },
+    ],
+  },
+  'Adam Lallana': {
+    senior: [
+      { years: '2006-2014', team: 'Southampton', apps: 235, goals: 48 },
+      { years: '2014-2020', team: 'Liverpool', apps: 128, goals: 18 },
+      { years: '2020-2024', team: 'Brighton & Hove Albion', apps: 95, goals: 3 },
+      { years: '2024-2025', team: 'Southampton', apps: 14, goals: 0 },
+    ],
+    intl: [
+      { years: '2013-2018', team: 'England', apps: 34, goals: 3 },
+    ],
+  },
+  'Bobby Robinson': {
+    senior: [
+      { years: '1897-1898', team: 'Blackpool', apps: 17, goals: 12 },
+      { years: '1898-1909', team: 'Liverpool', apps: 327, goals: 72 },
+      { years: '1909-1912', team: 'Blackpool', apps: 68, goals: 6 },
+    ],
+    intl: [
+      { years: '1901-1903', team: 'England', apps: 3, goals: 0 },
+    ],
+  },
+  'Jack Cox': {
+    senior: [
+      { years: '1897-1898', team: 'Blackpool', apps: 17, goals: 12 },
+      { years: '1898-1909', team: 'Liverpool', apps: 361, goals: 81 },
+    ],
+    intl: [
+      { years: '1901-1903', team: 'England', apps: 3, goals: 0 },
+    ],
+  },
+  'Luis García': {
+    senior: [
+      { years: '1997-2002', team: 'Barcelona B', apps: 73, goals: 25 },
+      { years: '2002-2003', team: 'Atlético Madrid', apps: 30, goals: 9 },
+      { years: '2003-2004', team: 'Barcelona', apps: 25, goals: 4 },
+      { years: '2004-2007', team: 'Liverpool', apps: 77, goals: 18 },
+      { years: '2007-2009', team: 'Atlético Madrid', apps: 49, goals: 2 },
+      { years: '2009-2010', team: 'Racing Santander', apps: 15, goals: 0 },
+      { years: '2010-2011', team: 'Panathinaikos', apps: 18, goals: 2 },
+    ],
+    intl: [
+      { years: '2005-2006', team: 'Spain', apps: 18, goals: 4 },
+    ],
+  },
+  'Jack Parkinson': {
+    senior: [
+      { years: '1903-1914', team: 'Liverpool', apps: 199, goals: 123 },
+      { years: '1914-1915', team: 'Bury', apps: 4, goals: 3 },
+    ],
+    intl: [
+      { years: '1910', team: 'England', apps: 2, goals: 0 },
+    ],
+  },
+  'Danny Murphy': {
+    senior: [
+      { years: '1993-1997', team: 'Crewe Alexandra', apps: 134, goals: 27 },
+      { years: '1997-2004', team: 'Liverpool', apps: 170, goals: 25 },
+      { years: '2004-2006', team: 'Charlton Athletic', apps: 56, goals: 7 },
+      { years: '2006-2007', team: 'Tottenham Hotspur', apps: 22, goals: 1 },
+      { years: '2007-2012', team: 'Fulham', apps: 169, goals: 17 },
+      { years: '2012-2013', team: 'Blackburn Rovers', apps: 33, goals: 1 },
+    ],
+    intl: [
+      { years: '2001-2003', team: 'England', apps: 9, goals: 1 },
+    ],
+  },
 };
 
 export type CLFinal = { y: string; r: string; city: string; mgr: string };
