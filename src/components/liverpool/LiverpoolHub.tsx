@@ -428,7 +428,7 @@ function Top100() {
                     {careers[g.name].intl.length > 0 && (
                       <CareerTable title="International career" rows={careers[g.name].intl} />
                     )}
-                    <p className={styles.careerFoot}>Domestic-league appearances &amp; goals. Source: Wikipedia.</p>
+                    <p className={styles.careerFoot}>League appearances &amp; goals only. Source: Wikipedia.</p>
                   </div>
                 )}
               </div>
@@ -656,7 +656,7 @@ function PlayerModal({ player, onClose }: { player: Player | null; onClose: () =
             <div className={styles.careerWrap}>
               <CareerTable title="Senior career" rows={careers[player.name].senior} />
               <CareerTable title="International career" rows={careers[player.name].intl} />
-              <p className={styles.careerFoot}>Domestic-league appearances &amp; goals. Source: Wikipedia.</p>
+              <p className={styles.careerFoot}>League appearances &amp; goals only, via Wikipedia - the {player.apps} Liverpool apps above (in the profile box) covers all competitions, including cups and Europe.</p>
             </div>
           )}
 
