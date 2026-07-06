@@ -1258,7 +1258,7 @@ export function LiverpoolHub() {
             <div className={styles.eyebrow}>Three derbies that define the season</div>
             <h2 className={styles.section} data-reveal>The Rivalries</h2>
             <p className={styles.lede} data-reveal>Not just modern grudges. Here&apos;s where each one actually comes from, and why it still matters.</p>
-            <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16 }}>
+            <div className={`${styles.grid} ${styles.g3}`} style={{ marginTop: 16, alignItems: 'start' }}>
               {rivalries.map((r) => (
                 <div className={`${styles.card} ${styles.rivalCard}`} key={r.name} data-reveal>
                   <h3>{r.name} - <Term term="derby">{r.tag}</Term></h3>
