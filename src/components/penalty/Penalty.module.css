@@ -1,0 +1,903 @@
+/* ─── Penalty Simulator — floodlit Liverpool FC shootout ───────────────────
+   Deliberately single-theme: a night-match broadcast frame doesn't flip to
+   "light mode" any more than a stadium under floodlights does. Namespaced
+   under .game so it never touches the rest of the site's mono-black
+   portfolio or the Liverpool hub's red/gold palette (which it borrows
+   from, on purpose — same club colors, different page). */
+
+.game {
+  --bezel: #0b0e14;
+  --bezel-hi: #171d29;
+  --screen: #0a0d12;
+  --red: #d10a2f;
+  --gold: #f4c752;
+  --gold-dim: #a9842a;
+  --gold-bright: #ffe08a;
+  --ink: #f2f0ec;
+  --muted: #9aa3ac;
+  --bad: #ff4d5e;
+  --good: #4fd68a;
+  --line: rgba(242, 240, 236, 0.1);
+
+  --f-display: var(--font-anton), 'Arial Narrow', sans-serif;
+  --f-cond: var(--font-oswald), 'Oswald', sans-serif;
+  --f-body: var(--font-inter), system-ui, sans-serif;
+
+  /* Pinned to the actual viewport (not just "100dvh" in normal flow) so
+     centering is exact regardless of document height, scroll position, or
+     dvh quirks — this is the visible screen, full stop. Scrolls internally
+     if content is ever taller than the viewport. */
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px 16px;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(209, 10, 47, 0.1), transparent 55%),
+    var(--bezel);
+  color: var(--ink);
+  font-family: var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── HUD ───────────────────────────────────────────────── */
+/* Grid with two EQUAL flanking columns, not flex+space-between — with only
+   3 children, space-between centers the middle item relative to the two
+   side items' own widths, not the row's true center. Since "← SITE" and
+   "SFX ON"/"SFX OFF" aren't the same width, that shifted the title
+   noticeably off-center. Equal 1fr columns guarantee true centering
+   regardless of what the side content measures. */
+.hud {
+  width: 100%;
+  max-width: max(360px, min(85vw, 112vh, 1700px));
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.hud > .back {
+  justify-self: start;
+}
+.hud > .muteBtn {
+  justify-self: end;
+}
+
+.back {
+  font-family: var(--f-cond);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 6px 10px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.back:hover {
+  color: var(--ink);
+  border-color: var(--gold-dim);
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(22px, 5vw, 32px);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.title span {
+  color: var(--gold);
+}
+
+.muteBtn {
+  font-family: var(--f-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.muteBtn:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.muteBtn:focus-visible,
+.back:focus-visible,
+.kickBtn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ─── Score row ─────────────────────────────────────────── */
+/* Same true-centering issue and fix as .hud — "ROUND 5/5 — CPU: NAME #19"
+   is much longer than "BEST 5/5", so flex+space-between visibly dragged
+   the center score group off to one side. */
+.scoreRow {
+  width: 100%;
+  max-width: max(360px, min(85vw, 112vh, 1700px));
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--f-cond);
+}
+.roundLabel {
+  justify-self: start;
+}
+.bestLabel {
+  justify-self: end;
+}
+.scoreCenter {
+  justify-self: center;
+}
+
+.roundLabel,
+.bestLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.pips {
+  display: flex;
+  gap: 7px;
+}
+.pip {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+.pipGoal {
+  background: var(--good);
+  border-color: var(--good);
+  box-shadow: 0 0 6px rgba(79, 214, 138, 0.6);
+}
+.pipMiss {
+  background: var(--bad);
+  border-color: var(--bad);
+}
+.pipEmpty {
+  opacity: 0.5;
+}
+
+/* ─── Score center (both sides' pips + running tally) ────── */
+.scoreCenter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scoreSideLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.scoreTally {
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  min-width: 2.4em;
+  text-align: center;
+}
+
+/* ─── Stage row (screen + power meter) ──────────────────── */
+.stageRow {
+  width: 100%;
+  max-width: max(360px, min(85vw, 112vh, 1700px));
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* Shared "broadcast screen" frame — the same dark, bordered box gameplay
+   renders inside of. Applied to the start and squad screens too, so the
+   whole experience (menu through shootout) reads as one console, not a
+   plain webpage that happens to reveal a game after a click. */
+.screenFrame {
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--screen);
+  box-shadow:
+    inset 0 0 0 1px #000,
+    inset 0 0 50px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--bezel-hi),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 640 / 400;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 45%, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+/* ─── Cinematic intro ───────────────────────────────────── */
+.cinematic {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 100% at 50% 30%, #1b2233, #05070b);
+}
+
+.jerseyCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: clamp(20px, 4vw, 36px) clamp(28px, 6vw, 56px);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.jerseyTeamLabel {
+  font-family: var(--f-cond);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  opacity: 0.85;
+}
+.jerseyNum {
+  font-family: var(--f-display);
+  font-size: clamp(48px, 11vw, 84px);
+  line-height: 0.9;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+.jerseyName {
+  font-family: var(--f-cond);
+  font-weight: 700;
+  font-size: clamp(14px, 3vw, 20px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@keyframes cardIn {
+  from {
+    transform: translateY(24px) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ─── Prompts + banners ─────────────────────────────────── */
+.prompt {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  transform: translateX(-50%);
+  font-family: var(--f-cond);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: clamp(11px, 2.2vw, 14px);
+  color: var(--gold-bright);
+  background: rgba(10, 13, 18, 0.55);
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.diffEASY {
+  color: var(--good);
+}
+.diffMEDIUM {
+  color: var(--gold);
+}
+.diffHARD {
+  color: var(--bad);
+}
+
+.banner {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(28px, 7vw, 46px);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 12px;
+  background: rgba(10, 13, 18, 0.4);
+  animation: pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow: 0 0 16px currentColor;
+}
+.good {
+  color: var(--gold-bright);
+}
+.bad {
+  color: var(--bad);
+}
+.warn {
+  color: #ffb347;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.75);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.gameover {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: rgba(10, 13, 18, 0.85);
+}
+
+.gameoverWord {
+  font-family: var(--f-display);
+  font-size: clamp(28px, 7vw, 44px);
+  text-transform: uppercase;
+  text-shadow: 0 0 14px currentColor;
+}
+
+.gameoverScore {
+  font-family: var(--f-display);
+  font-size: clamp(20px, 5vw, 28px);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* ─── Defend mini-game (A/D move, W/S dive) ─────────────── */
+.defendControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.defendMoveGroup,
+.defendDiveGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.defendBtn {
+  font-family: var(--f-display);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--screen);
+  background: var(--gold);
+  border: none;
+  border-radius: 4px;
+  padding: 13px 20px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 0 var(--gold-dim), 0 6px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.defendBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--gold-dim), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Power meter (vertical, auto-oscillating) ──────────── */
+.meterWrap {
+  width: 46px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.meterLabelTop,
+.meterLabelBottom {
+  font-family: var(--f-cond);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.meterLabelTop {
+  color: var(--bad);
+}
+.meterLabelBottom {
+  color: var(--muted);
+}
+
+.meterTrack {
+  position: relative;
+  flex: 1;
+  width: 22px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.meterZoneOver,
+.meterZoneGood,
+.meterZoneWeak {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.meterZoneOver {
+  top: 0;
+  height: 12%;
+  background: rgba(255, 77, 94, 0.28);
+}
+.meterZoneGood {
+  top: 12%;
+  height: 68%;
+  background: linear-gradient(to bottom, rgba(244, 199, 82, 0.24), rgba(63, 182, 139, 0.2));
+}
+.meterZoneWeak {
+  bottom: 0;
+  height: 20%;
+  background: rgba(154, 163, 172, 0.16);
+}
+
+.meterFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0%;
+  background: linear-gradient(to top, #3fb68b, var(--gold) 70%, var(--bad));
+  box-shadow: 0 0 8px rgba(244, 199, 82, 0.5);
+}
+
+/* ─── Buttons ────────────────────────────────────────────── */
+.kickBtn {
+  font-family: var(--f-display);
+  font-size: clamp(14px, 2.8vw, 18px);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--screen);
+  background: var(--gold);
+  border: none;
+  border-radius: 4px;
+  padding: 16px 40px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 0 var(--gold-dim), 0 6px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.kickBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--gold-dim), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+.kickBtn:disabled {
+  cursor: default;
+  opacity: 0.55;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ─── Round label taker tag ─────────────────────────────── */
+.takerLabel {
+  color: var(--gold);
+  font-weight: 400;
+}
+
+/* ─── Start / squad screens get the empty goal (no players) as a blurred
+   backdrop, so the whole flow — menu through shootout — reads as one
+   console rather than a plain page that reveals a game after a click. */
+.startScreen,
+.squadScreen {
+  position: relative;
+  width: 100%;
+  max-width: max(360px, min(85vw, 112vh, 1700px));
+}
+
+/* Both screens keep the same background frame — matches the .stage seen
+   once you press play. The squad screen's actual card (title + list +
+   actions) is shrunk vertically via .squadListWrap's max-height below,
+   not by shrinking this shared frame/background. */
+.startScreen,
+.squadScreen {
+  aspect-ratio: 640 / 400;
+}
+
+.menuBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(9px) brightness(0.55) saturate(1.05);
+  transform: scale(1.08);
+}
+
+.menuScrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 100% at 50% 25%, rgba(8, 10, 14, 0.3), rgba(5, 6, 9, 0.8));
+}
+
+.menuContent {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.startContent {
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  padding: 32px;
+}
+
+.startTitle {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(32px, 8vw, 56px);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.startTitle span {
+  color: var(--gold);
+}
+
+.startSubtitle {
+  font-family: var(--f-cond);
+  font-size: clamp(13px, 2.4vw, 16px);
+  color: var(--muted);
+  max-width: 46ch;
+  line-height: 1.5;
+}
+
+/* ─── Squad / penalty-order screen ──────────────────────── */
+.squadContent {
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 22px 20px;
+}
+
+/* .title has flex:1 for its original context (the HUD's horizontal row,
+   centered between the back/mute buttons). Reused here in a vertical
+   column layout, that same flex:1 made the heading balloon to claim
+   roughly half the frame's leftover height, shoving the actual list and
+   buttons down into the bottom half — the real cause of the "not
+   centered" look. This resets it to its natural content height so only
+   .squadListWrap's flex:1 claims the leftover space. */
+.squadTitle {
+  composes: title;
+  flex: none;
+}
+
+.squadCount {
+  font-family: var(--f-cond);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+.squadListWrap {
+  /* Capped instead of flex:1 — a fixed max-height keeps this card shorter
+     than the frame so .squadContent's justify-content:center gives it even
+     breathing room above/below, rather than stretching to fill the frame. */
+  flex: 0 1 auto;
+  max-height: 300px;
+  min-height: 0;
+  width: 100%;
+  max-width: 34%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(10, 13, 18, 0.55);
+}
+
+.squadHeaderRow,
+.squadRow {
+  display: grid;
+  grid-template-columns: 1fr 26px 32px 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+}
+
+.squadHeaderRow {
+  font-family: var(--f-cond);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.squadHeaderRow span:nth-child(2),
+.squadHeaderRow span:nth-child(3),
+.squadHeaderRow span:nth-child(4) {
+  text-align: center;
+}
+
+.squadList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.squadRow {
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 12.5px;
+  cursor: grab;
+  transition: background 0.15s ease;
+}
+.squadRow:active {
+  cursor: grabbing;
+}
+.squadRow:hover {
+  background: rgba(244, 199, 82, 0.07);
+}
+
+/* Top ROUNDS rows — these are who actually kicks */
+.squadRowActive {
+  background: rgba(244, 199, 82, 0.05);
+}
+
+/* Rest of the roster — reorderable in, but sitting out this shootout */
+.squadRowBench {
+  color: var(--muted);
+}
+.squadRowBench .squadName {
+  color: var(--muted);
+}
+
+.squadDivider {
+  padding: 5px 12px;
+  font-family: var(--f-cond);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--line);
+}
+
+.squadName {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.squadNum,
+.squadPos,
+.squadRating {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.squadRating {
+  color: var(--gold);
+  font-weight: 600;
+}
+.squadRowBench .squadRating {
+  color: var(--gold-dim);
+}
+
+.squadEstMark {
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 1px;
+}
+
+.squadActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.squadActions .kickBtn {
+  padding: 12px 28px;
+  font-size: 13px;
+}
+
+/* ─── Team-select screen ─────────────────────────────────── */
+.teamSelectContent {
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 18px 22px 20px;
+}
+
+.teamSelectCols {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+
+.teamPicker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 200px;
+}
+
+.teamColLabel {
+  font-family: var(--f-cond);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-align: center;
+}
+
+.teamColDivider {
+  align-self: center;
+  font-family: var(--f-display);
+  font-size: 20px;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.pickerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pickerArrow {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(10, 13, 18, 0.5);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.pickerArrow:hover {
+  background: rgba(244, 199, 82, 0.1);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.teamCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 148px;
+  padding: 10px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(10, 13, 18, 0.5);
+}
+
+.teamCardName {
+  font-family: var(--f-cond);
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* Two overlapping star rows — a muted background row (always 5 full stars)
+   and a gold foreground row clipped to a percentage width — the standard
+   way to render fractional star ratings without an icon font. */
+.starRow {
+  position: relative;
+  font-size: 13px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.starRowBg {
+  color: var(--line);
+}
+.starRowFg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--gold);
+}
+
+@media (max-width: 480px) {
+  .stageRow {
+    gap: 8px;
+  }
+  .meterWrap {
+    width: 34px;
+  }
+  .meterTrack {
+    width: 16px;
+  }
+  .squadListWrap {
+    max-width: 100%;
+  }
+  .squadHeaderRow,
+  .squadRow {
+    grid-template-columns: 1fr 24px 30px 40px;
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner,
+  .faceReveal,
+  .jerseyCard {
+    animation: none;
+  }
+  .faceHalf::after {
+    animation: none;
+  }
+}
