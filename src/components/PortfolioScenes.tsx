@@ -144,7 +144,7 @@ export function SkillsScene() {
       <div className={styles.skillsHeading} data-reveal>
         <h2>Agentic engineering. Full-stack execution.</h2>
         <p className={styles.skillsStatement}>
-          I use AI to accelerate development, not replace engineering judgment. I review every generated change. I test the behavior and check the performance before I ship the code. An AI tool is only as effective as the engineer who directs the tool.
+          I use AI to move faster, not to replace engineering judgment. I review every generated change and test its behavior and performance before I ship it.
         </p>
       </div>
       <div className={styles.skillGroups} data-reveal>
