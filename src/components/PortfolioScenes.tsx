@@ -85,15 +85,7 @@ export function AboutScene() {
       <div className={styles.aboutStory} data-reveal>
         <p className={styles.lead}>{ABOUT_TEXT[0]}</p>
         <div className={styles.aboutColumns}><p>{ABOUT_TEXT[1]}</p><p>{ABOUT_TEXT[2]}</p></div>
-        <div className={styles.aboutAside}>
-          <p>{ABOUT_TEXT[3]}</p>
-          <p>{ABOUT_TEXT[4]}</p>
-        </div>
-        <dl className={styles.details}>
-          <div><dt>Based in</dt><dd>South Florida</dd></div>
-          <div><dt>Focus</dt><dd>Full-stack</dd></div>
-          <div><dt>Available for</dt><dd>Freelance and product teams</dd></div>
-        </dl>
+        <p className={styles.aboutAside}>{ABOUT_TEXT[3]}</p>
       </div>
     </section>
   );

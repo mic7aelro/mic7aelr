@@ -1,11 +1,10 @@
 import type { Project, SkillCategory } from '@/types';
 
 export const ABOUT_TEXT = [
-  "My dad, a back-end developer, introduced me to software engineering and showed me how reliable systems are built.",
+  "I've always loved building things. It started with LEGOs. Then, one day, my dad, a back-end developer, introduced me to software engineering. The rest is history.",
   "I build fast, stable products because software should work without friction. Reliability, performance, and clear behavior guide each decision.",
   "I work across the full product lifecycle, from system architecture and APIs to precise interfaces. I stay close to the details through deployment.",
   "When I'm not coding you'll find me digging through record crates, rewatching Star Wars, reading DC comics, or deep in a tech rabbit hole.",
-  "Currently open to select freelance projects.",
 ];
 
 export const SKILLS: SkillCategory[] = [
