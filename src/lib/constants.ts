@@ -10,7 +10,7 @@ export const ABOUT_TEXT = [
 export const SKILLS: SkillCategory[] = [
   {
     label: 'Agentic Systems',
-    summary: 'Orchestrate models, tools, context, and human review across reliable workflows.',
+    summary: 'Orchestrate models, tools, and review in reliable workflows.',
     items: ['LangGraph', 'MCP', 'Agent Orchestration', 'Tool Calling', 'Claude Code', 'OpenAI Codex'],
   },
   {
@@ -20,7 +20,7 @@ export const SKILLS: SkillCategory[] = [
   },
   {
     label: 'Distributed Systems & Data',
-    summary: 'Design the APIs, storage, identity, and event flows behind production software.',
+    summary: 'Design reliable APIs, data stores, identity, and event flows.',
     items: ['PostgreSQL', 'MongoDB', 'REST APIs', 'Event-Driven Systems', 'Auth'],
   },
   {
