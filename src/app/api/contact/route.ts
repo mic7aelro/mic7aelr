@@ -1,9 +1,13 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: 'Contact service is not configured.' }, { status: 503 });
+  }
+
+  const resend = new Resend(apiKey);
   const { name, email, inquiry_type, message } = await req.json();
 
   const firstName = name.split(' ')[0];
@@ -36,7 +40,7 @@ export async function POST(req: Request) {
     <div class="value">${inquiry_type}</div>
     <div class="label">Message</div>
     <p class="value">${message}</p>
-    <div class="footer">Michael Rodriguez &mdash; Software Engineer</div>
+    <div class="footer">Michael Rodriguez - Software Engineer</div>
   </div>
 </body>
 </html>`;
@@ -45,7 +49,7 @@ export async function POST(req: Request) {
     from: 'Portfolio Contact <donotreply@mic7aelr.com>',
     to: 'mic7aelro@gmail.com',
     replyTo: email,
-    subject: `[Portfolio] ${inquiry_type} — ${name}`,
+    subject: `[Portfolio] ${inquiry_type} - ${name}`,
     html: notifyHtml,
     text: `Name: ${name}\nEmail: ${email}\nInquiry: ${inquiry_type}\n\n${message}`,
   });
@@ -79,7 +83,7 @@ export async function POST(req: Request) {
     <div class="value">${inquiry_type}</div>
     <div class="label">Your Message</div>
     <p class="value">${message}</p>
-    <div class="footer">Michael Rodriguez &mdash; Software Engineer</div>
+    <div class="footer">Michael Rodriguez - Software Engineer</div>
   </div>
 </body>
 </html>`;
@@ -89,7 +93,7 @@ export async function POST(req: Request) {
     to: email,
     subject: `Got your message, ${firstName}.`,
     html,
-    text: `Got it.\n\nYour message came through, ${firstName}. I care deeply about the craft, and that includes responding to the people who take the time to reach out. I'll be in touch.\n\nInquiry: ${inquiry_type}\n\nYour Message:\n${message}\n\nMichael Rodriguez — Software Engineer`,
+    text: `Got it.\n\nYour message came through, ${firstName}. I care deeply about the craft, and that includes responding to the people who take the time to reach out. I'll be in touch.\n\nInquiry: ${inquiry_type}\n\nYour Message:\n${message}\n\nMichael Rodriguez - Software Engineer`,
   });
 
   return NextResponse.json({ success: true });

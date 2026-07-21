@@ -10,36 +10,34 @@ export const ABOUT_TEXT = [
 
 export const SKILLS: SkillCategory[] = [
   {
-    label: 'Languages',
-    items: ['Python', 'C#', 'TypeScript', 'Java', 'JavaScript', 'SQL'],
+    label: 'Agentic Engineering',
+    summary: 'Plan, delegate, review, and verify work with coding agents.',
+    items: ['Claude Code', 'OpenAI Codex', 'Agent Skills', 'Subagents', 'Code Review'],
   },
   {
-    label: 'Frontend',
-    items: ['React', 'Next.js', 'GSAP', 'CSS / Tailwind'],
+    label: 'Agent Tooling',
+    summary: 'Give agents the tools, context, and guardrails they need.',
+    items: ['MCP Servers', 'Custom Tools', 'Hooks', 'Repository Instructions', 'Context Engineering'],
   },
   {
-    label: 'Backend',
-    items: ['Node.js', '.NET', 'FastAPI', 'REST'],
+    label: 'AI Systems',
+    summary: 'Build model-backed features around real product data.',
+    items: ['LLM APIs', 'RAG', 'Embeddings', 'Vector Search', 'Evals'],
   },
   {
-    label: 'Databases',
-    items: ['MongoDB', 'SQL', 'PostgreSQL'],
+    label: 'Product Engineering',
+    summary: 'Ship interfaces, APIs, and back-end systems together.',
+    items: ['TypeScript', 'React', 'Next.js', 'Node.js', '.NET'],
   },
   {
-    label: 'Infrastructure',
+    label: 'Cloud & Delivery',
+    summary: 'Automate reliable builds, tests, and deployments.',
     items: ['AWS', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions', 'Vercel'],
   },
   {
-    label: 'Architecture',
-    items: ['REST', 'GraphQL', 'Microservices', 'Event-Driven'],
-  },
-  {
-    label: 'Security',
-    items: ['Auth0', 'OAuth', 'JWT'],
-  },
-  {
-    label: 'AI',
-    items: ['Claude Code', 'ChatGPT', 'Vector Databases', 'Embeddings'],
+    label: 'Data & Architecture',
+    summary: 'Design storage, identity, APIs, and event flows.',
+    items: ['PostgreSQL', 'MongoDB', 'REST APIs', 'Event-Driven Systems', 'Auth'],
   },
 ];
 

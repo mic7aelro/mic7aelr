@@ -20,10 +20,10 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Michael Rodriguez — Software Engineer',
+  title: 'Michael Rodriguez | Software Engineer',
   description: 'Portfolio of Michael Rodriguez, software engineer building precise, purposeful digital experiences.',
   openGraph: {
-    title: 'Michael Rodriguez — Software Engineer',
+    title: 'Michael Rodriguez | Software Engineer',
     description: 'Portfolio of Michael Rodriguez, software engineer.',
     type: 'website',
   },
