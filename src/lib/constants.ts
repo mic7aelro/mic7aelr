@@ -9,24 +9,24 @@ export const ABOUT_TEXT = [
 
 export const SKILLS: SkillCategory[] = [
   {
-    label: 'Agentic Development',
-    summary: 'Direct coding agents, review their work, and verify the results.',
-    items: ['Claude Code', 'OpenAI Codex', 'LangGraph', 'Agent Orchestration', 'MCP', 'Code Review'],
+    label: 'Agentic Systems',
+    summary: 'Orchestrate models, tools, context, and human review across reliable workflows.',
+    items: ['LangGraph', 'MCP', 'Agent Orchestration', 'Tool Calling', 'Claude Code', 'OpenAI Codex'],
   },
   {
-    label: 'Product Engineering',
-    summary: 'Build complete web products, from the interface to the API.',
-    items: ['TypeScript', 'React', 'Next.js', 'Node.js', '.NET', 'FastAPI', 'GraphQL'],
+    label: 'AI Product Engineering',
+    summary: 'Turn model capabilities into complete, usable products.',
+    items: ['TypeScript', 'React', 'Next.js', 'FastAPI', 'GraphQL', 'LLM APIs', '.NET'],
   },
   {
-    label: 'Systems & Data',
-    summary: 'Design reliable APIs, data models, identity, and event flows.',
-    items: ['REST APIs', 'PostgreSQL', 'MongoDB', 'Auth', 'Event-Driven'],
+    label: 'Distributed Systems & Data',
+    summary: 'Design the APIs, storage, identity, and event flows behind production software.',
+    items: ['PostgreSQL', 'MongoDB', 'REST APIs', 'Event-Driven Systems', 'Auth'],
   },
   {
-    label: 'Delivery',
-    summary: 'Build, test, and deploy reliable software.',
-    items: ['AWS', 'ECS', 'Lambda', 'S3', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions', 'Vercel'],
+    label: 'Cloud Platform & Delivery',
+    summary: 'Deploy, automate, and operate reliable systems in the cloud.',
+    items: ['AWS', 'ECS', 'Lambda', 'S3', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions'],
   },
 ];
 
