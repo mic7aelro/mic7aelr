@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { InstagramLogo } from '@phosphor-icons/react';
 import { useState, type FormEvent } from 'react';
 import { ABOUT_TEXT, PROJECTS, SKILLS } from '@/lib/constants';
 import type { Painting } from '@/hooks/useDailyPainting';
@@ -64,15 +65,23 @@ export function HeroScene() {
             <a href="mailto:mic7aelro@gmail.com">Email me</a>
           </div>
         </div>
-        <figure className={styles.heroFigure} data-hero-image>
-          <Image
-            src="/images/hero-instagram.jpg"
-            alt="Michael Rodriguez wearing sunglasses in patterned window light"
-            fill
-            priority
-            sizes="(max-width: 767px) calc(100vw - 32px), 44vw"
-          />
-        </figure>
+        <div className={styles.heroPortrait} data-hero-image>
+          <figure className={styles.heroFigure}>
+            <Image
+              src="/images/hero-instagram.jpg"
+              alt="Michael Rodriguez wearing sunglasses in patterned window light"
+              fill
+              priority
+              sizes="(max-width: 767px) calc(100vw - 32px), 44vw"
+            />
+          </figure>
+          <div className={styles.photoCredit}>
+            <span>Photo by Marla McLeod</span>
+            <a href="https://www.instagram.com/marlizzlle/" target="_blank" rel="noreferrer" aria-label="Marla McLeod on Instagram">
+              <InstagramLogo weight="regular" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
       </section>
     </div>
   );
