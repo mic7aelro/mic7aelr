@@ -91,8 +91,8 @@
 .sectionTitle h2, .workHeading h2, .skillsHeading h2, .contactIntro h2 { font-family: var(--font-cormorant), serif; font-size: clamp(3rem, 5vw, 5rem); font-weight: 300; letter-spacing: -0.035em; line-height: 0.98; }
 .aboutStory { max-width: 710px; }
 .lead { font-family: var(--font-cormorant), serif; font-size: clamp(1.75rem, 2.6vw, 2.65rem); font-weight: 300; line-height: 1.18; }
-.aboutColumns { display: grid; grid-template-columns: 1fr; gap: 14px; width: min(100%, 620px); margin: 36px auto 0; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
-.aboutAside { width: min(100%, 620px); margin: 32px auto 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--quiet); font-size: 0.76rem; line-height: 1.6; }
+.aboutColumns { display: grid; grid-template-columns: 1fr; gap: 14px; width: 100%; margin-top: 36px; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+.aboutAside { width: 100%; margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--quiet); font-size: 0.76rem; line-height: 1.6; }
 
 .work { padding-block: clamp(110px, 15vw, 200px) !important; }
 .workHeading { max-width: 680px; margin-bottom: 70px; }
