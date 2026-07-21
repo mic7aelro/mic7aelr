@@ -85,11 +85,7 @@ export function AboutScene() {
       <div className={styles.aboutStory} data-reveal>
         <p className={styles.lead}>{ABOUT_TEXT[0]}</p>
         <div className={styles.aboutColumns}><p>{ABOUT_TEXT[1]}</p><p>{ABOUT_TEXT[2]}</p></div>
-        <dl className={styles.details}>
-          <div><dt>Based in</dt><dd>South Florida</dd></div>
-          <div><dt>Focus</dt><dd>Full-stack</dd></div>
-          <div><dt>Available for</dt><dd>Freelance and product teams</dd></div>
-        </dl>
+        <p className={styles.aboutAside}>{ABOUT_TEXT[3]}</p>
       </div>
     </section>
   );
@@ -146,9 +142,9 @@ export function SkillsScene() {
   return (
     <section className={`${styles.skills} ${styles.scene}`} data-scene>
       <div className={styles.skillsHeading} data-reveal>
-        <h2>Agentic engineering. Full-stack execution.</h2>
+        <h2><span>Agentic engineering.</span><span>Full-stack execution.</span></h2>
         <p className={styles.skillsStatement}>
-          I use AI to accelerate development, not replace engineering judgment. I review every generated change. I test the behavior and check the performance before I ship the code. An AI tool is only as effective as the engineer who directs the tool.
+          I use AI to move faster without outsourcing engineering judgment. Every generated change is reviewed, tested, and measured before I ship it.
         </p>
       </div>
       <div className={styles.skillGroups} data-reveal>

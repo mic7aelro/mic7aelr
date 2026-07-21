@@ -1,43 +1,32 @@
 import type { Project, SkillCategory } from '@/types';
 
 export const ABOUT_TEXT = [
-  "I got into software engineering because of my dad, a back-end developer who showed me what the craft looked like up close.",
-  "Years of slow, broken apps made it personal. I build things that are fast, stable, and stay up. No excuses for software that doesn't work.",
-  "With a focus on full-stack web development, I work across the entire product lifecycle from system design to pixel-perfect UI. I care deeply about the craft.",
-  "When I'm not coding you'll find me digging through record crates, rewatching Star Wars, reading DC comics, or deep in a tech rabbit hole.",
-  "Currently open to select freelance projects.",
+  "I've always loved building things. It started with LEGOs. Then, one day, my dad, a back-end developer, introduced me to software engineering. The rest is history.",
+  "My love for software began with gaming. As a kid, I played games like Club Penguin, Poptropica, Cool Math Games, but none quite as impactful as Minecraft. Its sandbox gave me the freedom to explore and build, but before long, I wanted more. Then I discovered modding. I saw people create imaginative new worlds and experiences for a game I already loved. Their work gave me a sense of wonder, and I knew I wanted to create that feeling for others through technology. I did not know it yet, but software, programming, and code would become how I did it.",
+  "Over time, I realized that I loved understanding how things work, building them myself, and improving them. In high school, I discovered that software was the perfect medium for that curiosity. Nothing is more satisfying than building a system that uses thoughtful design and automation to make someone's life easier.",
+  "When I'm not coding you'll find me enjoying films (I'd classify myself as a cinephile), digging through record crates, rewatching Star Wars, reading DC comics, or deep in a tech rabbit hole.",
 ];
 
 export const SKILLS: SkillCategory[] = [
   {
-    label: 'Agentic Engineering',
-    summary: 'Plan, delegate, review, and verify work with coding agents.',
-    items: ['Claude Code', 'OpenAI Codex', 'Agent Skills', 'Subagents', 'Code Review'],
+    label: 'Agentic Systems',
+    summary: 'Orchestrate models, tools, and review in reliable workflows.',
+    items: ['LangGraph', 'MCP', 'Agent Orchestration', 'Tool Calling', 'Claude Code', 'OpenAI Codex'],
   },
   {
-    label: 'Agent Tooling',
-    summary: 'Give agents the tools, context, and guardrails they need.',
-    items: ['MCP Servers', 'Custom Tools', 'Hooks', 'Repository Instructions', 'Context Engineering'],
+    label: 'AI Product Engineering',
+    summary: 'Turn model capabilities into complete, usable products.',
+    items: ['TypeScript', 'React', 'Next.js', 'FastAPI', 'GraphQL', 'LLM APIs', '.NET'],
   },
   {
-    label: 'AI Systems',
-    summary: 'Build model-backed features around real product data.',
-    items: ['LLM APIs', 'RAG', 'Embeddings', 'Vector Search', 'Evals'],
-  },
-  {
-    label: 'Product Engineering',
-    summary: 'Ship interfaces, APIs, and back-end systems together.',
-    items: ['TypeScript', 'React', 'Next.js', 'Node.js', '.NET'],
-  },
-  {
-    label: 'Cloud & Delivery',
-    summary: 'Automate reliable builds, tests, and deployments.',
-    items: ['AWS', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions', 'Vercel'],
-  },
-  {
-    label: 'Data & Architecture',
-    summary: 'Design storage, identity, APIs, and event flows.',
+    label: 'Distributed Systems & Data',
+    summary: 'Design reliable APIs, data stores, identity, and event flows.',
     items: ['PostgreSQL', 'MongoDB', 'REST APIs', 'Event-Driven Systems', 'Auth'],
+  },
+  {
+    label: 'Cloud Platform & Delivery',
+    summary: 'Deploy, automate, and operate reliable systems in the cloud.',
+    items: ['AWS', 'ECS', 'Lambda', 'S3', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions'],
   },
 ];
 
