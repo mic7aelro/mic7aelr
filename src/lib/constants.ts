@@ -11,12 +11,12 @@ export const SKILLS: SkillCategory[] = [
   {
     label: 'Agentic Development',
     summary: 'Direct coding agents, review their work, and verify the results.',
-    items: ['Claude Code', 'OpenAI Codex', 'MCP', 'Code Review'],
+    items: ['Claude Code', 'OpenAI Codex', 'LangGraph', 'Agent Orchestration', 'MCP', 'Code Review'],
   },
   {
     label: 'Product Engineering',
     summary: 'Build complete web products, from the interface to the API.',
-    items: ['TypeScript', 'React', 'Next.js', 'Node.js', '.NET'],
+    items: ['TypeScript', 'React', 'Next.js', 'Node.js', '.NET', 'FastAPI', 'GraphQL'],
   },
   {
     label: 'Systems & Data',
@@ -26,7 +26,7 @@ export const SKILLS: SkillCategory[] = [
   {
     label: 'Delivery',
     summary: 'Build, test, and deploy reliable software.',
-    items: ['AWS', 'Azure', 'Docker', 'GitHub Actions', 'Vercel'],
+    items: ['AWS', 'ECS', 'Lambda', 'S3', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions', 'Vercel'],
   },
 ];
 
