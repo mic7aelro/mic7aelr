@@ -1,9 +1,9 @@
 import type { Project, SkillCategory } from '@/types';
 
 export const ABOUT_TEXT = [
-  "I got into software engineering because of my dad, a back-end developer who showed me what the craft looked like up close.",
-  "Years of slow, broken apps made it personal. I build things that are fast, stable, and stay up. No excuses for software that doesn't work.",
-  "With a focus on full-stack web development, I work across the entire product lifecycle from system design to pixel-perfect UI. I care deeply about the craft.",
+  "My dad, a back-end developer, introduced me to software engineering and showed me how reliable systems are built.",
+  "I build fast, stable products because software should work without friction. Reliability, performance, and clear behavior guide each decision.",
+  "I work across the full product lifecycle, from system architecture and APIs to precise interfaces. I stay close to the details through deployment.",
   "When I'm not coding you'll find me digging through record crates, rewatching Star Wars, reading DC comics, or deep in a tech rabbit hole.",
   "Currently open to select freelance projects.",
 ];
