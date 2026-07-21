@@ -142,9 +142,9 @@ export function SkillsScene() {
   return (
     <section className={`${styles.skills} ${styles.scene}`} data-scene>
       <div className={styles.skillsHeading} data-reveal>
-        <h2>Agentic engineering. Full-stack execution.</h2>
+        <h2><span>Agentic engineering.</span><span>Full-stack execution.</span></h2>
         <p className={styles.skillsStatement}>
-          I use AI to move faster, not to replace engineering judgment. I review every generated change and test its behavior and performance before I ship it.
+          I use AI to move faster without outsourcing engineering judgment. Every generated change is reviewed, tested, and measured before I ship it.
         </p>
       </div>
       <div className={styles.skillGroups} data-reveal>

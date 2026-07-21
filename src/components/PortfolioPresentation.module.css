@@ -112,6 +112,7 @@
 
 .skills { display: grid; grid-template-columns: .66fr 1.34fr; column-gap: clamp(48px, 7vw, 110px); row-gap: 0; padding-block: 0 !important; }
 .skillsHeading { max-width: 500px; }
+.skillsHeading h2 span { display: block; }
 .skillsHeading, .skillGroups { margin-top: clamp(100px, 13vw, 170px); }
 .skillsStatement { max-width: 440px; margin-top: 28px; color: var(--muted); font-size: clamp(0.8rem, 1vw, 0.9rem); line-height: 1.7; }
 .skillGroups { display: grid; grid-template-columns: 1fr 1fr; column-gap: 38px; }
@@ -203,6 +204,8 @@
   .projectVisual { grid-column: 2; grid-row: 2; align-self: start; justify-self: end; width: min(100%, 390px); height: clamp(350px, 40dvh, 430px); margin-right: clamp(70px, 8vw, 150px); }
   .projectContent { grid-column: 1; grid-row: 2; align-self: start; justify-content: flex-start; gap: clamp(18px, 2vh, 24px); }
   .skills { grid-template-rows: 1fr; align-items: center; }
+  .skillsHeading h2 { font-size: clamp(3.25rem, 3.4vw, 3.8rem); line-height: 1.04; }
+  .skillsHeading h2 span { white-space: nowrap; }
   .skillsHeading, .skillGroups { align-self: center; margin-top: 0; }
   .skillItems { white-space: nowrap; }
   .contact { min-height: 100dvh; padding-block: clamp(64px, 8vh, 100px) !important; }
