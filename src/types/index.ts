@@ -10,5 +10,6 @@ export interface Project {
 
 export interface SkillCategory {
   label: string;
+  summary: string;
   items: string[];
 }
