@@ -57,6 +57,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html[data-theme='light'],
+html[data-theme='light'] body {
+  background-color: #f2f2ee;
+  color: #171715;
+}
+
+.theme-icon-dark {
+  display: none;
+}
+
+html[data-theme='light'] .theme-icon-light {
+  display: none;
+}
+
+html[data-theme='light'] .theme-icon-dark {
+  display: block;
+}
+
 /* ─── Typography ────────────────────────────────────────── */
 h1, h2, h3, h4 {
   font-family: var(--font-cormorant), serif;

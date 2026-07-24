@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { usePathname } from 'next/navigation';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,32 +14,35 @@ let lenisInstance: Lenis | null = null;
 export const getLenis = () => lenisInstance;
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
+    if (pathname === '/') return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       touchMultiplier: 2,
     });
 
-    lenisRef.current = lenis;
     lenisInstance = lenis;
 
-    lenis.on('scroll', ScrollTrigger.update);
-
-    gsap.ticker.add((time) => {
+    const updateScrollTrigger = () => ScrollTrigger.update();
+    const updateLenis = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
 
+    lenis.on('scroll', updateScrollTrigger);
+    gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      lenis.off('scroll', updateScrollTrigger);
+      gsap.ticker.remove(updateLenis);
       lenis.destroy();
-      lenisInstance = null;
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      if (lenisInstance === lenis) lenisInstance = null;
     };
-  }, []);
+  }, [pathname]);
 
   return <>{children}</>;
 }

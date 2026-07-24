@@ -11,11 +11,29 @@ function inlineFormat(text: string) {
   });
 }
 
+function normalizeEmphasis(body: string) {
+  const lines = body.split('\n').map((line) => line
+    .replace(/^__([^_])/, '_$1')
+    .replace(/([^_])__$/, '$1_'));
+
+  for (let index = 0; index < lines.length - 1; index += 1) {
+    if (!lines[index].startsWith('_') || lines[index].endsWith('_')) continue;
+    const nextLine = lines[index + 1];
+    if (!nextLine.trim() || /^(#{1,3})\s+|^-\s+|^\d+\.\s+/.test(nextLine) || !nextLine.endsWith('_')) continue;
+    lines[index] = `${lines[index]}_`;
+    lines[index + 1] = `_${nextLine}`;
+    index += 1;
+  }
+
+  return lines.map((line) => {
+    const markerCount = (line.match(/_/g) || []).length;
+    if (markerCount % 2 === 0) return line;
+    return line.replace(/^_/, '').replace(/_$/, '');
+  }).join('\n');
+}
+
 export function WritingBody({ body }: { body: string }) {
-  const normalizedBody = body
-    .replace(/_([^_]*\n[^_]*?)_/g, (_, value: string) => value.split('\n').map((line) => `_${line}_`).join('\n'))
-    .replace(/\*\*([^*]*\n[^*]*?)\*\*/g, (_, value: string) => value.split('\n').map((line) => `**${line}**`).join('\n'))
-    .replace(/\+\+([^+]*\n[^+]*?)\+\+/g, (_, value: string) => value.split('\n').map((line) => `++${line}++`).join('\n'));
+  const normalizedBody = normalizeEmphasis(body);
   const lines = normalizedBody.split('\n');
   const content: ReactNode[] = [];
   for (let index = 0; index < lines.length;) {
@@ -24,7 +42,7 @@ export function WritingBody({ body }: { body: string }) {
     const heading = line.match(/^(#{1,3})\s+(.+)$/);
     if (heading) {
       const value = inlineFormat(heading[2]);
-      content.push(heading[1].length === 1 ? <h2 key={index}>{value}</h2> : heading[1].length === 2 ? <h3 key={index}>{value}</h3> : <h4 key={index}>{value}</h4>);
+      content.push(heading[1].length <= 2 ? <h2 key={index}>{value}</h2> : <h3 key={index}>{value}</h3>);
       index += 1;
       continue;
     }
