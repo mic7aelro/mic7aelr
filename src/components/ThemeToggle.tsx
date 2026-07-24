@@ -18,6 +18,9 @@ export function ThemeToggle({ className }: { className?: string }) {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = nextTheme;
     document.documentElement.style.colorScheme = nextTheme;
+    document
+      .querySelector<HTMLMetaElement>('#site-theme-color')
+      ?.setAttribute('content', nextTheme === 'light' ? '#ffffff' : '#000000');
     window.localStorage.setItem(themeKey, nextTheme);
     setTheme(nextTheme);
   }
