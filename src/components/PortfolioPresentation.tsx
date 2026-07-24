@@ -29,7 +29,7 @@ export function PortfolioPresentation() {
     nextPainting,
   } = useDailyPainting();
   const siteStyle = {
-    '--painting-background': `url("${painting.blurred}")`,
+    '--painting-background': `url("${painting.color}")`,
   } as CSSProperties;
 
   usePortfolioEnvironment();

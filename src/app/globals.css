@@ -24,6 +24,20 @@
   *, *::before, *::after {
     cursor: none;
   }
+
+  body:has([data-native-cursor]) *,
+  body:has([data-native-cursor]) *::before,
+  body:has([data-native-cursor]) *::after {
+    cursor: auto;
+  }
+
+  body:has([data-native-cursor]) :is(a, button, select) {
+    cursor: pointer;
+  }
+
+  body:has([data-native-cursor]) :is(input, textarea) {
+    cursor: text;
+  }
 }
 
 html {

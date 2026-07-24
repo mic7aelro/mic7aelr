@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Michael Rodriguez portfolio
 
-## Getting Started
+This project uses Next.js 16, React 19, TypeScript, and the App Router.
 
-First, run the development server:
+## Writing configuration
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The `/writing` route provides public posts, comments, and comment reactions. The `/writing/admin` route provides the private author workspace.
+
+Add these server environment variables in Vercel for production. Use `.env.local` for local development. Do not prefix these variables with `NEXT_PUBLIC_`.
+
+```text
+MONGODB_URI=
+MONGODB_DB=portfolio
+ANTHROPIC_API_KEY=
+WRITING_ADMIN_USERNAME=
+WRITING_ADMIN_PASSWORD=
+WRITING_SESSION_SECRET=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Use a long random value for `WRITING_SESSION_SECRET`. Use a unique password for `WRITING_ADMIN_PASSWORD`. Store secret values in Vercel, not in GitHub.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+MongoDB uses these collections:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `writing_groups`
+- `writing_areas`
+- `writing_posts`
+- `writing_comments`
+- `writing_reactions`
+- `writing_chats`
+- `writing_drafts`
 
-## Learn More
+The author workspace sends the active writing field to Claude only when the author sends a chat message. Claude can return advice or an edited field. The author must review and publish the text.
 
-To learn more about Next.js, take a look at the following resources:
+Saved chat messages include the authenticated author name, an ISO timestamp, and the request IP address. Treat the IP address as personal data. Set an appropriate retention policy before production use.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Claude response records also include the model, input tokens, output tokens, request status, field-change status, writing context, pricing rates, and estimated USD cost. The cost uses the Anthropic pricing snapshot dated 2026-07-22 and remains an estimate. Compare stored estimates with the Claude Console invoice data.
