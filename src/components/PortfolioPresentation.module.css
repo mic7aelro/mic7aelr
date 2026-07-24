@@ -74,14 +74,14 @@
 .nav .socialLink:hover { background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 5px 16px rgba(0, 0, 0, 0.2); }
 
 :global(html[data-theme='light']) .site {
-  --black: #f2f2ee;
+  --black: #fff;
   --ink: #171715;
   --muted: #656560;
   --quiet: #898984;
   --line: #cecec7;
 }
 :global(html[data-theme='light']) .site::before { display: none; }
-:global(html[data-theme='light']) .site::after { background: #f2f2ee; }
+:global(html[data-theme='light']) .site::after { background: #fff; }
 :global(html[data-theme='light']) .nav a,
 :global(html[data-theme='light']) .themeToggle { color: #656560; }
 :global(html[data-theme='light']) .nav a:hover,

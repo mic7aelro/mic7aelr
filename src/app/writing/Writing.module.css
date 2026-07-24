@@ -177,7 +177,7 @@
 .deleteButton { min-height: 42px; border: 1px solid #a85d53; background: #7f3e36; color: #fff; padding: 0 15px; font: inherit; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .deleteButton:disabled { opacity: .4; }
 
-:global(html[data-theme='light']) .shell { background: #f2f2ee; color: #171715; }
+:global(html[data-theme='light']) .shell { background: #fff; color: #171715; }
 :global(html[data-theme='light']) .header,
 :global(html[data-theme='light']) .group,
 :global(html[data-theme='light']) .areaHeader,
@@ -237,7 +237,7 @@
 :global(html[data-theme='light']) .field,
 :global(html[data-theme='light']) .textarea,
 :global(html[data-theme='light']) .select { border-color: #bdbdb7; color: #171715; }
-:global(html[data-theme='light']) .button { border-color: #171715; background: #171715; color: #f2f2ee; }
+:global(html[data-theme='light']) .button { border-color: #171715; background: #171715; color: #fff; }
 :global(html[data-theme='light']) .reaction,
 :global(html[data-theme='light']) .secondaryButton,
 :global(html[data-theme='light']) .formatToolbar,
@@ -250,11 +250,11 @@
 :global(html[data-theme='light']) .formatToolbar button { background: #e8e8e3; }
 :global(html[data-theme='light']) .formatToolbar button:hover { border-color: #656560; color: #171715; }
 :global(html[data-theme='light']) .claudeFieldButton,
-:global(html[data-theme='light']) .claudeButton { border-color: #a9a9a3; background: rgba(242, 242, 238, .92); color: #171715; }
+:global(html[data-theme='light']) .claudeButton { border-color: #a9a9a3; background: rgba(255, 255, 255, .94); color: #171715; }
 :global(html[data-theme='light']) .claudeFieldButton:hover,
 :global(html[data-theme='light']) .claudeButton:hover { border-color: #656560; background: #e5e5df; }
 :global(html[data-theme='light']) .claudeChat,
-:global(html[data-theme='light']) .deleteDialog { border-color: #a9a9a3; background: #f2f2ee; box-shadow: 0 24px 80px rgba(31, 31, 28, .18); }
+:global(html[data-theme='light']) .deleteDialog { border-color: #a9a9a3; background: #fff; box-shadow: 0 24px 80px rgba(31, 31, 28, .18); }
 :global(html[data-theme='light']) .claudeChat > header,
 :global(html[data-theme='light']) .savedChats,
 :global(html[data-theme='light']) .modelSwitch,
@@ -281,8 +281,9 @@
 :global(html[data-theme='light']) .error { color: #9d352d; }
 
 @media (max-width: 760px) {
-  .header { width: min(100% - 32px, 1240px); grid-template-columns: 1fr auto; }
+  .header { width: min(100% - 32px, 1240px); grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 16px; }
   .nav { gap: 18px; }
+  .headerActions { gap: 0; }
   .adminLink { display: none; }
   .main, .article, .admin { width: min(100% - 32px, 1240px); }
   .group, .panel { grid-template-columns: 1fr; }

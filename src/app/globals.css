@@ -59,7 +59,7 @@ body {
 
 html[data-theme='light'],
 html[data-theme='light'] body {
-  background-color: #f2f2ee;
+  background-color: #fff;
   color: #171715;
 }
 
