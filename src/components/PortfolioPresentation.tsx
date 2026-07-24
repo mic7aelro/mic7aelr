@@ -24,12 +24,13 @@ export function PortfolioPresentation() {
     painting,
     paintingIndex,
     paintingCount,
+    paintingReady,
     debugEnabled,
     previousPainting,
     nextPainting,
   } = useDailyPainting();
   const siteStyle = {
-    '--painting-background': `url("${painting.color}")`,
+    '--painting-background': `url("${painting.blurred}")`,
   } as CSSProperties;
 
   usePortfolioEnvironment();
@@ -37,7 +38,7 @@ export function PortfolioPresentation() {
   usePortfolioIntro(root);
 
   return (
-    <main ref={root} className={styles.site} style={siteStyle}>
+    <main ref={root} className={styles.site} style={siteStyle} data-native-cursor>
       <PortfolioNavigation />
       <div ref={deck} className={styles.deck}>
         <HeroScene />
@@ -48,6 +49,7 @@ export function PortfolioPresentation() {
           painting={painting}
           paintingIndex={paintingIndex}
           paintingCount={paintingCount}
+          paintingReady={paintingReady}
           debugEnabled={debugEnabled}
           onPrevious={previousPainting}
           onNext={nextPainting}
