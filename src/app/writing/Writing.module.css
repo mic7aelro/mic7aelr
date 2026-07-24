@@ -1,4 +1,4 @@
-.shell { min-height: 100dvh; background: #0a0a0a; color: #f1f1ed; cursor: auto !important; }
+.shell { min-height: 100dvh; background: var(--page-background, #0a0a0a); color: var(--page-color, #f1f1ed); cursor: auto !important; }
 .shell *, .shell *::before, .shell *::after { cursor: auto !important; }
 .shell :is(a, button, select),
 .shell :is(a, button, select) * { cursor: pointer !important; }

@@ -37,9 +37,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`} data-theme="dark" suppressHydrationWarning>
       <head>
+        <meta id="site-theme-color" name="theme-color" content="#000000" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{const saved=localStorage.getItem('site-theme');const theme=saved==='light'||saved==='dark'?saved:'dark';document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme}catch{}`,
+            __html: `try{const saved=localStorage.getItem('site-theme');const theme=saved==='light'||saved==='dark'?saved:'dark';document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;document.querySelector('#site-theme-color')?.setAttribute('content',theme==='light'?'#ffffff':'#000000')}catch{}`,
           }}
         />
       </head>
