@@ -54,24 +54,6 @@
     "source": "https://commons.wikimedia.org/wiki/File:Th%C3%A9odore_G%C3%A9ricault_-_Le_Radeau_de_La_M%C3%A9duse.jpg"
   },
   {
-    "slug": "snow-storm-hannibal",
-    "title": "Snow Storm: Hannibal and His Army Crossing the Alps",
-    "artist": "J. M. W. Turner",
-    "year": "1812",
-    "color": "/images/paintings/snow-storm-hannibal.webp",
-    "blurred": "/images/paintings/snow-storm-hannibal-blurred.webp",
-    "source": "https://commons.wikimedia.org/wiki/File:Joseph_Mallord_William_Turner_081.jpg"
-  },
-  {
-    "slug": "last-day-of-pompeii",
-    "title": "The Last Day of Pompeii",
-    "artist": "Karl Bryullov",
-    "year": "1830-1833",
-    "color": "/images/paintings/last-day-of-pompeii.webp",
-    "blurred": "/images/paintings/last-day-of-pompeii-blurred.webp",
-    "source": "https://commons.wikimedia.org/wiki/File:Karl_Brullov_-_The_Last_Day_of_Pompeii_-_Google_Art_Project.jpg"
-  },
-  {
     "slug": "course-of-empire-destruction",
     "title": "The Course of Empire: Destruction",
     "artist": "Thomas Cole",
@@ -79,23 +61,5 @@
     "color": "/images/paintings/course-of-empire-destruction.webp",
     "blurred": "/images/paintings/course-of-empire-destruction-blurred.webp",
     "source": "https://commons.wikimedia.org/wiki/File:Cole_Thomas_The_Course_of_Empire_Destruction_1836.jpg"
-  },
-  {
-    "slug": "oath-of-the-horatii",
-    "title": "The Oath of the Horatii",
-    "artist": "Jacques-Louis David",
-    "year": "1784",
-    "color": "/images/paintings/oath-of-the-horatii.webp",
-    "blurred": "/images/paintings/oath-of-the-horatii-blurred.webp",
-    "source": "https://commons.wikimedia.org/wiki/File:Jacques-Louis_David_-_Oath_of_the_Horatii_-_Google_Art_Project.jpg"
-  },
-  {
-    "slug": "the-deluge",
-    "title": "The Deluge",
-    "artist": "Francis Danby",
-    "year": "1840",
-    "color": "/images/paintings/the-deluge.webp",
-    "blurred": "/images/paintings/the-deluge-blurred.webp",
-    "source": "https://commons.wikimedia.org/wiki/File:Francis_Danby_-_The_Deluge_-_Google_Art_Project.jpg"
   }
 ]

@@ -2,12 +2,16 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { usePathname } from 'next/navigation';
 
 export function CustomCursor() {
+  const pathname = usePathname();
+  const useNativeCursor = pathname.startsWith('/writing');
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (useNativeCursor) return;
     const cursor = cursorRef.current;
     const follower = followerRef.current;
     if (!cursor || !follower) return;
@@ -57,7 +61,9 @@ export function CustomCursor() {
         el.removeEventListener('mouseleave', onLeave);
       });
     };
-  }, []);
+  }, [useNativeCursor]);
+
+  if (useNativeCursor) return null;
 
   return (
     <>
