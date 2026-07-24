@@ -16,6 +16,7 @@ function getDailyIndex(date: Date) {
 
 export function useDailyPainting() {
   const [paintingIndex, setPaintingIndex] = useState(0);
+  const [paintingReady, setPaintingReady] = useState(false);
   const [debugEnabled, setDebugEnabled] = useState(false);
 
   useEffect(() => {
@@ -32,11 +33,13 @@ export function useDailyPainting() {
     if (requestedPainting === 'debug') {
       setDebugEnabled(true);
       setPaintingIndex(dailyIndex);
+      setPaintingReady(true);
       return;
     }
 
     const requestedIndex = paintings.findIndex(({ slug }) => slug === requestedPainting);
     setPaintingIndex(requestedIndex >= 0 ? requestedIndex : dailyIndex);
+    setPaintingReady(true);
   }, []);
 
   const previousPainting = () => {
@@ -51,6 +54,7 @@ export function useDailyPainting() {
     painting: paintings[paintingIndex] ?? paintings[0],
     paintingIndex,
     paintingCount: paintings.length,
+    paintingReady,
     debugEnabled,
     previousPainting,
     nextPainting,

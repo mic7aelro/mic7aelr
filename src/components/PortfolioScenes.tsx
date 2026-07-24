@@ -14,6 +14,7 @@ type ArtworkSceneProps = {
   debugEnabled: boolean;
   paintingIndex: number;
   paintingCount: number;
+  paintingReady: boolean;
   onPrevious: () => void;
   onNext: () => void;
 };
@@ -245,6 +246,7 @@ export function ContactScene(props: ArtworkSceneProps) {
 
 function ArtworkScene({
   painting,
+  paintingReady,
   debugEnabled,
   paintingIndex,
   paintingCount,
@@ -261,6 +263,7 @@ function ArtworkScene({
         alt={`${painting.title}, a painting by ${painting.artist}`}
         fill
         sizes="100vw"
+        preload={paintingReady}
       />
       <div className={styles.artShade} aria-hidden="true" />
       <div className={styles.artCaption} data-art-caption>

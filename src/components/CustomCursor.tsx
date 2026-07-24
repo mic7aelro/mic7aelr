@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 export function CustomCursor() {
   const pathname = usePathname();
-  const useNativeCursor = pathname.startsWith('/writing');
+  const useNativeCursor = pathname === '/' || pathname.startsWith('/writing');
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
 
