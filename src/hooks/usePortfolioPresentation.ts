@@ -45,12 +45,13 @@ export function usePortfolioNavigation(
     let artActive = false;
     let resetDelta: number | undefined;
     let activeTimeline: gsap.core.Timeline | null = null;
+    const isLightMode = () => document.documentElement.dataset.theme === 'light';
 
     const showArt = () => {
       const artReveal = getArtReveal();
       const artColor = getArtColor();
       const artCaption = getArtCaption();
-      if (animating || artActive || !artReveal || !artColor || !artCaption) return;
+      if (isLightMode() || animating || artActive || !artReveal || !artColor || !artCaption) return;
 
       animating = true;
       artActive = true;
@@ -138,11 +139,28 @@ export function usePortfolioNavigation(
         return;
       }
       if (active === getScenes().length - 1 && direction > 0) {
-        showArt();
+        if (!isLightMode()) showArt();
         return;
       }
       goTo(active + direction);
     };
+
+    const themeObserver = new MutationObserver(() => {
+      if (!isLightMode() || !artActive) return;
+
+      activeTimeline?.kill();
+      artActive = false;
+      animating = false;
+      const artReveal = getArtReveal();
+      if (artReveal) {
+        gsap.set(artReveal, {
+          opacity: 0,
+          visibility: 'hidden',
+          pointerEvents: 'none',
+        });
+      }
+      gsap.set(getContactContent(), { opacity: 1, y: 0 });
+    });
 
     const onWheel = (event: WheelEvent) => {
       event.preventDefault();
@@ -191,9 +209,14 @@ export function usePortfolioNavigation(
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('resize', onResize);
     element.addEventListener('click', onLinkClick);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
 
     return () => {
       window.clearTimeout(resetDelta);
+      themeObserver.disconnect();
       document.documentElement.removeEventListener('wheel', onWheel, true);
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('resize', onResize);
