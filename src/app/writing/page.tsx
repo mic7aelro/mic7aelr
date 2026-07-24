@@ -29,8 +29,12 @@ export default async function WritingPage() {
         <p className={styles.empty}>No writing groups are published yet.</p>
       ) : groups.map((group) => {
         const groupAreas = areas.filter((area) => area.groupId === group.id);
-        const groupDescription = group.name.trim().toLowerCase() === 'movies' && !group.description.includes('\nNice. I got')
-          ? group.description.replace('Nice. I got', '\nNice. I got')
+        const groupDescription = group.name.trim().toLowerCase() === 'movies'
+          ? group.description
+            .replace(/^\s*["“”]\s*$/gm, '')
+            .replace('Nice. I got', '\nNice. I got')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim()
           : group.description;
         return (
           <section className={styles.group} key={group.id}>
