@@ -63,12 +63,43 @@
 .writingHome:hover { color: var(--ink); }
 .navLinks { display: flex; gap: 38px; }
 .navActions { display: flex; justify-self: end; align-items: center; gap: 16px; }
+.themeToggle { display: grid; width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: #8b8b8b; place-items: center; transition: background 200ms ease, color 200ms ease; }
+.themeToggle svg { width: 17px; height: 17px; }
+.themeToggle:hover { background: rgba(255, 255, 255, 0.09); color: #f5f5f5; }
 .resume { margin-right: 2px; }
 .socialLink { display: grid; width: 28px; height: 28px; border-radius: 50%; place-items: center; transition: background 200ms ease, box-shadow 200ms ease, color 200ms ease; }
 .socialLink svg { width: 18px; height: 18px; }
 .nav a { color: #8b8b8b; transition: color 200ms ease; }
 .nav a:hover { color: #f5f5f5; }
 .nav .socialLink:hover { background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 5px 16px rgba(0, 0, 0, 0.2); }
+
+:global(html[data-theme='light']) .site {
+  --black: #f2f2ee;
+  --ink: #171715;
+  --muted: #656560;
+  --quiet: #898984;
+  --line: #cecec7;
+}
+:global(html[data-theme='light']) .site::before { display: none; }
+:global(html[data-theme='light']) .site::after { background: #f2f2ee; }
+:global(html[data-theme='light']) .nav a,
+:global(html[data-theme='light']) .themeToggle { color: #656560; }
+:global(html[data-theme='light']) .nav a:hover,
+:global(html[data-theme='light']) .themeToggle:hover { color: #171715; }
+:global(html[data-theme='light']) .themeToggle:hover,
+:global(html[data-theme='light']) .nav .socialLink:hover { background: rgba(0, 0, 0, .06); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 5px 16px rgba(0, 0, 0, .08); }
+:global(html[data-theme='light']) .lastName { color: #555550; }
+:global(html[data-theme='light']) .heroFigure,
+:global(html[data-theme='light']) .projectVisual { background: #deded8; }
+:global(html[data-theme='light']) .heroFigure img,
+:global(html[data-theme='light']) .projectVisual img { border-color: #c5c5bf; }
+:global(html[data-theme='light']) .form label { color: #656560; }
+:global(html[data-theme='light']) .form :is(input, select, textarea) { border-color: #bdbdb7; }
+:global(html[data-theme='light']) .form select { color-scheme: light; }
+:global(html[data-theme='light']) .submitRow .error { color: #9d352d; }
+
+/* Light mode omits the painting layers to reduce image and filter work. */
+:global(html[data-theme='light']) .artScene { display: none; }
 
 .hero {
   min-height: calc(100dvh - 72px);
@@ -201,8 +232,8 @@
   .nav > * { position: relative; z-index: 1; }
   .site, .deck, .scene { height: 100dvh; }
   .site { overflow: hidden; }
-  .deck { will-change: transform; }
-  .scene { min-height: 100dvh; overflow: hidden; }
+  .deck { transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; }
+  .scene { min-height: 100dvh; overflow: hidden; backface-visibility: hidden; }
   .hero { min-height: 100dvh; }
   .contact { align-items: center; }
   .about { align-content: center; align-items: start; padding-block: clamp(64px, 7vh, 92px) !important; }
@@ -224,6 +255,12 @@
     left: 50%;
     transform: translateX(-50%);
   }
+  :global(html[data-theme='light']) .nav {
+    border-color: rgba(23, 23, 21, .12);
+    background: rgba(255, 255, 252, .82);
+    box-shadow: inset 0 1px 0 #fff, 0 8px 24px rgba(23, 23, 21, .06);
+  }
+  :global(html[data-theme='light']) .nav::before { background: linear-gradient(90deg, transparent 4%, rgba(255, 255, 255, .72) 24%, transparent 52%); }
 }
 
 @media (max-width: 900px) {

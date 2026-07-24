@@ -5,6 +5,7 @@ import { InstagramLogo } from '@phosphor-icons/react';
 import { useState, type FormEvent } from 'react';
 import { ABOUT_TEXT, PROJECTS, SKILLS } from '@/lib/constants';
 import type { Painting } from '@/hooks/useDailyPainting';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import styles from './PortfolioPresentation.module.css';
 
 type FormState = 'idle' | 'sending' | 'sent' | 'error';
@@ -29,6 +30,7 @@ export function PortfolioNavigation() {
         <a href="#contact">Contact</a>
       </div>
       <div className={styles.navActions}>
+        <ThemeToggle className={styles.themeToggle} />
         <a className={`${styles.socialLink} ${styles.resume}`} href="/resume.pdf" download aria-label="Download resume" title="Download resume">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M7 3.5h6.5L18 8v12.5H7V3.5Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />

@@ -107,26 +107,29 @@ export function usePortfolioNavigation(
 
       animating = true;
       active = destination;
+      const reveals = scenes[destination]?.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!reduceMotion && reveals?.length) gsap.set(reveals, { opacity: 0, y: 20 });
+
       gsap.to(deckElement, {
         y: -destination * window.innerHeight,
         duration: duration(1.2),
-        ease: 'power3.inOut',
+        ease: 'power2.inOut',
+        force3D: true,
         overwrite: true,
-        onComplete: () => { animating = false; },
+        onComplete: () => {
+          animating = false;
+          if (!reduceMotion && reveals?.length) {
+            gsap.to(reveals, {
+              opacity: 1,
+              y: 0,
+              duration: 0.48,
+              stagger: 0.045,
+              ease: 'power3.out',
+              force3D: true,
+            });
+          }
+        },
       });
-
-      if (reduceMotion) return;
-      const reveals = scenes[destination]?.querySelectorAll('[data-reveal]');
-      if (reveals?.length) {
-        gsap.fromTo(reveals, { opacity: 0, y: 28 }, {
-          opacity: 1,
-          y: 0,
-          duration: 0.65,
-          stagger: 0.07,
-          delay: 0.32,
-          ease: 'power3.out',
-        });
-      }
     };
 
     const navigate = (direction: number) => {

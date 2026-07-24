@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { WritingSignOut } from '@/components/WritingSignOut';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { isAdmin } from '@/lib/writing-auth';
 import styles from './Writing.module.css';
 
@@ -18,7 +19,10 @@ export default async function WritingLayout({ children }: { children: React.Reac
         <nav className={styles.nav} aria-label="Writing navigation">
           <Link href="/#work">Work</Link>
         </nav>
-        {authenticated ? <WritingSignOut /> : <Link className={styles.adminLink} href="/writing/admin">Author login</Link>}
+        <div className={styles.headerActions}>
+          <ThemeToggle className={styles.themeToggle} />
+          {authenticated ? <WritingSignOut /> : <Link className={styles.adminLink} href="/writing/admin">Author login</Link>}
+        </div>
       </header>
       {children}
     </div>
