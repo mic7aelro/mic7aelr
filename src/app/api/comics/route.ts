@@ -42,6 +42,9 @@ export async function POST(request: Request) {
   const read = Boolean(body.read);
   const status: ComicStatus = body.status === 'wishlist' ? 'wishlist' : 'owned';
   if (!title) return NextResponse.json({ error: 'Enter a comic title.' }, { status: 400 });
+  // Only accept an https cover URL. The lookup supplies an Open Library address.
+  const coverInput = cleanText(body.cover, 500);
+  const cover = /^https:\/\//.test(coverInput) ? coverInput : '';
 
   const baseId = createSlug(title) || 'comic';
   const existingIds = new Set(comics.map((comic) => comic.id));
@@ -62,6 +65,7 @@ export async function POST(request: Request) {
     writers: cleanText(body.writers, 300),
     artists: cleanText(body.artists, 300),
     collects: cleanText(body.collects, 600),
+    cover,
     read,
     status,
     universe,

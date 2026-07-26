@@ -29,4 +29,15 @@ MongoDB uses these collections:
 
 The author writes and edits all text directly. The site sends no content to an external model.
 
+### Comic lookup
+
+The Add comic form can fill the fields from Open Library. Enter a title, an
+ISBN, or an Amazon link. An Amazon book link contains the ISBN-10 as the ASIN,
+so the server reads the ISBN from the link. Open Library needs no API key and
+no account, so this feature adds no environment variable.
+
+Open Library returns the data of one printing. The year is the year of that
+printing, not the year of the first release. Search results include reprints
+and translations. Check every value before you save.
+
 The author session also protects the `/comics` route. Select **Author login** in the comics header to sign in. One session covers the writing pages and the comics pages.

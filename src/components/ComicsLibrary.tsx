@@ -19,6 +19,25 @@ const filters: { id: Filter; label: string }[] = [
   { id: 'wishlist', label: 'Wishlist' },
 ];
 
+type ComicCandidate = {
+  isbn: string;
+  title: string;
+  authors: string;
+  year: string;
+  publisher: string;
+  cover: string;
+};
+
+type Draft = {
+  title: string; description: string; year: string; category: string;
+  writers: string; artists: string; collects: string; cover: string;
+};
+
+const emptyDraft: Draft = {
+  title: '', description: '', year: '', category: '',
+  writers: '', artists: '', collects: '', cover: '',
+};
+
 type ComicsLibraryProps = {
   initialComics: Comic[];
   authenticated: boolean;
@@ -34,6 +53,11 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [savingComic, setSavingComic] = useState(false);
   const [comicError, setComicError] = useState('');
   const [failedCovers, setFailedCovers] = useState<Record<string, boolean>>({});
+  const [lookupQuery, setLookupQuery] = useState('');
+  const [lookupResults, setLookupResults] = useState<ComicCandidate[]>([]);
+  const [lookupBusy, setLookupBusy] = useState(false);
+  const [lookupNote, setLookupNote] = useState('');
+  const [draft, setDraft] = useState(emptyDraft);
   const [signingIn, setSigningIn] = useState(false);
   const [signInPending, setSignInPending] = useState(false);
   const [signInError, setSignInError] = useState('');
@@ -132,6 +156,62 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     setSelectedComic((current) => current ? { ...current, ...update } : current);
   };
 
+  const setField = (name: keyof Draft) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setDraft((current) => ({ ...current, [name]: event.target.value }));
+
+  const applyBook = (book: Partial<Draft>, note: string) => {
+    // Keep any value you already typed. The lookup only fills empty fields.
+    setDraft((current) => ({
+      ...current,
+      title: current.title || book.title || '',
+      year: current.year || book.year || '',
+      writers: current.writers || book.writers || '',
+      artists: current.artists || book.artists || '',
+      cover: book.cover || current.cover,
+    }));
+    setLookupResults([]);
+    setLookupNote(note);
+  };
+
+  const runLookup = async () => {
+    const query = lookupQuery.trim();
+    if (!query || lookupBusy) return;
+    setLookupBusy(true);
+    setLookupNote('');
+    setLookupResults([]);
+    const response = await fetch(`/api/comics/lookup?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+    setLookupBusy(false);
+    if (!response.ok) {
+      setLookupNote(data.error || 'The lookup failed.');
+      return;
+    }
+    if (data.kind === 'book') {
+      applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
+      return;
+    }
+    if (!data.results.length) {
+      setLookupNote('Open Library returned no match. Enter the details by hand.');
+      return;
+    }
+    setLookupResults(data.results);
+  };
+
+  const selectCandidate = async (candidate: ComicCandidate) => {
+    setLookupBusy(true);
+    setLookupNote('');
+    const response = await fetch(`/api/comics/lookup?q=${encodeURIComponent(candidate.isbn)}`);
+    const data = await response.json();
+    setLookupBusy(false);
+    if (!response.ok || data.kind !== 'book') {
+      // Fall back to the values the search result already carries.
+      applyBook({ title: candidate.title, year: candidate.year, writers: candidate.authors, cover: candidate.cover },
+        'Filled from the search result. Check every value before you save.');
+      return;
+    }
+    applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
+  };
+
   const addComic = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSavingComic(true);
@@ -142,6 +222,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...values,
+        ...draft,
         read: values.read === 'on',
       }),
     });
@@ -152,6 +233,9 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       return;
     }
     setLibrary((current) => [...current, data.comic]);
+    setDraft(emptyDraft);
+    setLookupQuery('');
+    setLookupNote('');
     setUniverse(data.comic.universe);
     setFilter('all');
     setAddingComic(false);
@@ -243,7 +327,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
 
         <div className={styles.grid}>
           {visibleComics.map((comic, index) => {
-            const cover = `/images/comics/${comic.id}.jpg`;
+            const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
             const showImage = !failedCovers[comic.id];
             return (
               <article className={styles.card} key={comic.id}>
@@ -342,7 +426,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 {!failedCovers[selectedComic.id] ? (
                   <img
                     className={selectedComic.id === 'swamp-thing' ? styles.containCover : undefined}
-                    src={`/images/comics/${selectedComic.id}.jpg`}
+                    src={selectedComic.cover || `/images/comics/${selectedComic.id}.jpg`}
                     alt={`Cover of ${selectedComic.title}`}
                     onError={() => setFailedCovers((current) => ({
                       ...current,
@@ -445,40 +529,86 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <div>
                 <p className={styles.detailMeta}>New collected edition</p>
                 <h2 id="add-comic-title">Add a comic.</h2>
-                <p>Enter the details of the collected edition. Only the title is required.</p>
+                <p>Search for the book, or paste an Amazon link or an ISBN. Open Library fills the empty fields that it can. Check every value before you save.</p>
               </div>
+
+              <div className={styles.lookupField}>
+                <label htmlFor="comic-lookup">Find the book</label>
+                <div className={styles.lookupRow}>
+                  <input
+                    id="comic-lookup"
+                    value={lookupQuery}
+                    onChange={(event) => setLookupQuery(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') { event.preventDefault(); void runLookup(); }
+                    }}
+                    maxLength={200}
+                    placeholder="Batman: Year One, an ISBN, or an Amazon link"
+                  />
+                  <button type="button" onClick={() => void runLookup()} disabled={lookupBusy || !lookupQuery.trim()}>
+                    {lookupBusy ? 'Searching…' : 'Search'}
+                  </button>
+                </div>
+                <p className={styles.lookupHint}>Results include reprints and translations. Check the publisher before you select an edition. The year is the year of the printing, not the year of the first release.</p>
+                {lookupNote && <p className={styles.lookupNote}>{lookupNote}</p>}
+                {lookupResults.length > 0 && (
+                  <ul className={styles.lookupResults}>
+                    {lookupResults.map((candidate) => (
+                      <li key={candidate.isbn}>
+                        <button type="button" onClick={() => void selectCandidate(candidate)}>
+                          <img src={candidate.cover} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} />
+                          <span>
+                            <strong>{candidate.title}</strong>
+                            <small>{[candidate.authors, candidate.year, candidate.publisher].filter(Boolean).join(' / ')}</small>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
               <label>
                 Comic title
-                <input name="title" required maxLength={180} placeholder="Batman: Year One" />
+                <input value={draft.title} onChange={setField('title')} required maxLength={180} placeholder="Batman: Year One" />
               </label>
               <label>
                 Description
-                <textarea name="description" maxLength={600} placeholder="A short, spoiler-free summary" />
+                <textarea value={draft.description} onChange={setField('description')} maxLength={600} placeholder="A short, spoiler-free summary" />
               </label>
               <div className={styles.addComicOptions}>
                 <label>
                   Year
-                  <input name="year" maxLength={40} placeholder="1987" />
+                  <input value={draft.year} onChange={setField('year')} maxLength={40} placeholder="1987" />
                 </label>
                 <label>
                   Category
-                  <input name="category" maxLength={100} placeholder="Collected Editions" />
+                  <input value={draft.category} onChange={setField('category')} maxLength={100} placeholder="Collected Editions" />
                 </label>
               </div>
               <div className={styles.addComicOptions}>
                 <label>
                   Writers
-                  <input name="writers" maxLength={300} placeholder="Frank Miller" />
+                  <input value={draft.writers} onChange={setField('writers')} maxLength={300} placeholder="Frank Miller" />
                 </label>
                 <label>
                   Artists
-                  <input name="artists" maxLength={300} placeholder="David Mazzucchelli" />
+                  <input value={draft.artists} onChange={setField('artists')} maxLength={300} placeholder="David Mazzucchelli" />
                 </label>
               </div>
               <label>
                 Collects
-                <input name="collects" maxLength={600} placeholder="Batman #404-407" />
+                <input value={draft.collects} onChange={setField('collects')} maxLength={600} placeholder="Batman #404-407" />
               </label>
+              {draft.cover && (
+                <div className={styles.lookupCover}>
+                  <img src={draft.cover} alt="Cover found by the lookup" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />
+                  <div>
+                    <p>Cover from Open Library</p>
+                    <button type="button" onClick={() => setDraft((current) => ({ ...current, cover: '' }))}>Remove cover</button>
+                  </div>
+                </div>
+              )}
               <div className={styles.addComicOptions}>
                 <label>
                   Publisher
