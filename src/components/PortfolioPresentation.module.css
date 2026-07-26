@@ -276,6 +276,9 @@
   .nav, .hero, .about, .work, .skills, .contact, .footer { width: min(100% - 32px, 1320px); }
   .nav { height: 64px; grid-template-columns: 1fr auto; }
   .navLinks { display: none; }
+  .navActions .socialLink { display: none; }
+  .brandGroup { gap: 10px; }
+  .writingHome { padding-left: 10px; }
   .hero { min-height: auto; grid-template-columns: 1fr; padding-block: 56px 72px !important; }
   .hero h1 { font-size: clamp(4.25rem, 22vw, 7.2rem); }
   .lastName, .heroCopy, .heroActions { margin-left: 0; }
