@@ -1,19 +1,24 @@
+import { comicDetails } from './comicDetails';
+
 export type ComicStatus = 'owned' | 'wishlist';
 
 export type Comic = {
   id: string;
   title: string;
   creators?: string;
+  writers?: string;
+  artists?: string;
   year?: string;
   category: string;
   description?: string;
+  collects?: string;
   read: boolean;
   status: ComicStatus;
   universe?: 'dc' | 'marvel';
   cover?: string;
 };
 
-export const comics: Comic[] = [
+const comicCatalog: Comic[] = [
   { id: 'batman-adventures-omnibus', title: 'Batman Adventures Omnibus', year: '2021', category: 'Animated Tie-ins', description: 'The complete Batman Adventures series set in the world of Batman: The Animated Series.', read: false, status: 'owned' },
   { id: 'batman-adventures-continue-1', title: 'The Batman Adventures Continue: Season One', creators: 'Paul Dini, Alan Burnett & Ty Templeton', year: '2020', category: 'Animated Tie-ins', description: 'The animated universe continues with new villains and modern continuity links.', read: false, status: 'owned' },
   { id: 'batman-adventures-continue-2', title: 'The Batman Adventures Continue: Season Two', year: '2021', category: 'Animated Tie-ins', read: false, status: 'owned' },
@@ -79,10 +84,10 @@ export const comics: Comic[] = [
   { id: 'fantastic-four-unthinkable', title: 'Fantastic Four: Unthinkable', creators: 'Mark Waid & Mike Wieringo', year: '2003', category: 'Fantastic Four', description: 'Doctor Doom abandons science and embraces black magic.', read: false, status: 'wishlist', universe: 'marvel' },
   { id: 'silver-surfer-slott-omnibus', title: 'Silver Surfer by Slott & Allred Omnibus', creators: 'Dan Slott & Mike Allred', year: '2014–2017', category: 'Cosmic Marvel', read: false, status: 'owned', universe: 'marvel' },
   { id: 'infinity-entity', title: 'The Infinity Entity', creators: 'Jim Starlin & Alan Davis', year: '2016', category: 'Cosmic Marvel', read: false, status: 'owned', universe: 'marvel' },
-  { id: 'fantastic-four-hickman-1', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 1', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
-  { id: 'fantastic-four-hickman-2', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 2', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
-  { id: 'fantastic-four-hickman-3', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 3', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
-  { id: 'fantastic-four-hickman-4', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 4', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
+  { id: 'fantastic-four-hickman-1', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 1', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', collects: 'Collects Dark Reign: Fantastic Four #1-5, Fantastic Four #570-578, and material from Dark Reign: The Cabal.', read: false, status: 'owned', universe: 'marvel' },
+  { id: 'fantastic-four-hickman-2', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 2', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', collects: 'Collects Fantastic Four #579-588 and FF #1-5.', read: false, status: 'owned', universe: 'marvel' },
+  { id: 'fantastic-four-hickman-3', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 3', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', collects: 'Collects FF #6-16 and Fantastic Four #600-604.', read: false, status: 'owned', universe: 'marvel' },
+  { id: 'fantastic-four-hickman-4', title: 'Fantastic Four by Jonathan Hickman: The Complete Collection Vol. 4', creators: 'Jonathan Hickman, Dale Eaglesham & Steve Epting', category: 'Hickman Saga', collects: 'Collects Fantastic Four #605-611 and #605.1, plus FF #17-23.', read: false, status: 'owned', universe: 'marvel' },
   { id: 'avengers-hickman-1', title: 'Avengers by Jonathan Hickman: The Complete Collection Vol. 1', creators: 'Jonathan Hickman, Jerome Opeña & Leinil Francis Yu', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
   { id: 'avengers-hickman-2', title: 'Avengers by Jonathan Hickman: The Complete Collection Vol. 2', creators: 'Jonathan Hickman, Jerome Opeña & Leinil Francis Yu', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
   { id: 'avengers-hickman-3', title: 'Avengers by Jonathan Hickman: The Complete Collection Vol. 3', creators: 'Jonathan Hickman, Jerome Opeña & Leinil Francis Yu', category: 'Hickman Saga', read: false, status: 'owned', universe: 'marvel' },
@@ -100,6 +105,11 @@ export const comics: Comic[] = [
   { id: 'miles-morales-ziglar-6', title: 'Miles Morales: Spider-Man Vol. 6 — Webs of Wakanda / Pools of Blood', creators: 'Cody Ziglar', category: 'Read Whenever', read: false, status: 'owned', universe: 'marvel' },
   { id: 'miles-morales-ziglar-7', title: 'Miles Morales: Spider-Man Vol. 7 — God War', creators: 'Cody Ziglar', category: 'Read Whenever', read: false, status: 'wishlist', universe: 'marvel' },
 ];
+
+export const comics: Comic[] = comicCatalog.map((comic) => ({
+  ...comic,
+  ...comicDetails[comic.id],
+}));
 
 export const comicCovers: Record<string, string> = {
   'batman-adventures-omnibus': 'https://images-na.ssl-images-amazon.com/images/P/1779521197.01.LZZZZZZZ.jpg',

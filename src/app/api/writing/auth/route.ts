@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { clearAdminSession, createAdminSession, isAdmin, verifyCredentials } from '@/lib/writing-auth';
+import { authIsConfigured, clearAdminSession, createAdminSession, isAdmin, verifyCredentials } from '@/lib/writing-auth';
 import { cleanText } from '@/lib/writing-utils';
 
 export async function GET() {
@@ -7,6 +7,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!authIsConfigured()) {
+    return NextResponse.json({
+      error: 'Login is not configured. Set WRITING_ADMIN_USERNAME, WRITING_ADMIN_PASSWORD, and WRITING_SESSION_SECRET on the server.',
+    }, { status: 503 });
+  }
+
   const body = await request.json();
   const username = cleanText(body.username, 100);
   const password = cleanText(body.password, 300);
