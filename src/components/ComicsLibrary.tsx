@@ -436,7 +436,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         <div className={styles.detailBackdrop} role="presentation">
           <section className={`${styles.detailPanel} ${styles.addComicPanel}`} role="dialog" aria-modal="true" aria-labelledby="add-comic-title">
             <header className={styles.detailHeader}>
-              <span>Claude catalog assistant</span>
+              <span>New comic</span>
               <button type="button" onClick={() => setAddingComic(false)} aria-label="Close add comic form">
                 <X weight="regular" />
               </button>
@@ -445,15 +445,39 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <div>
                 <p className={styles.detailMeta}>New collected edition</p>
                 <h2 id="add-comic-title">Add a comic.</h2>
-                <p>Enter the exact edition title. Claude will create the description and catalog details. Review the saved details after Claude adds the comic.</p>
+                <p>Enter the details of the collected edition. Only the title is required.</p>
               </div>
               <label>
                 Comic title
                 <input name="title" required maxLength={180} placeholder="Batman: Year One" />
               </label>
               <label>
-                Edition notes
-                <textarea name="notes" maxLength={2000} placeholder="Optional ISBN, volume, or edition details" />
+                Description
+                <textarea name="description" maxLength={600} placeholder="A short, spoiler-free summary" />
+              </label>
+              <div className={styles.addComicOptions}>
+                <label>
+                  Year
+                  <input name="year" maxLength={40} placeholder="1987" />
+                </label>
+                <label>
+                  Category
+                  <input name="category" maxLength={100} placeholder="Collected Editions" />
+                </label>
+              </div>
+              <div className={styles.addComicOptions}>
+                <label>
+                  Writers
+                  <input name="writers" maxLength={300} placeholder="Frank Miller" />
+                </label>
+                <label>
+                  Artists
+                  <input name="artists" maxLength={300} placeholder="David Mazzucchelli" />
+                </label>
+              </div>
+              <label>
+                Collects
+                <input name="collects" maxLength={600} placeholder="Batman #404-407" />
               </label>
               <div className={styles.addComicOptions}>
                 <label>
@@ -477,7 +501,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               </label>
               {comicError && <p className={styles.comicError}>{comicError}</p>}
               <button className={styles.createComicButton} type="submit" disabled={savingComic}>
-                {savingComic ? 'Claude is creating details…' : 'Create with Claude'}
+                {savingComic ? 'Saving…' : 'Add comic'}
               </button>
             </form>
           </section>
