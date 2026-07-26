@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Discovery } from '@/components/Discovery';
+import { DiscoveryRedesign } from '@/components/DiscoveryRedesign';
 
 export const metadata: Metadata = {
   title: 'Discovery — Michael Rodriguez',
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function DiscoveryPage() {
   return (
     <main>
-      <Discovery />
+      <DiscoveryRedesign />
     </main>
   );
 }

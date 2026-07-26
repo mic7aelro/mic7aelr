@@ -9,9 +9,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type Track = 'ml' | 'astro' | 'aws';
+export type Track = 'ml' | 'astro' | 'aws';
 
-type Phase = {
+export type Phase = {
   id: number;
   name: string;
   subtitle: string;
@@ -33,7 +33,7 @@ const TC: Record<Track, { primary: string; glow: string; text: string }> = {
 
 // ─── Phase data ──────────────────────────────────────────────────────────────
 
-const PHASES: Phase[] = [
+export const PHASES: Phase[] = [
   {
     id: 1, name: 'Foundation', subtitle: 'Rebuild the Core',
     duration: '4–6 weeks', track: 'ml',
@@ -202,11 +202,11 @@ function edgePath(a: { x: number; y: number }, b: { x: number; y: number }) {
 
 // ─── Trees ───────────────────────────────────────────────────────────────────
 
-type TreeId = 'ml' | 'astro' | 'aws';
+export type TreeId = 'ml' | 'astro' | 'aws';
 
 type TreeNode = { idx: number; x: number; y: number; isLock?: boolean };
 
-type TreeDef = {
+export type TreeDef = {
   id: TreeId;
   label: string;
   description: string;
@@ -218,7 +218,7 @@ type TreeDef = {
   prerequisites?: Phase[];
 };
 
-const TREES: TreeDef[] = [
+export const TREES: TreeDef[] = [
   {
     id: 'ml',
     label: 'Machine Learning',
