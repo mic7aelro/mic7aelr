@@ -1,4 +1,5 @@
 import { comics, type Comic } from '@/data/comics';
+import { comicOrder } from '@/data/comicOrder';
 import { getWritingDatabase, isWritingConfigured } from '@/lib/mongodb';
 
 /** Fields the author can change from the comics page. */
@@ -32,7 +33,7 @@ export async function getComics(): Promise<Comic[]> {
         // Accept an empty string, which clears a field, and accept a number.
         if (value !== undefined && value !== null) overrides[field] = value;
       }
-      for (const field of ['goodreadsRating', 'goodreadsCount'] as const) {
+      for (const field of ['goodreadsRating', 'goodreadsCount', 'readingOrder'] as const) {
         const value = record[field];
         if (typeof value === 'number') overrides[field] = value;
       }
@@ -40,7 +41,13 @@ export async function getComics(): Promise<Comic[]> {
     });
     const custom = records
       .filter((record) => record.custom)
-      .map(({ _id: _ignored, custom: _custom, updatedAt: _updatedAt, ...comic }) => comic);
+      .map(({ _id: _ignored, custom: _custom, updatedAt: _updatedAt, ...comic }) => ({
+        ...comic,
+        // A comic added by hand still belongs in the reading order.
+        ...(comic.readingOrder === undefined && comicOrder[comic.id]
+          ? { readingOrder: comicOrder[comic.id] }
+          : {}),
+      }));
     return [...seeded, ...custom];
   } catch {
     return comics;

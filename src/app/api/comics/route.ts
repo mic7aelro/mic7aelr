@@ -76,6 +76,11 @@ export async function PATCH(request: Request) {
     if ((field === 'cover' || field === 'link') && value && !/^https:\/\//.test(value)) continue;
     update[field] = value;
   }
+  if ('readingOrder' in body) {
+    const value = Number(body.readingOrder);
+    // An empty value removes the book from the reading order.
+    update.readingOrder = body.readingOrder === '' || !Number.isFinite(value) ? null : Math.round(value);
+  }
   // Derive the cover from the purchase link when the cover is empty, so the
   // cover always shows the edition that the link sells.
   if (!update.cover && typeof update.link === 'string' && update.link) {

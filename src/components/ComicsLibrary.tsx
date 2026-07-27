@@ -57,6 +57,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [filter, setFilter] = useState<Filter>('all');
   const [category, setCategory] = useState('all');
   const [search, setSearch] = useState('');
+  const [byOrder, setByOrder] = useState(false);
   const [selectedComic, setSelectedComic] = useState<Comic | null>(null);
   const [addingComic, setAddingComic] = useState(false);
   const [savingComic, setSavingComic] = useState(false);
@@ -152,13 +153,28 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     });
   }, [category, filter, search, universeComics]);
 
+  const orderedComics = useMemo(
+    () => visibleComics.filter((comic) => typeof comic.readingOrder === 'number')
+      .sort((left, right) => (left.readingOrder ?? 0) - (right.readingOrder ?? 0)),
+    [visibleComics],
+  );
+  const wheneverComics = useMemo(
+    () => visibleComics.filter((comic) => typeof comic.readingOrder !== 'number'),
+    [visibleComics],
+  );
+  // The modal steps through the list in the order shown on screen.
+  const orderedVisible = useMemo(
+    () => byOrder ? [...orderedComics, ...wheneverComics] : visibleComics,
+    [byOrder, orderedComics, visibleComics, wheneverComics],
+  );
+
   const readCount = universeComics.filter((comic) => comic.read).length;
   const ownedCount = universeComics.filter((comic) => comic.status === 'owned').length;
   const wishlistCount = universeComics.filter((comic) => comic.status === 'wishlist').length;
   const dcCount = library.filter((comic) => (comic.universe ?? 'dc') === 'dc').length;
   const marvelCount = library.filter((comic) => comic.universe === 'marvel').length;
   const selectedIndex = selectedComic
-    ? visibleComics.findIndex((comic) => comic.id === selectedComic.id)
+    ? orderedVisible.findIndex((comic) => comic.id === selectedComic.id)
     : -1;
 
   const measureCover = (id: string) => (event: React.SyntheticEvent<HTMLImageElement>) => {
@@ -169,9 +185,9 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   };
 
   const selectAdjacentComic = (direction: -1 | 1) => {
-    if (selectedIndex < 0 || visibleComics.length < 2) return;
-    const nextIndex = (selectedIndex + direction + visibleComics.length) % visibleComics.length;
-    setSelectedComic(visibleComics[nextIndex]);
+    if (selectedIndex < 0 || orderedVisible.length < 2) return;
+    const nextIndex = (selectedIndex + direction + orderedVisible.length) % orderedVisible.length;
+    setSelectedComic(orderedVisible[nextIndex]);
   };
 
   const signIn = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -517,6 +533,14 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <nav className={styles.categories} aria-label="Filter by category">
             <button
               type="button"
+              className={byOrder ? styles.categoryActive : undefined}
+              aria-pressed={byOrder}
+              onClick={() => setByOrder((current) => !current)}
+            >
+              Reading order
+            </button>
+            <button
+              type="button"
               className={category === 'all' ? styles.categoryActive : undefined}
               aria-pressed={category === 'all'}
               onClick={() => setCategory('all')}
@@ -541,8 +565,15 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <p className={styles.emptyResult}>No comic matches the current filters.</p>
         )}
 
+        {byOrder && orderedComics.length > 0 && (
+          <div className={styles.orderHead}>
+            <h2>Reading order</h2>
+            <p>Read these in sequence. The order follows the story, not the release date.</p>
+          </div>
+        )}
+
         <div className={styles.grid}>
-          {visibleComics.map((comic, index) => {
+          {(byOrder ? orderedComics : visibleComics).map((comic, index) => {
             const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
             const showImage = !failedCovers[comic.id];
             return (
@@ -599,6 +630,67 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
             );
           })}
         </div>
+
+        {byOrder && wheneverComics.length > 0 && (
+          <>
+            <div className={styles.orderHead}>
+              <h2>Read whenever</h2>
+              <p>These books stand alone. Read any of them at any time.</p>
+            </div>
+            <div className={styles.grid}>
+              {wheneverComics.map((comic, index) => {
+                const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
+                return (
+                  <article className={styles.card} key={comic.id}>
+                    <button
+                      className={styles.cardButton}
+                      type="button"
+                      onClick={() => setSelectedComic(comic)}
+                      aria-label={`Open details for ${comic.title}`}
+                    >
+                      <div className={styles.cover}>
+                        {!failedCovers[comic.id] ? (
+                          <img
+                            className={containCovers[comic.id] ? styles.containCover : undefined}
+                            src={cover}
+                            alt={`Cover of ${comic.title}`}
+                            loading={index < 4 ? 'eager' : 'lazy'}
+                            onLoad={measureCover(comic.id)}
+                            onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
+                          />
+                        ) : (
+                          <div className={styles.fallbackCover}>
+                            <span>{comic.universe === 'marvel' ? 'Marvel' : 'DC'}</span>
+                            <strong>{comic.title}</strong>
+                            <small>{comic.creators}</small>
+                          </div>
+                        )}
+                        <div className={styles.coverStatus}>
+                          <span className={comic.read ? styles.read : styles.unread}>
+                            {comic.read ? <Check weight="bold" /> : <Circle weight="regular" />}
+                            {comic.read ? 'Read' : 'Unread'}
+                          </span>
+                          <span className={comic.status === 'wishlist' ? styles.wishlist : styles.owned}>
+                            {comic.status === 'wishlist' && <BookmarkSimple weight="fill" />}
+                            {comic.status === 'wishlist' ? 'Wishlist' : 'Owned'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={styles.cardCopy}>
+                        <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
+                        {typeof comic.goodreadsRating === 'number' && (
+                          <span className={styles.scoreTag}>{comic.goodreadsRating.toFixed(2)}<small>/5</small></span>
+                        )}
+                        <h2>{comic.title}</h2>
+                        {comic.creators && <span>{comic.creators}</span>}
+                      </div>
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          </>
+        )}
       </main>
 
       {selectedComic && (
@@ -620,7 +712,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               type="button"
               onClick={() => selectAdjacentComic(-1)}
               aria-label="Open previous comic"
-              disabled={visibleComics.length < 2}
+              disabled={orderedVisible.length < 2}
             >
               <CaretLeft weight="regular" />
             </button>
@@ -629,7 +721,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               type="button"
               onClick={() => selectAdjacentComic(1)}
               aria-label="Open next comic"
-              disabled={visibleComics.length < 2}
+              disabled={orderedVisible.length < 2}
             >
               <CaretRight weight="regular" />
             </button>

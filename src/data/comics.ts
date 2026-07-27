@@ -1,4 +1,5 @@
 import { comicDetails } from './comicDetails';
+import { comicOrder } from './comicOrder';
 import { comicSeries } from './comicSeries';
 
 export type ComicStatus = 'owned' | 'wishlist';
@@ -23,6 +24,8 @@ export type Comic = {
   series?: string;
   /** The position of this book inside the run, counting from 1. */
   order?: number;
+  /** The place of this book in the suggested reading order of its publisher. */
+  readingOrder?: number;
   /** The Goodreads average, from 0 to 5. */
   goodreadsRating?: number;
   /** How many Goodreads ratings produced the average. */
@@ -121,6 +124,7 @@ export const comics: Comic[] = comicCatalog.map((comic) => ({
   ...comic,
   ...comicDetails[comic.id],
   ...comicSeries[comic.id],
+  ...(comicOrder[comic.id] ? { readingOrder: comicOrder[comic.id] } : {}),
 }));
 
 export const comicCovers: Record<string, string> = {

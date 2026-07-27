@@ -101,6 +101,11 @@
 .categories small { color: inherit; font-size: .58rem; opacity: .62; }
 .categories .categoryActive { border-color: var(--ink); background: var(--ink); color: var(--background); }
 
+.orderHead { padding: clamp(46px, 6vw, 68px) 0 0; }
+.orderHead h2 { font-family: var(--font-cormorant), serif; font-size: clamp(2.1rem, 4vw, 3.1rem); font-weight: 400; letter-spacing: -.035em; line-height: 1; }
+.orderHead p { max-width: 520px; margin-top: 11px; color: var(--muted); font-size: .82rem; line-height: 1.6; }
+.orderHead + .grid { padding-top: 34px; }
+
 .emptyResult { padding: 52px 0 0; color: var(--muted); font-size: .86rem; }
 .ratingEditor { display: grid; gap: 15px; padding: 17px; border: 1px solid var(--line); }
 .ratingEditor legend { padding: 0 7px; color: var(--quiet); font-size: .58rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
