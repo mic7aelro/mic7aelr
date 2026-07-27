@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { type Comic } from '@/data/comics';
-import { aggregate, ratingParts, type RatingField } from '@/lib/comic-rating';
 import styles from './ComicsLibrary.module.css';
 
 type Filter = 'all' | 'read' | 'unread' | 'owned' | 'wishlist';
@@ -73,9 +72,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [lookupNote, setLookupNote] = useState('');
   const [draft, setDraft] = useState(emptyDraft);
   const [editingComic, setEditingComic] = useState<Comic | null>(null);
-  const [scores, setScores] = useState<Record<string, string>>({});
-  const [review, setReview] = useState('');
-  const [posts, setPosts] = useState<Array<{ slug: string; title: string }>>([]);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkLinks, setBulkLinks] = useState('');
   const [bulkBusy, setBulkBusy] = useState(false);
@@ -281,16 +277,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
   };
 
-  useEffect(() => {
-    if (!authenticated || posts.length) return;
-    void fetch('/api/writing/index')
-      .then((response) => response.ok ? response.json() : null)
-      .then((data) => {
-        if (data?.posts) setPosts(data.posts.map((post: { slug: string; title: string }) => ({ slug: post.slug, title: post.title })));
-      })
-      .catch(() => undefined);
-  }, [authenticated, posts.length]);
-
   const runBulkLookup = async () => {
     if (bulkBusy || !bulkLinks.trim()) return;
     setBulkBusy(true);
@@ -354,11 +340,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     setLookupResults([]);
     setLookupNote('');
     setComicError('');
-    setScores(Object.fromEntries(ratingParts.map((part) => {
-      const value = comic[part.field];
-      return [part.field, typeof value === 'number' ? String(value) : ''];
-    })));
-    setReview(comic.review || '');
     setEditingComic(comic);
   };
 
@@ -370,7 +351,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     const response = await fetch('/api/comics', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: editingComic.id, ...draft, ...scores, review }),
+      body: JSON.stringify({ id: editingComic.id, ...draft }),
     });
     const data = await response.json();
     setSavingComic(false);
@@ -378,11 +359,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       setComicError(data.error || 'The comic could not be saved.');
       return;
     }
-    const saved: Partial<Comic> = { ...draft, review };
-    for (const part of ratingParts) {
-      const raw = scores[part.field];
-      saved[part.field] = raw === '' || raw === undefined ? undefined : Number(raw);
-    }
+    const saved: Partial<Comic> = { ...draft };
     const apply = (comic: Comic) => comic.id === editingComic.id ? { ...comic, ...saved } : comic;
     setLibrary((current) => current.map(apply));
     setSelectedComic((current) => current && current.id === editingComic.id ? { ...current, ...saved } : current);
@@ -606,8 +583,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   </div>
                   <div className={styles.cardCopy}>
                     <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
-                    {aggregate(comic) !== null && (
-                      <span className={styles.scoreTag}>{aggregate(comic)}<small>/100</small></span>
+                    {typeof comic.goodreadsRating === 'number' && (
+                      <span className={styles.scoreTag}>{comic.goodreadsRating.toFixed(2)}<small>/5</small></span>
                     )}
                     {comic.series && comic.order ? (
                       <span className={styles.seriesTag}>
@@ -719,16 +696,14 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                       <dd>{selectedComic.artists}</dd>
                     </div>
                   )}
-                  {aggregate(selectedComic) !== null && (
+                  {typeof selectedComic.goodreadsRating === 'number' && (
                     <div>
-                      <dt>Rating</dt>
+                      <dt>Goodreads</dt>
                       <dd className={styles.ratingValue}>
-                        <strong>{aggregate(selectedComic)}</strong><small>/100</small>
-                        <span>
-                          {ratingParts
-                            .map((part) => `${part.name} ${selectedComic[part.field as RatingField]}`)
-                            .join(' · ')}
-                        </span>
+                        <strong>{selectedComic.goodreadsRating.toFixed(2)}</strong><small>/5</small>
+                        {typeof selectedComic.goodreadsCount === 'number' && (
+                          <span>{selectedComic.goodreadsCount.toLocaleString('en')} ratings</span>
+                        )}
                       </dd>
                     </div>
                   )}
@@ -764,11 +739,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                     </dd>
                   </div>
                 </dl>
-                {selectedComic.review && (
-                  <a className={styles.buyLink} href={`/writing/${selectedComic.review}`}>
-                    Read the review
-                  </a>
-                )}
                 {selectedComic.link && (
                   <a
                     className={styles.buyLink}
@@ -1093,46 +1063,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   </div>
                 </div>
               )}
-              <fieldset className={styles.ratingEditor}>
-                <legend>Rating</legend>
-                <div className={styles.ratingGrid}>
-                  {ratingParts.map((part) => (
-                    <label key={part.field}>
-                      {part.name} · {part.weight}%
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="0.1"
-                        inputMode="decimal"
-                        value={scores[part.field] ?? ''}
-                        placeholder="0–10"
-                        onChange={(event) => setScores((current) => ({ ...current, [part.field]: event.target.value }))}
-                      />
-                    </label>
-                  ))}
-                </div>
-                <p className={styles.ratingAggregate}>
-                  <span>Aggregate</span>
-                  <strong>
-                    {(() => {
-                      const values = ratingParts.map((part) => Number(scores[part.field]));
-                      const complete = ratingParts.every((part) => scores[part.field] !== '' && scores[part.field] !== undefined)
-                        && values.every((value) => Number.isFinite(value));
-                      if (!complete) return '—';
-                      return Math.round(ratingParts.reduce((total, part, index) => total + values[index] * part.weight / 10, 0));
-                    })()}
-                    <small>/100</small>
-                  </strong>
-                </p>
-              </fieldset>
-              <label>
-                Review post
-                <select value={review} onChange={(event) => setReview(event.target.value)}>
-                  <option value="">No review</option>
-                  {posts.map((post) => <option key={post.slug} value={post.slug}>{post.title}</option>)}
-                </select>
-              </label>
               <div className={styles.addComicOptions}>
                 <label>
                   Publisher

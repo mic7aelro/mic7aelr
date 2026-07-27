@@ -1,11 +1,10 @@
 import { comics, type Comic } from '@/data/comics';
-import { ratingFields } from '@/lib/comic-rating';
 import { getWritingDatabase, isWritingConfigured } from '@/lib/mongodb';
 
 /** Fields the author can change from the comics page. */
 export const editableFields = [
   'title', 'description', 'year', 'category', 'creators',
-  'writers', 'artists', 'collects', 'cover', 'link', 'series', 'review',
+  'writers', 'artists', 'collects', 'cover', 'link', 'series',
 ] as const;
 
 type ComicRecord = Comic & {
@@ -33,7 +32,7 @@ export async function getComics(): Promise<Comic[]> {
         // Accept an empty string, which clears a field, and accept a number.
         if (value !== undefined && value !== null) overrides[field] = value;
       }
-      for (const field of ratingFields) {
+      for (const field of ['goodreadsRating', 'goodreadsCount'] as const) {
         const value = record[field];
         if (typeof value === 'number') overrides[field] = value;
       }

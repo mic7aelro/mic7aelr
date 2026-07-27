@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { comics, type ComicStatus } from '@/data/comics';
 import { amazonCover, extractIsbn } from '@/lib/comic-lookup';
-import { cleanScore, ratingFields } from '@/lib/comic-rating';
 import { editableFields, getComics } from '@/lib/comics-data';
 import { getWritingDatabase } from '@/lib/mongodb';
 import { isAdmin } from '@/lib/writing-auth';
@@ -60,9 +59,7 @@ export async function PATCH(request: Request) {
   const read = typeof body.read === 'boolean' ? body.read : null;
   const status: ComicStatus | null = body.status === 'owned' || body.status === 'wishlist' ? body.status : null;
   const nextUniverse = body.universe === 'dc' || body.universe === 'marvel' ? body.universe : null;
-  const hasMetadata = editableFields.some((field) => field in body)
-    || ratingFields.some((field) => field in body)
-    || nextUniverse !== null;
+  const hasMetadata = editableFields.some((field) => field in body) || nextUniverse !== null;
   if (!id || (read === null && status === null && !hasMetadata)) {
     return NextResponse.json({ error: 'Select a valid comic update.' }, { status: 400 });
   }
@@ -78,11 +75,6 @@ export async function PATCH(request: Request) {
     // Only accept an https address for the cover and for the purchase link.
     if ((field === 'cover' || field === 'link') && value && !/^https:\/\//.test(value)) continue;
     update[field] = value;
-  }
-  for (const field of ratingFields) {
-    if (!(field in body)) continue;
-    // An empty value clears the score for that part.
-    update[field] = body[field] === '' || body[field] === null ? null : cleanScore(body[field]);
   }
   // Derive the cover from the purchase link when the cover is empty, so the
   // cover always shows the edition that the link sells.
