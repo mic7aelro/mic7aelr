@@ -53,17 +53,22 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [savingComic, setSavingComic] = useState(false);
   const [comicError, setComicError] = useState('');
   const [failedCovers, setFailedCovers] = useState<Record<string, boolean>>({});
+  // A cover whose shape differs from the 2:3 card gets cropped by object-fit:
+  // cover, which cuts the logo or the figure. Measure the image and switch that
+  // cover to object-fit: contain.
+  const [containCovers, setContainCovers] = useState<Record<string, boolean>>({});
   const [lookupQuery, setLookupQuery] = useState('');
   const [lookupResults, setLookupResults] = useState<ComicCandidate[]>([]);
   const [lookupBusy, setLookupBusy] = useState(false);
   const [lookupNote, setLookupNote] = useState('');
   const [draft, setDraft] = useState(emptyDraft);
+  const [editingComic, setEditingComic] = useState<Comic | null>(null);
   const [signingIn, setSigningIn] = useState(false);
   const [signInPending, setSignInPending] = useState(false);
   const [signInError, setSignInError] = useState('');
 
   useEffect(() => {
-    if (!selectedComic && !addingComic && !signingIn) return;
+    if (!selectedComic && !addingComic && !signingIn && !editingComic) return;
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -71,6 +76,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         setSelectedComic(null);
         setAddingComic(false);
         setSigningIn(false);
+        setEditingComic(null);
       }
     };
 
@@ -81,7 +87,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', closeOnEscape);
     };
-  }, [addingComic, selectedComic, signingIn]);
+  }, [addingComic, editingComic, selectedComic, signingIn]);
 
   const universeComics = useMemo(
     () => library.filter((comic) => (comic.universe ?? 'dc') === universe),
@@ -104,6 +110,13 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const selectedIndex = selectedComic
     ? visibleComics.findIndex((comic) => comic.id === selectedComic.id)
     : -1;
+
+  const measureCover = (id: string) => (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const image = event.currentTarget;
+    if (!image.naturalWidth || !image.naturalHeight) return;
+    const ratio = image.naturalWidth / image.naturalHeight;
+    if (Math.abs(ratio - 2 / 3) > 0.04) setContainCovers((current) => ({ ...current, [id]: true }));
+  };
 
   const selectAdjacentComic = (direction: -1 | 1) => {
     if (selectedIndex < 0 || visibleComics.length < 2) return;
@@ -212,6 +225,42 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
   };
 
+  const openEditor = (comic: Comic) => {
+    setDraft({
+      title: comic.title || '', description: comic.description || '', year: comic.year || '',
+      category: comic.category || '', writers: comic.writers || '', artists: comic.artists || '',
+      collects: comic.collects || '', cover: comic.cover || '',
+    });
+    setLookupQuery('');
+    setLookupResults([]);
+    setLookupNote('');
+    setComicError('');
+    setEditingComic(comic);
+  };
+
+  const saveEdit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!editingComic) return;
+    setSavingComic(true);
+    setComicError('');
+    const response = await fetch('/api/comics', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: editingComic.id, ...draft }),
+    });
+    const data = await response.json();
+    setSavingComic(false);
+    if (!response.ok) {
+      setComicError(data.error || 'The comic could not be saved.');
+      return;
+    }
+    const apply = (comic: Comic) => comic.id === editingComic.id ? { ...comic, ...draft } : comic;
+    setLibrary((current) => current.map(apply));
+    setSelectedComic((current) => current && current.id === editingComic.id ? { ...current, ...draft } : current);
+    setEditingComic(null);
+    setDraft(emptyDraft);
+  };
+
   const addComic = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSavingComic(true);
@@ -243,7 +292,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   };
 
   return (
-    <div className={styles.page} data-native-cursor>
+    <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.brandGroup}>
           <Link className={styles.brand} href="/">mic7aelr</Link>
@@ -340,10 +389,11 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   <div className={styles.cover}>
                     {showImage ? (
                       <img
-                        className={comic.id === 'swamp-thing' ? styles.containCover : undefined}
+                        className={containCovers[comic.id] ? styles.containCover : undefined}
                         src={cover}
                         alt={`Cover of ${comic.title}`}
                         loading={index < 8 ? 'eager' : 'lazy'}
+                        onLoad={measureCover(comic.id)}
                         onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
                       />
                     ) : (
@@ -425,9 +475,10 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <div className={styles.detailCover}>
                 {!failedCovers[selectedComic.id] ? (
                   <img
-                    className={selectedComic.id === 'swamp-thing' ? styles.containCover : undefined}
+                    className={containCovers[selectedComic.id] ? styles.containCover : undefined}
                     src={selectedComic.cover || `/images/comics/${selectedComic.id}.jpg`}
                     alt={`Cover of ${selectedComic.title}`}
+                    onLoad={measureCover(selectedComic.id)}
                     onError={() => setFailedCovers((current) => ({
                       ...current,
                       [selectedComic.id]: true,
@@ -506,6 +557,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                       >
                         {selectedComic.status === 'owned' ? 'Move to wishlist' : 'Mark owned'}
                       </button>
+                      <button type="button" onClick={() => openEditor(selectedComic)}>Edit entry</button>
                     </div>
                   </div>
                 )}
@@ -675,6 +727,127 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               {signInError && <p className={styles.comicError}>{signInError}</p>}
               <button className={styles.createComicButton} type="submit" disabled={signInPending}>
                 {signInPending ? 'Signing in…' : 'Sign in'}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {editingComic && (
+        <div
+          className={styles.detailBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setEditingComic(null);
+          }}
+        >
+          <section
+            className={`${styles.detailPanel} ${styles.addComicPanel}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-comic-title"
+          >
+            <header className={styles.detailHeader}>
+              <span>Edit entry</span>
+              <button type="button" onClick={() => setEditingComic(null)} aria-label="Close the edit form">
+                <X weight="regular" />
+              </button>
+            </header>
+            <form className={styles.addComicForm} onSubmit={saveEdit} data-lenis-prevent>
+              <div>
+                <p className={styles.detailMeta}>Edit this comic</p>
+                <h2 id="edit-comic-title">Edit entry.</h2>
+                <p>Change any field. Leave a field empty to remove the value.</p>
+              </div>
+              <div className={styles.lookupField}>
+                <label htmlFor="comic-lookup">Find the book</label>
+                <div className={styles.lookupRow}>
+                  <input
+                    id="comic-lookup"
+                    value={lookupQuery}
+                    onChange={(event) => setLookupQuery(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') { event.preventDefault(); void runLookup(); }
+                    }}
+                    maxLength={200}
+                    placeholder="Batman: Year One, an ISBN, or an Amazon link"
+                  />
+                  <button type="button" onClick={() => void runLookup()} disabled={lookupBusy || !lookupQuery.trim()}>
+                    {lookupBusy ? 'Searching…' : 'Search'}
+                  </button>
+                </div>
+                <p className={styles.lookupHint}>Results include reprints and translations. Check the publisher before you select an edition. The year is the year of the printing, not the year of the first release.</p>
+                {lookupNote && <p className={styles.lookupNote}>{lookupNote}</p>}
+                {lookupResults.length > 0 && (
+                  <ul className={styles.lookupResults}>
+                    {lookupResults.map((candidate) => (
+                      <li key={candidate.isbn}>
+                        <button type="button" onClick={() => void selectCandidate(candidate)}>
+                          <img src={candidate.cover} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} />
+                          <span>
+                            <strong>{candidate.title}</strong>
+                            <small>{[candidate.authors, candidate.year, candidate.publisher].filter(Boolean).join(' / ')}</small>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <label>
+                Comic title
+                <input value={draft.title} onChange={setField('title')} required maxLength={180} placeholder="Batman: Year One" />
+              </label>
+              <label>
+                Description
+                <textarea value={draft.description} onChange={setField('description')} maxLength={600} placeholder="A short, spoiler-free summary" />
+              </label>
+              <div className={styles.addComicOptions}>
+                <label>
+                  Year
+                  <input value={draft.year} onChange={setField('year')} maxLength={40} placeholder="1987" />
+                </label>
+                <label>
+                  Category
+                  <input value={draft.category} onChange={setField('category')} maxLength={100} placeholder="Collected Editions" />
+                </label>
+              </div>
+              <div className={styles.addComicOptions}>
+                <label>
+                  Writers
+                  <input value={draft.writers} onChange={setField('writers')} maxLength={300} placeholder="Frank Miller" />
+                </label>
+                <label>
+                  Artists
+                  <input value={draft.artists} onChange={setField('artists')} maxLength={300} placeholder="David Mazzucchelli" />
+                </label>
+              </div>
+              <label>
+                Collects
+                <input value={draft.collects} onChange={setField('collects')} maxLength={600} placeholder="Batman #404-407" />
+              </label>
+              {draft.cover && (
+                <div className={styles.lookupCover}>
+                  <img src={draft.cover} alt="Cover found by the lookup" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />
+                  <div>
+                    <p>Cover from Open Library</p>
+                    <button type="button" onClick={() => setDraft((current) => ({ ...current, cover: '' }))}>Remove cover</button>
+                  </div>
+                </div>
+              )}
+              {draft.cover && (
+                <div className={styles.lookupCover}>
+                  <img src={draft.cover} alt="Cover for this comic" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />
+                  <div>
+                    <p>Cover address</p>
+                    <button type="button" onClick={() => setDraft((current) => ({ ...current, cover: '' }))}>Remove cover</button>
+                  </div>
+                </div>
+              )}
+              {comicError && <p className={styles.comicError}>{comicError}</p>}
+              <button className={styles.createComicButton} type="submit" disabled={savingComic}>
+                {savingComic ? 'Saving\u2026' : 'Save changes'}
               </button>
             </form>
           </section>

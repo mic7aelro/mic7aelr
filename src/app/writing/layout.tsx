@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function WritingLayout({ children }: { children: React.ReactNode }) {
   const authenticated = await isAdmin();
   return (
-    <div className={styles.shell} data-native-cursor>
+    <div className={styles.shell}>
       <header className={styles.header}>
         <div className={styles.brandGroup}><Link className={styles.brand} href="/">mic7aelr</Link><Link className={styles.writingHome} href="/writing">Writing</Link></div>
         <nav className={styles.nav} aria-label="Writing navigation">

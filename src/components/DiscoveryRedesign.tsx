@@ -18,7 +18,7 @@ export function DiscoveryRedesign() {
   }
 
   return (
-    <div className={styles.page} data-native-cursor>
+    <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.brandGroup}>
           <Link className={styles.brand} href="/">mic7aelr</Link>

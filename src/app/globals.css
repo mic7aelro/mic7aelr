@@ -20,24 +20,13 @@
   padding: 0;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  *, *::before, *::after {
-    cursor: none;
-  }
+/* The site uses the native cursor. Keep the pointer on controls. */
+button, select, summary, [role='button'] {
+  cursor: pointer;
+}
 
-  body:has([data-native-cursor]) *,
-  body:has([data-native-cursor]) *::before,
-  body:has([data-native-cursor]) *::after {
-    cursor: auto;
-  }
-
-  body:has([data-native-cursor]) :is(a, button, select) {
-    cursor: pointer;
-  }
-
-  body:has([data-native-cursor]) :is(input, textarea) {
-    cursor: text;
-  }
+button:disabled {
+  cursor: not-allowed;
 }
 
 html {
@@ -151,40 +140,6 @@ a {
   height: 1px;
   background-color: #222;
   transform-origin: left;
-}
-
-/* ─── Custom Cursor ─────────────────────────────────────── */
-@media (hover: none), (pointer: coarse) {
-  .cursor, .cursor-follower {
-    display: none;
-  }
-}
-
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  background-color: #fff;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10000;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
-}
-
-.cursor-follower {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
 }
 
 /* ─── Text reveal clip ──────────────────────────────────── */
