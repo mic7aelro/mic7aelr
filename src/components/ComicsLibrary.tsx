@@ -28,6 +28,12 @@ type ComicCandidate = {
   cover: string;
 };
 
+type BulkCandidate = {
+  link: string; isbn: string; title: string; year: string;
+  writers: string; artists: string; cover: string; found: boolean; note: string;
+  keep: boolean;
+};
+
 type Draft = {
   title: string; description: string; year: string; category: string;
   writers: string; artists: string; collects: string; cover: string; link: string;
@@ -66,12 +72,20 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [lookupNote, setLookupNote] = useState('');
   const [draft, setDraft] = useState(emptyDraft);
   const [editingComic, setEditingComic] = useState<Comic | null>(null);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkLinks, setBulkLinks] = useState('');
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkSaving, setBulkSaving] = useState(false);
+  const [bulkError, setBulkError] = useState('');
+  const [bulkCandidates, setBulkCandidates] = useState<BulkCandidate[]>([]);
+  const [bulkUniverse, setBulkUniverse] = useState<Universe>('dc');
+  const [bulkStatus, setBulkStatus] = useState<'owned' | 'wishlist'>('owned');
   const [signingIn, setSigningIn] = useState(false);
   const [signInPending, setSignInPending] = useState(false);
   const [signInError, setSignInError] = useState('');
 
   useEffect(() => {
-    if (!selectedComic && !addingComic && !signingIn && !editingComic) return;
+    if (!selectedComic && !addingComic && !signingIn && !editingComic && !bulkOpen) return;
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -80,6 +94,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         setAddingComic(false);
         setSigningIn(false);
         setEditingComic(null);
+        setBulkOpen(false);
       }
     };
 
@@ -90,7 +105,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', closeOnEscape);
     };
-  }, [addingComic, editingComic, selectedComic, signingIn]);
+  }, [addingComic, bulkOpen, editingComic, selectedComic, signingIn]);
 
   const seriesTotals = useMemo(() => {
     const totals = new Map<string, number>();
@@ -262,6 +277,58 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
   };
 
+  const runBulkLookup = async () => {
+    if (bulkBusy || !bulkLinks.trim()) return;
+    setBulkBusy(true);
+    setBulkError('');
+    setBulkCandidates([]);
+    const response = await fetch('/api/comics/bulk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ links: bulkLinks }),
+    });
+    const data = await response.json();
+    setBulkBusy(false);
+    if (!response.ok) {
+      setBulkError(data.error || 'The lookup failed.');
+      return;
+    }
+    setBulkCandidates((data.candidates as BulkCandidate[]).map((item) => ({ ...item, keep: true })));
+    if (data.skipped) setBulkError(`This form reads 20 links at a time. It skipped ${data.skipped}.`);
+  };
+
+  const saveBulk = async () => {
+    const chosen = bulkCandidates.filter((item) => item.keep && item.title.trim());
+    if (!chosen.length || bulkSaving) return;
+    setBulkSaving(true);
+    setBulkError('');
+    const added: Comic[] = [];
+    for (const item of chosen) {
+      const response = await fetch('/api/comics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: item.title, year: item.year, writers: item.writers, artists: item.artists,
+          cover: item.cover, link: item.link, universe: bulkUniverse, status: bulkStatus, read: false,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) added.push(data.comic);
+    }
+    setBulkSaving(false);
+    if (!added.length) {
+      setBulkError('No comic was saved.');
+      return;
+    }
+    setLibrary((current) => [...current, ...added]);
+    setUniverse(bulkUniverse);
+    setFilter('all');
+    setCategory('all');
+    setBulkOpen(false);
+    setBulkLinks('');
+    setBulkCandidates([]);
+  };
+
   const openEditor = (comic: Comic) => {
     setDraft({
       title: comic.title || '', description: comic.description || '', year: comic.year || '',
@@ -421,6 +488,11 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
             <button className={styles.addComicButton} type="button" onClick={() => setAddingComic(true)}>
               <Plus weight="bold" />
               Add comic
+            </button>
+          )}
+          {authenticated && (
+            <button className={styles.addComicButton} type="button" onClick={() => { setBulkError(''); setBulkOpen(true); }}>
+              Add several
             </button>
           )}
           <span>{visibleComics.length} books</span>
@@ -1002,6 +1074,121 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 {savingComic ? 'Saving\u2026' : 'Save changes'}
               </button>
             </form>
+          </section>
+        </div>
+      )}
+
+      {bulkOpen && (
+        <div
+          className={styles.detailBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setBulkOpen(false);
+          }}
+        >
+          <section
+            className={`${styles.detailPanel} ${styles.addComicPanel}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bulk-add-title"
+          >
+            <header className={styles.detailHeader}>
+              <span>Add several</span>
+              <button type="button" onClick={() => setBulkOpen(false)} aria-label="Close the bulk add form">
+                <X weight="regular" />
+              </button>
+            </header>
+            <div className={styles.addComicForm} data-lenis-prevent>
+              <div>
+                <p className={styles.detailMeta}>Several collected editions</p>
+                <h2 id="bulk-add-title">Add several.</h2>
+                <p>Paste up to 20 Amazon links or ISBNs, one per line. Check each title before you save.</p>
+              </div>
+              <label>
+                Links
+                <textarea
+                  value={bulkLinks}
+                  onChange={(event) => setBulkLinks(event.target.value)}
+                  rows={5}
+                  maxLength={6000}
+                  placeholder={'https://www.amazon.com/dp/1401207529\nhttps://www.amazon.com/dp/0785130098'}
+                />
+              </label>
+              <div className={styles.addComicOptions}>
+                <label>
+                  Publisher
+                  <select value={bulkUniverse} onChange={(event) => setBulkUniverse(event.target.value as Universe)}>
+                    <option value="dc">DC</option>
+                    <option value="marvel">Marvel</option>
+                  </select>
+                </label>
+                <label>
+                  Collection
+                  <select value={bulkStatus} onChange={(event) => setBulkStatus(event.target.value as 'owned' | 'wishlist')}>
+                    <option value="owned">Owned</option>
+                    <option value="wishlist">Wishlist</option>
+                  </select>
+                </label>
+              </div>
+              <button
+                className={styles.createComicButton}
+                type="button"
+                onClick={() => void runBulkLookup()}
+                disabled={bulkBusy || !bulkLinks.trim()}
+              >
+                {bulkBusy ? 'Looking up\u2026' : 'Look up the links'}
+              </button>
+
+              {bulkCandidates.length > 0 && (
+                <ul className={styles.bulkList}>
+                  {bulkCandidates.map((item, index) => (
+                    <li key={`${item.isbn || item.link}-${index}`} className={item.keep ? undefined : styles.bulkSkipped}>
+                      <label className={styles.bulkKeep}>
+                        <input
+                          type="checkbox"
+                          checked={item.keep}
+                          onChange={(event) => setBulkCandidates((current) => current.map((entry, position) =>
+                            position === index ? { ...entry, keep: event.target.checked } : entry))}
+                          aria-label={`Include ${item.title || item.link}`}
+                        />
+                      </label>
+                      {item.cover
+                        ? <img src={item.cover} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} />
+                        : <span className={styles.bulkNoCover} aria-hidden="true" />}
+                      <div className={styles.bulkFields}>
+                        <input
+                          value={item.title}
+                          onChange={(event) => setBulkCandidates((current) => current.map((entry, position) =>
+                            position === index ? { ...entry, title: event.target.value } : entry))}
+                          placeholder="Enter the title"
+                          aria-label="Comic title"
+                        />
+                        <small>
+                          {[item.year, item.writers].filter(Boolean).join(' / ') || item.link}
+                          {item.note ? ` — ${item.note}` : ''}
+                        </small>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {bulkError && <p className={styles.comicError}>{bulkError}</p>}
+
+              {bulkCandidates.length > 0 && (
+                <button
+                  className={styles.createComicButton}
+                  type="button"
+                  onClick={() => void saveBulk()}
+                  disabled={bulkSaving || !bulkCandidates.some((item) => item.keep && item.title.trim())}
+                >
+                  {bulkSaving ? 'Saving\u2026' : (() => {
+                    const total = bulkCandidates.filter((item) => item.keep && item.title.trim()).length;
+                    return `Add ${total} ${total === 1 ? 'comic' : 'comics'}`;
+                  })()}
+                </button>
+              )}
+            </div>
           </section>
         </div>
       )}
