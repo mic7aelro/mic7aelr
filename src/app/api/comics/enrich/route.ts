@@ -5,6 +5,12 @@ import { getWritingDatabase } from '@/lib/mongodb';
 import { isAdmin } from '@/lib/writing-auth';
 
 const GOODREADS_URL = 'https://www.goodreads.com/book/review_counts.json';
+/**
+ * The fewest ratings an average may rest on.
+ * A rare printing can carry a handful of ratings, and that average would
+ * misrepresent the book beside an average taken from thousands.
+ */
+const MIN_RATINGS = 100;
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -106,8 +112,10 @@ async function goodreadsBatch(isbns: string[]) {
     const data = await response.json() as { books?: GoodreadsBook[] };
     for (const book of data.books || []) {
       const rating = Number(book.average_rating);
+      const count = Number(book.work_ratings_count) || 0;
       if (!book.isbn || !Number.isFinite(rating) || rating <= 0) continue;
-      found.set(book.isbn, { rating, count: Number(book.work_ratings_count) || 0 });
+      if (count < MIN_RATINGS) continue;
+      found.set(book.isbn, { rating, count });
     }
   } catch {
     // A failed batch leaves the stored values untouched.
