@@ -30,12 +30,13 @@ type ComicCandidate = {
 
 type Draft = {
   title: string; description: string; year: string; category: string;
-  writers: string; artists: string; collects: string; cover: string;
+  writers: string; artists: string; collects: string; cover: string; link: string;
+  universe: Universe;
 };
 
 const emptyDraft: Draft = {
   title: '', description: '', year: '', category: '',
-  writers: '', artists: '', collects: '', cover: '',
+  writers: '', artists: '', collects: '', cover: '', link: '', universe: 'dc',
 };
 
 type ComicsLibraryProps = {
@@ -48,6 +49,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [library, setLibrary] = useState(initialComics);
   const [universe, setUniverse] = useState<Universe>('dc');
   const [filter, setFilter] = useState<Filter>('all');
+  const [category, setCategory] = useState('all');
+  const [search, setSearch] = useState('');
   const [selectedComic, setSelectedComic] = useState<Comic | null>(null);
   const [addingComic, setAddingComic] = useState(false);
   const [savingComic, setSavingComic] = useState(false);
@@ -89,18 +92,41 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     };
   }, [addingComic, editingComic, selectedComic, signingIn]);
 
+  const categories = useMemo(() => {
+    const seen = new Map<string, number>();
+    for (const comic of library) {
+      if ((comic.universe ?? 'dc') !== universe) continue;
+      seen.set(comic.category, (seen.get(comic.category) ?? 0) + 1);
+    }
+    return [...seen.entries()].sort((left, right) => right[1] - left[1]);
+  }, [library, universe]);
+
+  const selectUniverse = (next: Universe) => {
+    setUniverse(next);
+    setCategory('all');
+  };
+
   const universeComics = useMemo(
     () => library.filter((comic) => (comic.universe ?? 'dc') === universe),
     [library, universe],
   );
 
-  const visibleComics = useMemo(() => universeComics.filter((comic) => {
-    if (filter === 'read') return comic.read;
-    if (filter === 'unread') return !comic.read;
-    if (filter === 'owned') return comic.status === 'owned';
-    if (filter === 'wishlist') return comic.status === 'wishlist';
-    return true;
-  }), [filter, universeComics]);
+  const visibleComics = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return universeComics.filter((comic) => {
+      if (category !== 'all' && comic.category !== category) return false;
+      if (term) {
+        const haystack = [comic.title, comic.creators, comic.writers, comic.artists, comic.collects]
+          .filter(Boolean).join(' ').toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+      if (filter === 'read') return comic.read;
+      if (filter === 'unread') return !comic.read;
+      if (filter === 'owned') return comic.status === 'owned';
+      if (filter === 'wishlist') return comic.status === 'wishlist';
+      return true;
+    });
+  }, [category, filter, search, universeComics]);
 
   const readCount = universeComics.filter((comic) => comic.read).length;
   const ownedCount = universeComics.filter((comic) => comic.status === 'owned').length;
@@ -189,6 +215,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const runLookup = async () => {
     const query = lookupQuery.trim();
     if (!query || lookupBusy) return;
+    // Keep an Amazon link as the purchase link for this comic.
+    if (/^https:\/\//.test(query)) setDraft((current) => ({ ...current, link: current.link || query }));
     setLookupBusy(true);
     setLookupNote('');
     setLookupResults([]);
@@ -229,7 +257,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     setDraft({
       title: comic.title || '', description: comic.description || '', year: comic.year || '',
       category: comic.category || '', writers: comic.writers || '', artists: comic.artists || '',
-      collects: comic.collects || '', cover: comic.cover || '',
+      collects: comic.collects || '', cover: comic.cover || '', link: comic.link || '',
+      universe: (comic.universe ?? 'dc') as Universe,
     });
     setLookupQuery('');
     setLookupResults([]);
@@ -270,8 +299,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ...values,
         ...draft,
+        ...values,
         read: values.read === 'on',
       }),
     });
@@ -299,8 +328,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <span className={styles.sectionLabel}>Comics</span>
         </div>
         <nav className={styles.headerNav} aria-label="Comics navigation">
-          <Link href="/#work">Work</Link>
-          <Link href="/writing">Writing</Link>
           <Link href="/discovery">Discovery</Link>
         </nav>
         <div className={styles.headerActions}>
@@ -327,6 +354,22 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <div><dt>Owned</dt><dd>{ownedCount}</dd></div>
               <div><dt>Wishlist</dt><dd>{wishlistCount}</dd></div>
             </dl>
+            <div className={styles.progress}>
+              <div className={styles.progressHead}>
+                <span>Reading progress</span>
+                <strong>{readCount} of {universeComics.length}</strong>
+              </div>
+              <div
+                className={styles.progressTrack}
+                role="progressbar"
+                aria-valuenow={readCount}
+                aria-valuemin={0}
+                aria-valuemax={universeComics.length}
+                aria-label={`Read ${readCount} of ${universeComics.length} books`}
+              >
+                <span style={{ width: `${universeComics.length ? (readCount / universeComics.length) * 100 : 0}%` }} />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -334,7 +377,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <button
             className={universe === 'dc' ? styles.universeActive : undefined}
             type="button"
-            onClick={() => setUniverse('dc')}
+            onClick={() => selectUniverse('dc')}
             aria-pressed={universe === 'dc'}
           >
             <span>Comics / 01</span>
@@ -344,7 +387,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <button
             className={universe === 'marvel' ? styles.universeActive : undefined}
             type="button"
-            onClick={() => setUniverse('marvel')}
+            onClick={() => selectUniverse('marvel')}
             aria-pressed={universe === 'marvel'}
           >
             <span>Comics / 02</span>
@@ -373,6 +416,48 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           )}
           <span>{visibleComics.length} books</span>
         </nav>
+
+        <div className={styles.toolbar}>
+          <div className={styles.searchField}>
+            <input
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search a title, a writer, or an artist"
+              aria-label="Search the comics"
+            />
+            {search && (
+              <button type="button" onClick={() => setSearch('')} aria-label="Clear the search">
+                <X weight="regular" />
+              </button>
+            )}
+          </div>
+          <nav className={styles.categories} aria-label="Filter by category">
+            <button
+              type="button"
+              className={category === 'all' ? styles.categoryActive : undefined}
+              aria-pressed={category === 'all'}
+              onClick={() => setCategory('all')}
+            >
+              All categories
+            </button>
+            {categories.map(([name, total]) => (
+              <button
+                key={name}
+                type="button"
+                className={category === name ? styles.categoryActive : undefined}
+                aria-pressed={category === name}
+                onClick={() => setCategory(name)}
+              >
+                {name} <small>{total}</small>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {visibleComics.length === 0 && (
+          <p className={styles.emptyResult}>No comic matches the current filters.</p>
+        )}
 
         <div className={styles.grid}>
           {visibleComics.map((comic, index) => {
@@ -542,6 +627,16 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                     </dd>
                   </div>
                 </dl>
+                {selectedComic.link && (
+                  <a
+                    className={styles.buyLink}
+                    href={selectedComic.link}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    Where to buy
+                  </a>
+                )}
                 {authenticated && (
                   <div className={styles.ownerControls}>
                     <p>Owner controls</p>
@@ -651,6 +746,16 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <label>
                 Collects
                 <input value={draft.collects} onChange={setField('collects')} maxLength={600} placeholder="Batman #404-407" />
+              </label>
+              <label>
+                Purchase link
+                <input
+                  value={draft.link}
+                  onChange={setField('link')}
+                  maxLength={500}
+                  inputMode="url"
+                  placeholder="https://www.amazon.com/dp/..."
+                />
               </label>
               {draft.cover && (
                 <div className={styles.lookupCover}>
@@ -827,6 +932,16 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 Collects
                 <input value={draft.collects} onChange={setField('collects')} maxLength={600} placeholder="Batman #404-407" />
               </label>
+              <label>
+                Purchase link
+                <input
+                  value={draft.link}
+                  onChange={setField('link')}
+                  maxLength={500}
+                  inputMode="url"
+                  placeholder="https://www.amazon.com/dp/..."
+                />
+              </label>
               {draft.cover && (
                 <div className={styles.lookupCover}>
                   <img src={draft.cover} alt="Cover found by the lookup" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />
@@ -836,6 +951,18 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   </div>
                 </div>
               )}
+              <div className={styles.addComicOptions}>
+                <label>
+                  Publisher
+                  <select
+                    value={draft.universe}
+                    onChange={(event) => setDraft((current) => ({ ...current, universe: event.target.value as Universe }))}
+                  >
+                    <option value="dc">DC</option>
+                    <option value="marvel">Marvel</option>
+                  </select>
+                </label>
+              </div>
               {draft.cover && (
                 <div className={styles.lookupCover}>
                   <img src={draft.cover} alt="Cover for this comic" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />

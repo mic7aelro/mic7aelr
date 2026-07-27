@@ -25,9 +25,6 @@ export function DiscoveryRedesign() {
           <span className={styles.sectionLabel}>Discovery</span>
         </div>
         <nav className={styles.headerNav} aria-label="Discovery navigation">
-          <Link href="/#about">About</Link>
-          <Link href="/#work">Work</Link>
-          <Link href="/writing">Writing</Link>
           <Link href="/comics">Comics</Link>
         </nav>
         <div className={styles.headerActions}>

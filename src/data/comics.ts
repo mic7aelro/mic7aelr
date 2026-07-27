@@ -16,6 +16,8 @@ export type Comic = {
   status: ComicStatus;
   universe?: 'dc' | 'marvel';
   cover?: string;
+  /** A purchase page for this edition, for example an Amazon link. */
+  link?: string;
 };
 
 const comicCatalog: Comic[] = [

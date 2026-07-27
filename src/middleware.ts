@@ -10,7 +10,8 @@ import { NextResponse, type NextRequest } from 'next/server';
  */
 export function middleware(request: NextRequest) {
   const accept = request.headers.get('accept') || '';
-  const wantsJson = request.nextUrl.searchParams.get('format') === 'json';
+  const format = request.nextUrl.searchParams.get('format');
+  const wantsData = format === 'json' || format === 'md';
 
   // Next.js requests the route again for client navigation and for prefetch.
   // Those requests must still receive the page.
@@ -18,7 +19,7 @@ export function middleware(request: NextRequest) {
     || request.headers.has('rsc')
     || request.headers.has('next-router-prefetch');
 
-  if (!wantsJson && (isAppRequest || accept.includes('text/html'))) return NextResponse.next();
+  if (!wantsData && (isAppRequest || accept.includes('text/html'))) return NextResponse.next();
 
   const url = request.nextUrl.clone();
   url.pathname = '/api/comics';

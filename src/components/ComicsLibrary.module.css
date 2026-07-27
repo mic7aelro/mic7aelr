@@ -72,6 +72,32 @@
 .filters .addComicButton + span { margin-left: 0; }
 .addComicButton svg { width: 12px; height: 12px; }
 
+.progress { margin-top: 26px; }
+.progressHead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 9px; }
+.progressHead span { color: var(--quiet); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.progressHead strong { color: var(--muted); font-size: .72rem; font-weight: 500; }
+.progressTrack { position: relative; height: 3px; overflow: hidden; background: var(--line); }
+.progressTrack span { display: block; height: 100%; background: var(--ink); transition: width 420ms cubic-bezier(.16,1,.3,1); }
+
+.toolbar { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); align-items: center; gap: 22px; min-height: 62px; border-bottom: 1px solid var(--line); }
+.searchField { position: relative; display: flex; align-items: center; }
+.searchField input { width: 100%; min-height: 38px; padding: 8px 30px 8px 0; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--ink); font: inherit; font-size: .78rem; }
+.searchField input::placeholder { color: var(--quiet); }
+.searchField input:focus { outline: 0; border-bottom-color: var(--ink); }
+.searchField input::-webkit-search-cancel-button { display: none; }
+.searchField button { position: absolute; right: 0; display: grid; width: 22px; height: 22px; padding: 0; border: 0; background: transparent; color: var(--muted); place-items: center; cursor: pointer; }
+.searchField button:hover { color: var(--ink); }
+.searchField svg { width: 13px; height: 13px; }
+
+.categories { display: flex; justify-content: flex-end; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.categories::-webkit-scrollbar { display: none; }
+.categories button { display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 11px; border: 1px solid var(--line); background: transparent; color: var(--quiet); font: inherit; font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: border-color 180ms ease, color 180ms ease; }
+.categories button:hover { border-color: var(--muted); color: var(--ink); }
+.categories small { color: inherit; font-size: .58rem; opacity: .62; }
+.categories .categoryActive { border-color: var(--ink); background: var(--ink); color: var(--background); }
+
+.emptyResult { padding: 52px 0 0; color: var(--muted); font-size: .86rem; }
+
 .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 64px 24px; padding-top: 52px; }
 .card { min-width: 0; }
 .cardButton { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
@@ -126,6 +152,10 @@
 .ownerControls > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .ownerControls button, .createComicButton { min-height: 38px; padding: 0 14px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
 .ownerControls button:hover { background: var(--ink); color: var(--background); }
+.buyLink { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 10px 15px; border: 1px solid var(--line); color: var(--ink); font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; transition: border-color 180ms ease, background 180ms ease; }
+.buyLink:hover { border-color: var(--ink); background: rgba(255,255,255,.05); }
+.buyLink::after { content: '\2197'; font-size: .8rem; }
+:global(html[data-theme='light']) .buyLink:hover { background: rgba(0,0,0,.04); }
 .comicError { margin-top: 14px; color: #d7746b; font-size: .72rem; line-height: 1.5; }
 .detailArrow { position: absolute; top: 50%; z-index: 2; display: grid; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; background: rgba(12,12,11,.9); color: #f1f1ed; cursor: pointer; place-items: center; transform: translateY(-50%); transition: background 180ms ease, transform 180ms ease; }
 .detailArrow:hover { background: #f1f1ed; color: #111; }
@@ -194,6 +224,9 @@
   .universeTabs button { min-height: 104px; padding: 18px 16px; }
   .universeTabs strong { font-size: clamp(2.7rem, 14vw, 4rem); }
   .universeTabs small { display: none; }
+  .toolbar { grid-template-columns: 1fr; align-items: stretch; gap: 0; padding-block: 12px; }
+  .searchField input { padding-right: 26px; border-bottom-color: var(--line); }
+  .categories { justify-content: flex-start; padding-block: 12px 2px; }
   .filters { gap: 18px; overflow-x: auto; scrollbar-width: none; }
   .filters::-webkit-scrollbar { display: none; }
   .filters > span { display: none; }
