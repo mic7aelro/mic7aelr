@@ -92,6 +92,15 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     };
   }, [addingComic, editingComic, selectedComic, signingIn]);
 
+  const seriesTotals = useMemo(() => {
+    const totals = new Map<string, number>();
+    for (const comic of library) {
+      if (!comic.series) continue;
+      totals.set(comic.series, (totals.get(comic.series) ?? 0) + 1);
+    }
+    return totals;
+  }, [library]);
+
   const categories = useMemo(() => {
     const seen = new Map<string, number>();
     for (const comic of library) {
@@ -501,6 +510,11 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   </div>
                   <div className={styles.cardCopy}>
                     <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
+                    {comic.series && comic.order ? (
+                      <span className={styles.seriesTag}>
+                        {comic.series} · {comic.order} of {seriesTotals.get(comic.series) ?? comic.order}
+                      </span>
+                    ) : null}
                     <h2>{comic.title}</h2>
                     {comic.creators && <span>{comic.creators}</span>}
                   </div>
@@ -604,6 +618,17 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                     <div>
                       <dt>Artist{selectedComic.artists.includes(',') || selectedComic.artists.includes('&') ? 's' : ''}</dt>
                       <dd>{selectedComic.artists}</dd>
+                    </div>
+                  )}
+                  {selectedComic.series && (
+                    <div>
+                      <dt>Series</dt>
+                      <dd>
+                        {selectedComic.series}
+                        {selectedComic.order
+                          ? ` · Book ${selectedComic.order} of ${seriesTotals.get(selectedComic.series) ?? selectedComic.order}`
+                          : ''}
+                      </dd>
                     </div>
                   )}
                   {selectedComic.collects && (

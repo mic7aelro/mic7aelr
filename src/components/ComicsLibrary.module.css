@@ -120,6 +120,7 @@
 .cardCopy p { color: var(--quiet); font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .cardCopy h2 { margin-top: 8px; font-family: var(--font-cormorant), serif; font-size: clamp(1.55rem, 2.4vw, 2.15rem); font-weight: 500; letter-spacing: -.025em; line-height: 1.02; }
 .cardCopy span { display: block; margin-top: 8px; color: var(--muted); font-size: .7rem; line-height: 1.45; }
+.cardCopy .seriesTag { display: inline-block; margin-top: 9px; padding: 3px 7px; border: 1px solid var(--line); color: var(--quiet); font-size: .55rem; font-weight: 700; letter-spacing: .07em; line-height: 1.35; text-transform: uppercase; }
 
 .detailBackdrop { position: fixed; inset: 0; z-index: 40; display: grid; padding: 32px 76px; background: rgba(0,0,0,.68); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); place-items: center; }
 /* padding: 0 overrides the global `section` padding-block. The add comic panel

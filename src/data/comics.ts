@@ -1,4 +1,5 @@
 import { comicDetails } from './comicDetails';
+import { comicSeries } from './comicSeries';
 
 export type ComicStatus = 'owned' | 'wishlist';
 
@@ -18,6 +19,10 @@ export type Comic = {
   cover?: string;
   /** A purchase page for this edition, for example an Amazon link. */
   link?: string;
+  /** The run that holds this book, when the run reads in sequence. */
+  series?: string;
+  /** The position of this book inside the run, counting from 1. */
+  order?: number;
 };
 
 const comicCatalog: Comic[] = [
@@ -111,6 +116,7 @@ const comicCatalog: Comic[] = [
 export const comics: Comic[] = comicCatalog.map((comic) => ({
   ...comic,
   ...comicDetails[comic.id],
+  ...comicSeries[comic.id],
 }));
 
 export const comicCovers: Record<string, string> = {

@@ -17,11 +17,12 @@ function toMarkdown(list: Awaited<ReturnType<typeof getComics>>, universe: strin
       + `${list.filter((c) => c.status === 'owned').length} owned. `
       + `${list.filter((c) => c.status === 'wishlist').length} on the wishlist.`,
     '',
-    '| Title | Year | Category | Writers | Artists | Collects | Read | Status |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Title | Series | Year | Category | Writers | Artists | Collects | Read | Status |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ];
   for (const comic of list) {
-    lines.push(`| ${cell(comic.title)} | ${cell(comic.year)} | ${cell(comic.category)} `
+    const series = comic.series ? `${cell(comic.series)} ${comic.order ?? ''}`.trim() : '';
+    lines.push(`| ${cell(comic.title)} | ${series} | ${cell(comic.year)} | ${cell(comic.category)} `
       + `| ${cell(comic.writers || comic.creators)} | ${cell(comic.artists)} | ${cell(comic.collects)} `
       + `| ${comic.read ? 'yes' : 'no'} | ${comic.status} |`);
   }

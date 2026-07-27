@@ -4,7 +4,7 @@ import { getWritingDatabase, isWritingConfigured } from '@/lib/mongodb';
 /** Fields the author can change from the comics page. */
 export const editableFields = [
   'title', 'description', 'year', 'category', 'creators',
-  'writers', 'artists', 'collects', 'cover', 'link',
+  'writers', 'artists', 'collects', 'cover', 'link', 'series',
 ] as const;
 
 type ComicRecord = Comic & {
