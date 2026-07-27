@@ -1,16 +1,8 @@
 import { NextResponse } from 'next/server';
-import { amazonCover, extractIsbn, searchComics, toIsbn10 } from '@/lib/comic-lookup';
+import { amazonCover, searchComics, toIsbn10 } from '@/lib/comic-lookup';
 import { getComics } from '@/lib/comics-data';
 import { getWritingDatabase } from '@/lib/mongodb';
 import { isAdmin } from '@/lib/writing-auth';
-
-const GOODREADS_URL = 'https://www.goodreads.com/book/review_counts.json';
-/**
- * The fewest ratings an average may rest on.
- * A rare printing can carry a handful of ratings, and that average would
- * misrepresent the book beside an average taken from thousands.
- */
-const MIN_RATINGS = 100;
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -44,9 +36,7 @@ function titlesMatch(wanted: string, found: string) {
 
   // A volume number must agree. One title carrying a number and the other
   // carrying none means the edition differs.
-  const leftVolume = volumeOf(wanted);
-  const rightVolume = volumeOf(found);
-  if (leftVolume !== rightVolume) return false;
+  if (volumeOf(wanted) !== volumeOf(found)) return false;
 
   // The titles must be close in length, which rejects a title that merely
   // contains the other, such as "Miles Morales" against every volume.
@@ -98,37 +88,15 @@ function publisherRank(publisher: string) {
   return 1;
 }
 
-type GoodreadsBook = { isbn?: string; average_rating?: string; work_ratings_count?: number };
-
-/** Read the Goodreads average for a batch of ISBN-10 values. */
-async function goodreadsBatch(isbns: string[]) {
-  const found = new Map<string, { rating: number; count: number }>();
-  if (!isbns.length) return found;
-  try {
-    const response = await fetch(`${GOODREADS_URL}?isbns=${isbns.join(',')}`, {
-      headers: { 'User-Agent': 'mic7aelr-portfolio/1.0' },
-    });
-    if (!response.ok) return found;
-    const data = await response.json() as { books?: GoodreadsBook[] };
-    for (const book of data.books || []) {
-      const rating = Number(book.average_rating);
-      const count = Number(book.work_ratings_count) || 0;
-      if (!book.isbn || !Number.isFinite(rating) || rating <= 0) continue;
-      if (count < MIN_RATINGS) continue;
-      found.set(book.isbn, { rating, count });
-    }
-  } catch {
-    // A failed batch leaves the stored values untouched.
-  }
-  return found;
-}
-
+/**
+ * Find a purchase link for a comic that holds none.
+ * The route works on a slice, because a full scan of the collection exceeds
+ * one request.
+ */
 export async function POST(request: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Sign in to continue.' }, { status: 401 });
 
   const body = await request.json().catch(() => ({}));
-  const linksOnly = body.mode === 'links';
-  const ratingsOnly = body.mode === 'ratings';
   // A dry run reports the matches and writes nothing.
   const dryRun = body.dryRun === true;
   // Scan a slice, because a full scan of every comic exceeds the request time.
@@ -141,79 +109,53 @@ export async function POST(request: Request) {
   const collection = database.collection('comics');
 
   const report = {
-    linked: 0, linkSkipped: 0, rated: 0, ratingMissing: 0, scanned: comics.length, total: allComics.length, nextOffset: offset + comics.length, done: offset + comics.length >= allComics.length, dryRun,
+    linked: 0,
+    linkSkipped: 0,
+    scanned: comics.length,
+    total: allComics.length,
+    nextOffset: offset + comics.length,
+    done: offset + comics.length >= allComics.length,
+    dryRun,
     matches: [] as Array<{ title: string; matched: string; isbn: string }>,
     skipped: [] as string[],
   };
-  const isbnById = new Map<string, string>();
 
-  // Step 1: find a purchase link for a comic that holds none.
   for (const comic of comics) {
-    const existing = extractIsbn(comic.link || '');
-    if (existing) {
-      isbnById.set(comic.id, toIsbn10(existing) || existing);
-      continue;
-    }
-    if (comic.link || ratingsOnly) continue;
+    if (comic.link) continue;
 
     await wait(300);
     try {
-      const results = await searchComics(comic.title);
-      const hit = results
+      const hit = (await searchComics(comic.title))
         // A foreign edition would show a cover in another language, so drop it.
         .filter((item) => publisherRank(item.publisher) < 2)
         .filter((item) => titlesMatch(comic.title, item.title) && creatorsMatch(comic, item.authors))
         .sort((left, right) => publisherRank(left.publisher) - publisherRank(right.publisher))[0];
+
       const isbn10 = hit ? toIsbn10(hit.isbn) : '';
       if (!hit || !isbn10 || !isEnglishIsbn(isbn10)) {
         report.linkSkipped += 1;
         report.skipped.push(comic.title);
         continue;
       }
-      isbnById.set(comic.id, isbn10);
+
       report.matches.push({ title: comic.title, matched: hit.title, isbn: isbn10 });
-      if (dryRun) { report.linked += 1; continue; }
+      report.linked += 1;
+      if (dryRun) continue;
+
       const update: Record<string, string> = {
         link: `https://www.amazon.com/dp/${isbn10}`,
         updatedAt: new Date().toISOString(),
       };
       // Keep a cover that already works; only fill an empty one.
       if (!comic.cover) update.cover = amazonCover(isbn10);
-      await collection.updateOne({ id: comic.id }, { $set: update, $setOnInsert: { id: comic.id, custom: false } }, { upsert: true });
-      report.linked += 1;
-    } catch {
-      report.linkSkipped += 1;
-    }
-  }
-
-  if (linksOnly) return NextResponse.json(report);
-
-  // Step 2: read the Goodreads average for every ISBN, in batches.
-  const entries = [...isbnById.entries()];
-  for (let index = 0; index < entries.length; index += 25) {
-    const slice = entries.slice(index, index + 25);
-    if (index > 0) await wait(400);
-    const ratings = await goodreadsBatch(slice.map(([, isbn]) => isbn));
-    for (const [id, isbn] of slice) {
-      const found = ratings.get(isbn);
-      if (!found) {
-        report.ratingMissing += 1;
-        continue;
-      }
-      report.rated += 1;
-      if (dryRun) continue;
       await collection.updateOne(
-        { id },
-        {
-          $set: {
-            goodreadsRating: Math.round(found.rating * 100) / 100,
-            goodreadsCount: found.count,
-            updatedAt: new Date().toISOString(),
-          },
-          $setOnInsert: { id, custom: false },
-        },
+        { id: comic.id },
+        { $set: update, $setOnInsert: { id: comic.id, custom: false } },
         { upsert: true },
       );
+    } catch {
+      report.linkSkipped += 1;
+      report.skipped.push(comic.title);
     }
   }
 

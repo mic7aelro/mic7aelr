@@ -614,9 +614,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   </div>
                   <div className={styles.cardCopy}>
                     <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
-                    {typeof comic.goodreadsRating === 'number' && (
-                      <span className={styles.scoreTag}>{comic.goodreadsRating.toFixed(2)}<small>/5</small></span>
-                    )}
                     {comic.series && comic.order ? (
                       <span className={styles.seriesTag}>
                         {comic.series} · {comic.order} of {seriesTotals.get(comic.series) ?? comic.order}
@@ -678,9 +675,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                       </div>
                       <div className={styles.cardCopy}>
                         <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
-                        {typeof comic.goodreadsRating === 'number' && (
-                          <span className={styles.scoreTag}>{comic.goodreadsRating.toFixed(2)}<small>/5</small></span>
-                        )}
                         <h2>{comic.title}</h2>
                         {comic.creators && <span>{comic.creators}</span>}
                       </div>
@@ -786,17 +780,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                     <div>
                       <dt>Artist{selectedComic.artists.includes(',') || selectedComic.artists.includes('&') ? 's' : ''}</dt>
                       <dd>{selectedComic.artists}</dd>
-                    </div>
-                  )}
-                  {typeof selectedComic.goodreadsRating === 'number' && (
-                    <div>
-                      <dt>Goodreads</dt>
-                      <dd className={styles.ratingValue}>
-                        <strong>{selectedComic.goodreadsRating.toFixed(2)}</strong><small>/5</small>
-                        {typeof selectedComic.goodreadsCount === 'number' && (
-                          <span>{selectedComic.goodreadsCount.toLocaleString('en')} ratings</span>
-                        )}
-                      </dd>
                     </div>
                   )}
                   {selectedComic.series && (

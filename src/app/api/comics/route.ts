@@ -60,8 +60,7 @@ export async function PATCH(request: Request) {
   const status: ComicStatus | null = body.status === 'owned' || body.status === 'wishlist' ? body.status : null;
   const nextUniverse = body.universe === 'dc' || body.universe === 'marvel' ? body.universe : null;
   const hasMetadata = editableFields.some((field) => field in body)
-    || 'readingOrder' in body || 'goodreadsRating' in body || 'goodreadsCount' in body
-    || nextUniverse !== null;
+    || 'readingOrder' in body || nextUniverse !== null;
   if (!id || (read === null && status === null && !hasMetadata)) {
     return NextResponse.json({ error: 'Select a valid comic update.' }, { status: 400 });
   }
@@ -77,11 +76,6 @@ export async function PATCH(request: Request) {
     // Only accept an https address for the cover and for the purchase link.
     if ((field === 'cover' || field === 'link') && value && !/^https:\/\//.test(value)) continue;
     update[field] = value;
-  }
-  for (const field of ['goodreadsRating', 'goodreadsCount'] as const) {
-    if (!(field in body)) continue;
-    const value = Number(body[field]);
-    update[field] = body[field] === '' || !Number.isFinite(value) ? null : value;
   }
   if ('readingOrder' in body) {
     const value = Number(body.readingOrder);

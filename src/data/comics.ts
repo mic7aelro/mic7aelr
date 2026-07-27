@@ -26,10 +26,6 @@ export type Comic = {
   order?: number;
   /** The place of this book in the suggested reading order of its publisher. */
   readingOrder?: number;
-  /** The Goodreads average, from 0 to 5. */
-  goodreadsRating?: number;
-  /** How many Goodreads ratings produced the average. */
-  goodreadsCount?: number;
 };
 
 const comicCatalog: Comic[] = [

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fill the purchase link and the Goodreads rating for the comics collection.
+ * Fill the purchase link for each comic in the collection.
  *
  * The server route works on a slice, because a full scan of the collection
  * exceeds one request. This script walks every slice and prints a report.
@@ -57,7 +57,7 @@ const cookie = (signIn.headers.getSetCookie?.() || []).map((item) => item.split(
 
 console.log(`${apply ? 'APPLY' : 'DRY RUN'} against ${base}\n`);
 
-const totals = { linked: 0, linkSkipped: 0, rated: 0, ratingMissing: 0 };
+const totals = { linked: 0, linkSkipped: 0 };
 const matches = [];
 const skipped = [];
 let offset = 0;
@@ -77,8 +77,6 @@ while (offset < total) {
   total = report.total;
   totals.linked += report.linked;
   totals.linkSkipped += report.linkSkipped;
-  totals.rated += report.rated;
-  totals.ratingMissing += report.ratingMissing;
   matches.push(...(report.matches || []));
   skipped.push(...(report.skipped || []));
   process.stdout.write(`  scanned ${Math.min(report.nextOffset, total)} of ${total}\r`);
@@ -104,6 +102,4 @@ if (skipped.length) {
 
 console.log(`links ${apply ? 'set' : 'proposed'}: ${totals.linked}`);
 console.log(`links skipped:  ${totals.linkSkipped}`);
-console.log(`ratings ${apply ? 'set' : 'found'}: ${totals.rated}`);
-console.log(`ratings missing: ${totals.ratingMissing}`);
 if (!apply) console.log('\nNothing was written. Re-run with --apply once the matches look right.');

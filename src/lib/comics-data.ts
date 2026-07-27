@@ -33,7 +33,7 @@ export async function getComics(): Promise<Comic[]> {
         // Accept an empty string, which clears a field, and accept a number.
         if (value !== undefined && value !== null) overrides[field] = value;
       }
-      for (const field of ['goodreadsRating', 'goodreadsCount', 'readingOrder'] as const) {
+      for (const field of ['readingOrder'] as const) {
         const value = record[field];
         if (typeof value === 'number') overrides[field] = value;
       }
