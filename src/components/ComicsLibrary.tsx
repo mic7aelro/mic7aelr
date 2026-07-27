@@ -6,10 +6,25 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { type Comic } from '@/data/comics';
+import { readingTracks } from '@/data/comicOrder';
 import styles from './ComicsLibrary.module.css';
 
 type Filter = 'all' | 'read' | 'unread' | 'owned' | 'wishlist';
 type Universe = 'dc' | 'marvel';
+
+const trackNotes = new Map(
+  Object.values(readingTracks).flat().map((track) => [track.name, track.note]),
+);
+const trackNote = (name: string) => trackNotes.get(name) ?? '';
+
+/** A search on the publisher site. Neither publisher offers a keyless link
+ *  to one collected edition, so the link runs a search for the title. */
+function publisherLink(comic: Comic) {
+  const query = encodeURIComponent(comic.title);
+  return comic.universe === 'marvel'
+    ? `https://www.marvel.com/search?query=${query}`
+    : `https://www.dc.com/search?q=${query}`;
+}
 
 const filters: { id: Filter; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -158,6 +173,16 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       .sort((left, right) => (left.readingOrder ?? 0) - (right.readingOrder ?? 0)),
     [visibleComics],
   );
+  const tracks = useMemo(() => {
+    const grouped = new Map<string, Comic[]>();
+    for (const comic of orderedComics) {
+      const name = comic.readingTrack || 'Reading order';
+      if (!grouped.has(name)) grouped.set(name, []);
+      grouped.get(name)!.push(comic);
+    }
+    return [...grouped.entries()];
+  }, [orderedComics]);
+
   const wheneverComics = useMemo(
     () => visibleComics.filter((comic) => typeof comic.readingOrder !== 'number'),
     [visibleComics],
@@ -413,6 +438,63 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     setSelectedComic(data.comic);
   };
 
+  const renderCard = (comic: Comic, index: number) => {
+    const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
+    const showImage = !failedCovers[comic.id];
+    return (
+      <article className={styles.card} key={comic.id}>
+        <button
+          className={styles.cardButton}
+          type="button"
+          onClick={() => setSelectedComic(comic)}
+          aria-label={`Open details for ${comic.title}`}
+        >
+          <div className={styles.cover}>
+            {showImage ? (
+              <img
+                className={containCovers[comic.id] ? styles.containCover : undefined}
+                src={cover}
+                alt={`Cover of ${comic.title}`}
+                loading={index < 8 ? 'eager' : 'lazy'}
+                onLoad={measureCover(comic.id)}
+                onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
+              />
+            ) : (
+              <div className={styles.fallbackCover} aria-label={`Cover placeholder for ${comic.title}`}>
+                <span>{comic.universe === 'marvel' ? 'Marvel' : 'DC'}</span>
+                <strong>{comic.title}</strong>
+                <small>{comic.creators}</small>
+              </div>
+            )}
+            {byOrder && typeof comic.readingOrder === 'number' && (
+              <span className={styles.stepMark}>{index + 1}</span>
+            )}
+            <div className={styles.coverStatus}>
+              <span className={comic.read ? styles.read : styles.unread}>
+                {comic.read ? <Check weight="bold" /> : <Circle weight="regular" />}
+                {comic.read ? 'Read' : 'Unread'}
+              </span>
+              <span className={comic.status === 'wishlist' ? styles.wishlist : styles.owned}>
+                {comic.status === 'wishlist' && <BookmarkSimple weight="fill" />}
+                {comic.status === 'wishlist' ? 'Wishlist' : 'Owned'}
+              </span>
+            </div>
+          </div>
+          <div className={styles.cardCopy}>
+            <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
+            {comic.series && comic.order ? (
+              <span className={styles.seriesTag}>
+                {comic.series} · {comic.order} of {seriesTotals.get(comic.series) ?? comic.order}
+              </span>
+            ) : null}
+            <h2>{comic.title}</h2>
+            {comic.creators && <span>{comic.creators}</span>}
+          </div>
+        </button>
+      </article>
+    );
+  };
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -565,125 +647,42 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <p className={styles.emptyResult}>No comic matches the current filters.</p>
         )}
 
-        {byOrder && orderedComics.length > 0 && (
-          <div className={styles.orderHead}>
-            <h2>Reading order</h2>
-            <p>Read these in sequence. The order follows the story, not the release date.</p>
+        {!byOrder && (
+          <div className={styles.grid}>
+            {visibleComics.map((comic, index) => renderCard(comic, index))}
           </div>
         )}
 
-        <div className={styles.grid}>
-          {(byOrder ? orderedComics : visibleComics).map((comic, index) => {
-            const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
-            const showImage = !failedCovers[comic.id];
-            return (
-              <article className={styles.card} key={comic.id}>
-                <button
-                  className={styles.cardButton}
-                  type="button"
-                  onClick={() => setSelectedComic(comic)}
-                  aria-label={`Open details for ${comic.title}`}
-                >
-                  <div className={styles.cover}>
-                    {showImage ? (
-                      <img
-                        className={containCovers[comic.id] ? styles.containCover : undefined}
-                        src={cover}
-                        alt={`Cover of ${comic.title}`}
-                        loading={index < 8 ? 'eager' : 'lazy'}
-                        onLoad={measureCover(comic.id)}
-                        onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
-                      />
-                    ) : (
-                      <div className={styles.fallbackCover} aria-label={`Cover placeholder for ${comic.title}`}>
-                        <span>{comic.universe === 'marvel' ? 'Marvel' : 'DC'}</span>
-                        <strong>{comic.title}</strong>
-                        <small>{comic.creators}</small>
-                      </div>
-                    )}
-                    <div className={styles.coverStatus}>
-                      <span className={comic.read ? styles.read : styles.unread}>
-                        {comic.read ? <Check weight="bold" /> : <Circle weight="regular" />}
-                        {comic.read ? 'Read' : 'Unread'}
-                      </span>
-                      <span className={comic.status === 'wishlist' ? styles.wishlist : styles.owned}>
-                        {comic.status === 'wishlist' && <BookmarkSimple weight="fill" />}
-                        {comic.status === 'wishlist' ? 'Wishlist' : 'Owned'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className={styles.cardCopy}>
-                    <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
-                    {comic.series && comic.order ? (
-                      <span className={styles.seriesTag}>
-                        {comic.series} · {comic.order} of {seriesTotals.get(comic.series) ?? comic.order}
-                      </span>
-                    ) : null}
-                    <h2>{comic.title}</h2>
-                    {comic.creators && <span>{comic.creators}</span>}
-                  </div>
-                </button>
-              </article>
-            );
-          })}
-        </div>
-
-        {byOrder && wheneverComics.length > 0 && (
-          <>
-            <div className={styles.orderHead}>
-              <h2>Read whenever</h2>
-              <p>These books stand alone. Read any of them at any time.</p>
+        {byOrder && tracks.map(([name, books], trackIndex) => (
+          <section className={styles.track} key={name}>
+            <div className={styles.trackHead}>
+              <span className={styles.trackNumber}>{String(trackIndex + 1).padStart(2, '0')}</span>
+              <div>
+                <h2>{name}</h2>
+                <p>{trackNote(name)}</p>
+              </div>
+              <small>{books.length} books</small>
             </div>
             <div className={styles.grid}>
-              {wheneverComics.map((comic, index) => {
-                const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
-                return (
-                  <article className={styles.card} key={comic.id}>
-                    <button
-                      className={styles.cardButton}
-                      type="button"
-                      onClick={() => setSelectedComic(comic)}
-                      aria-label={`Open details for ${comic.title}`}
-                    >
-                      <div className={styles.cover}>
-                        {!failedCovers[comic.id] ? (
-                          <img
-                            className={containCovers[comic.id] ? styles.containCover : undefined}
-                            src={cover}
-                            alt={`Cover of ${comic.title}`}
-                            loading={index < 4 ? 'eager' : 'lazy'}
-                            onLoad={measureCover(comic.id)}
-                            onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
-                          />
-                        ) : (
-                          <div className={styles.fallbackCover}>
-                            <span>{comic.universe === 'marvel' ? 'Marvel' : 'DC'}</span>
-                            <strong>{comic.title}</strong>
-                            <small>{comic.creators}</small>
-                          </div>
-                        )}
-                        <div className={styles.coverStatus}>
-                          <span className={comic.read ? styles.read : styles.unread}>
-                            {comic.read ? <Check weight="bold" /> : <Circle weight="regular" />}
-                            {comic.read ? 'Read' : 'Unread'}
-                          </span>
-                          <span className={comic.status === 'wishlist' ? styles.wishlist : styles.owned}>
-                            {comic.status === 'wishlist' && <BookmarkSimple weight="fill" />}
-                            {comic.status === 'wishlist' ? 'Wishlist' : 'Owned'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className={styles.cardCopy}>
-                        <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
-                        <h2>{comic.title}</h2>
-                        {comic.creators && <span>{comic.creators}</span>}
-                      </div>
-                    </button>
-                  </article>
-                );
-              })}
+              {books.map((comic, index) => renderCard(comic, index))}
             </div>
-          </>
+          </section>
+        ))}
+
+        {byOrder && wheneverComics.length > 0 && (
+          <section className={styles.track}>
+            <div className={styles.trackHead}>
+              <span className={styles.trackNumber}>—</span>
+              <div>
+                <h2>Read whenever</h2>
+                <p>These books stand alone. Read any of them at any time.</p>
+              </div>
+              <small>{wheneverComics.length} books</small>
+            </div>
+            <div className={styles.grid}>
+              {wheneverComics.map((comic, index) => renderCard(comic, index))}
+            </div>
+          </section>
         )}
       </main>
 
@@ -814,6 +813,14 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                     </dd>
                   </div>
                 </dl>
+                <a
+                  className={styles.buyLink}
+                  href={publisherLink(selectedComic)}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  {selectedComic.universe === 'marvel' ? 'Marvel.com' : 'DC.com'}
+                </a>
                 {selectedComic.link && (
                   <a
                     className={styles.buyLink}

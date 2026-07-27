@@ -33,10 +33,8 @@ export async function getComics(): Promise<Comic[]> {
         // Accept an empty string, which clears a field, and accept a number.
         if (value !== undefined && value !== null) overrides[field] = value;
       }
-      for (const field of ['readingOrder'] as const) {
-        const value = record[field];
-        if (typeof value === 'number') overrides[field] = value;
-      }
+      if (typeof record.readingOrder === 'number') overrides.readingOrder = record.readingOrder;
+      if (typeof record.readingTrack === 'string') overrides.readingTrack = record.readingTrack;
       return { ...comic, ...overrides };
     });
     const custom = records
@@ -44,9 +42,7 @@ export async function getComics(): Promise<Comic[]> {
       .map(({ _id: _ignored, custom: _custom, updatedAt: _updatedAt, ...comic }) => ({
         ...comic,
         // A comic added by hand still belongs in the reading order.
-        ...(comic.readingOrder === undefined && comicOrder[comic.id]
-          ? { readingOrder: comicOrder[comic.id] }
-          : {}),
+        ...(comic.readingOrder === undefined ? comicOrder[comic.id] ?? {} : {}),
       }));
     return [...seeded, ...custom];
   } catch {

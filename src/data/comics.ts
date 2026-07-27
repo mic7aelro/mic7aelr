@@ -26,6 +26,8 @@ export type Comic = {
   order?: number;
   /** The place of this book in the suggested reading order of its publisher. */
   readingOrder?: number;
+  /** The named run that this book belongs to in the reading order. */
+  readingTrack?: string;
 };
 
 const comicCatalog: Comic[] = [
@@ -120,7 +122,7 @@ export const comics: Comic[] = comicCatalog.map((comic) => ({
   ...comic,
   ...comicDetails[comic.id],
   ...comicSeries[comic.id],
-  ...(comicOrder[comic.id] ? { readingOrder: comicOrder[comic.id] } : {}),
+  ...(comicOrder[comic.id] ?? {}),
 }));
 
 export const comicCovers: Record<string, string> = {
