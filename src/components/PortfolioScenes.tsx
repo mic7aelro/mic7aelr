@@ -26,7 +26,6 @@ export function PortfolioNavigation() {
       <div className={styles.brandGroup}>
         <a className={styles.brand} href="#top" aria-label="mic7aelr, home">mic7aelr</a>
         <a className={styles.writingHome} href="/writing">Writing</a>
-        <a className={styles.writingHome} href="/comics">Comics</a>
       </div>
       <div className={styles.navLinks}>
         <a href="#about">About</a>
