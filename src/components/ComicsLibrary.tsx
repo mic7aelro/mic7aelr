@@ -72,7 +72,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [filter, setFilter] = useState<Filter>('all');
   const [category, setCategory] = useState('all');
   const [search, setSearch] = useState('');
-  const [byOrder, setByOrder] = useState(false);
+  // Group by run by default. The subheadings carry the reading order.
+  const [byOrder, setByOrder] = useState(true);
   const [selectedComic, setSelectedComic] = useState<Comic | null>(null);
   const [addingComic, setAddingComic] = useState(false);
   const [savingComic, setSavingComic] = useState(false);
@@ -619,7 +620,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               aria-pressed={byOrder}
               onClick={() => setByOrder((current) => !current)}
             >
-              Reading order
+              {byOrder ? 'Grouped' : 'Flat list'}
             </button>
             <button
               type="button"
