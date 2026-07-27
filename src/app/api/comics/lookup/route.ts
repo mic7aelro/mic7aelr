@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { extractIsbn, lookupByIsbn, searchComics } from '@/lib/comic-lookup';
+import { amazonCover, extractIsbn, lookupByIsbn, searchComics } from '@/lib/comic-lookup';
 import { isAdmin } from '@/lib/writing-auth';
 import { cleanText } from '@/lib/writing-utils';
 
@@ -17,8 +17,18 @@ export async function GET(request: Request) {
     const isbn = extractIsbn(query);
     if (isbn) {
       const book = await lookupByIsbn(isbn);
-      if (!book) return NextResponse.json({ error: 'Open Library has no record for that ISBN.' }, { status: 404 });
-      return NextResponse.json({ kind: 'book', isbn, book });
+      if (book) return NextResponse.json({ kind: 'book', isbn, book });
+      // Open Library has no record. A recent release often still has a cover.
+      const cover = amazonCover(isbn);
+      if (cover) {
+        return NextResponse.json({
+          kind: 'book',
+          isbn,
+          book: { title: '', year: '', writers: '', artists: '', cover, pages: '' },
+          note: 'Open Library has no record for that ISBN. The cover is available. Enter the other details by hand.',
+        });
+      }
+      return NextResponse.json({ error: 'Open Library has no record for that ISBN.' }, { status: 404 });
     }
 
     const results = await searchComics(query);

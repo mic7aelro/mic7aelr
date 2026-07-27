@@ -38,7 +38,7 @@ export function PortfolioPresentation() {
   usePortfolioIntro(root);
 
   return (
-    <main ref={root} className={styles.site} style={siteStyle} data-native-cursor>
+    <main ref={root} className={styles.site} style={siteStyle}>
       <PortfolioNavigation />
       <div ref={deck} className={styles.deck}>
         <HeroScene />

@@ -4,6 +4,9 @@
 const SEARCH_URL = 'https://openlibrary.org/search.json';
 const BOOKS_URL = 'https://openlibrary.org/api/books';
 const COVER_URL = 'https://covers.openlibrary.org/b/isbn';
+// Amazon serves a cover by ISBN. Use it when Open Library has no record, which
+// happens with a recent release.
+const AMAZON_COVER_URL = 'https://images-na.ssl-images-amazon.com/images/P';
 
 export type ComicCandidate = {
   isbn: string;
@@ -77,6 +80,22 @@ function coverFor(isbn: string) {
   return isbn ? `${COVER_URL}/${isbn}-L.jpg` : '';
 }
 
+/**
+ * Return a cover address that shows a real image.
+ * Open Library answers with a blank image and status 200 when it holds no
+ * cover, so this asks for `default=false` to get status 404 instead.
+ */
+export async function resolveCover(isbn: string) {
+  if (!isbn) return '';
+  try {
+    const response = await fetch(`${COVER_URL}/${isbn}-L.jpg?default=false`, { method: 'HEAD' });
+    if (response.ok) return coverFor(isbn);
+  } catch {
+    // Fall through to the Amazon cover.
+  }
+  return amazonCover(isbn);
+}
+
 export async function searchComics(query: string): Promise<ComicCandidate[]> {
   const url = `${SEARCH_URL}?q=${encodeURIComponent(query)}&limit=8`
     + '&fields=title,subtitle,author_name,first_publish_year,publisher,isbn';
@@ -103,6 +122,11 @@ export async function searchComics(query: string): Promise<ComicCandidate[]> {
   });
 }
 
+export function amazonCover(isbn: string) {
+  // Amazon indexes the cover by ISBN-10.
+  return isbn.length === 10 ? `${AMAZON_COVER_URL}/${isbn}.01.LZZZZZZZ.jpg` : '';
+}
+
 export async function lookupByIsbn(isbn: string): Promise<ComicLookup | null> {
   const url = `${BOOKS_URL}?bibkeys=ISBN:${encodeURIComponent(isbn)}&format=json&jscmd=data`;
   const response = await fetch(url, { headers: { 'User-Agent': 'mic7aelr-portfolio/1.0' } });
@@ -125,7 +149,7 @@ export async function lookupByIsbn(isbn: string): Promise<ComicLookup | null> {
     year: publishDate.match(/\d{4}/)?.[0] || '',
     writers: credits.writers || authors,
     artists: credits.artists,
-    cover: coverFor(isbn),
+    cover: await resolveCover(isbn),
     pages: book.number_of_pages ? String(book.number_of_pages) : '',
   };
 }

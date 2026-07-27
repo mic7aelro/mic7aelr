@@ -1,6 +1,12 @@
 import { comics, type Comic } from '@/data/comics';
 import { getWritingDatabase, isWritingConfigured } from '@/lib/mongodb';
 
+/** Fields the author can change from the comics page. */
+export const editableFields = [
+  'title', 'description', 'year', 'category', 'creators',
+  'writers', 'artists', 'collects', 'cover',
+] as const;
+
 type ComicRecord = Comic & {
   custom?: boolean;
   updatedAt?: string;
@@ -18,11 +24,14 @@ export async function getComics(): Promise<Comic[]> {
       if (!record) return comic;
       // Apply only the fields the record holds. A record that stores one field
       // must not erase the seeded value of the other field.
-      return {
-        ...comic,
-        ...(typeof record.read === 'boolean' ? { read: record.read } : {}),
-        ...(record.status ? { status: record.status } : {}),
-      };
+      const overrides: Partial<Comic> = {};
+      if (typeof record.read === 'boolean') overrides.read = record.read;
+      if (record.status) overrides.status = record.status;
+      for (const field of editableFields) {
+        const value = record[field];
+        if (typeof value === 'string' && value) overrides[field] = value;
+      }
+      return { ...comic, ...overrides };
     });
     const custom = records
       .filter((record) => record.custom)
