@@ -58,7 +58,9 @@
 .universeTabs button + button { border-left: 1px solid var(--line); }
 .universeTabs button:hover { background: rgba(255,255,255,.025); color: var(--ink); }
 .universeTabs span, .universeTabs small { font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.universeTabs small { align-self: end; justify-self: end; }
+/* Put the count in the wordmark column so its right edge lines up with the
+   wordmark instead of stopping in the column gap. */
+.universeTabs small { grid-column: 2; align-self: end; justify-self: end; }
 .universeTabs strong { align-self: end; font-family: var(--font-cormorant), serif; font-size: clamp(3rem, 5vw, 5rem); font-weight: 400; letter-spacing: -.05em; line-height: .75; }
 .universeTabs .universeActive { background: var(--ink); color: var(--background); }
 .universeTabs .universeActive:hover { background: var(--ink); color: var(--background); }
@@ -68,9 +70,60 @@
 .filters button:hover, .filters .filterActive { color: var(--ink); }
 .filters .filterActive::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 1px; background: var(--ink); content: ''; }
 .filters > span { margin-left: auto; color: var(--quiet); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; }
+/* Only the first add button takes the free space. A second one with
+   margin-left: auto would split the space and strand the first in the middle. */
 .filters .addComicButton { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; color: var(--ink); }
+.filters .addComicButton ~ .addComicButton { margin-left: 0; }
 .filters .addComicButton + span { margin-left: 0; }
 .addComicButton svg { width: 12px; height: 12px; }
+
+.progress { margin-top: 26px; }
+.progressHead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 9px; }
+.progressHead span { color: var(--quiet); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.progressHead strong { color: var(--muted); font-size: .72rem; font-weight: 500; }
+.progressTrack { position: relative; height: 3px; overflow: hidden; background: var(--line); }
+.progressTrack span { display: block; height: 100%; background: var(--ink); transition: width 420ms cubic-bezier(.16,1,.3,1); }
+
+.toolbar { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); align-items: center; gap: 22px; min-height: 62px; border-bottom: 1px solid var(--line); }
+.searchField { position: relative; display: flex; align-items: center; }
+.searchField input { width: 100%; min-height: 38px; padding: 8px 30px 8px 0; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--ink); font: inherit; font-size: .78rem; }
+.searchField input::placeholder { color: var(--quiet); }
+.searchField input:focus { outline: 0; border-bottom-color: var(--ink); }
+.searchField input::-webkit-search-cancel-button { display: none; }
+.searchField button { position: absolute; right: 0; display: grid; width: 22px; height: 22px; padding: 0; border: 0; background: transparent; color: var(--muted); place-items: center; cursor: pointer; }
+.searchField button:hover { color: var(--ink); }
+.searchField svg { width: 13px; height: 13px; }
+
+.categories { display: flex; justify-content: flex-end; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.categories::-webkit-scrollbar { display: none; }
+.categories button { display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 11px; border: 1px solid var(--line); background: transparent; color: var(--quiet); font: inherit; font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: border-color 180ms ease, color 180ms ease; }
+.categories button:hover { border-color: var(--muted); color: var(--ink); }
+.categories small { color: inherit; font-size: .58rem; opacity: .62; }
+.categories .categoryActive { border-color: var(--ink); background: var(--ink); color: var(--background); }
+
+.track { padding-top: clamp(50px, 6vw, 74px); }
+.track:first-of-type { padding-top: clamp(34px, 4vw, 48px); }
+.trackHead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 20px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+.trackNumber { font-family: var(--font-cormorant), serif; font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300; letter-spacing: -.04em; line-height: .8; color: var(--quiet); }
+.trackHead h2 { font-family: var(--font-cormorant), serif; font-size: clamp(1.9rem, 3.4vw, 2.7rem); font-weight: 400; letter-spacing: -.035em; line-height: 1; }
+.trackHead p { max-width: 560px; margin-top: 9px; color: var(--muted); font-size: .82rem; line-height: 1.6; }
+.trackHead small { align-self: end; color: var(--quiet); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+.trackHead + .grid { padding-top: 38px; }
+.stepMark { position: absolute; top: 10px; left: 10px; display: grid; min-width: 26px; height: 26px; padding: 0 7px; border: 1px solid rgba(255,255,255,.2); background: rgba(7,7,7,.82); color: #f1f1ed; font-size: .62rem; font-weight: 700; letter-spacing: .04em; place-items: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+
+.emptyResult { padding: 52px 0 0; color: var(--muted); font-size: .86rem; }
+
+.bulkList { display: grid; max-height: 320px; gap: 4px; overflow-y: auto; overscroll-behavior: contain; margin: 0; padding: 0; border: 1px solid var(--line); list-style: none; }
+.bulkList li { display: grid; grid-template-columns: auto 34px minmax(0, 1fr); align-items: center; gap: 11px; padding: 9px 11px; }
+.bulkList li + li { border-top: 1px solid var(--line); }
+.bulkSkipped { opacity: .42; }
+.bulkKeep { display: grid; margin: 0; place-items: center; }
+.bulkKeep input { width: 15px; min-height: 15px; margin: 0; }
+.bulkList img { width: 34px; height: 50px; object-fit: cover; background: var(--line); }
+.bulkNoCover { display: block; width: 34px; height: 50px; background: var(--line); }
+.bulkFields { display: grid; min-width: 0; gap: 4px; }
+.bulkFields input { width: 100%; min-height: 32px; padding: 5px 8px; border: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-size: .76rem; letter-spacing: 0; text-transform: none; }
+.bulkFields small { color: var(--quiet); font-size: .62rem; line-height: 1.4; overflow-wrap: anywhere; }
 
 .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 64px 24px; padding-top: 52px; }
 .card { min-width: 0; }
@@ -94,6 +147,7 @@
 .cardCopy p { color: var(--quiet); font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .cardCopy h2 { margin-top: 8px; font-family: var(--font-cormorant), serif; font-size: clamp(1.55rem, 2.4vw, 2.15rem); font-weight: 500; letter-spacing: -.025em; line-height: 1.02; }
 .cardCopy span { display: block; margin-top: 8px; color: var(--muted); font-size: .7rem; line-height: 1.45; }
+.cardCopy .seriesTag { display: inline-block; margin-top: 9px; padding: 3px 7px; border: 1px solid var(--line); color: var(--quiet); font-size: .55rem; font-weight: 700; letter-spacing: .07em; line-height: 1.35; text-transform: uppercase; }
 
 .detailBackdrop { position: fixed; inset: 0; z-index: 40; display: grid; padding: 32px 76px; background: rgba(0,0,0,.68); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); place-items: center; }
 /* padding: 0 overrides the global `section` padding-block. The add comic panel
@@ -126,6 +180,10 @@
 .ownerControls > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .ownerControls button, .createComicButton { min-height: 38px; padding: 0 14px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
 .ownerControls button:hover { background: var(--ink); color: var(--background); }
+.buyLink { display: inline-flex; margin-right: 10px; align-items: center; gap: 8px; margin-top: 22px; padding: 10px 15px; border: 1px solid var(--line); color: var(--ink); font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; transition: border-color 180ms ease, background 180ms ease; }
+.buyLink:hover { border-color: var(--ink); background: rgba(255,255,255,.05); }
+.buyLink::after { content: '\2197'; font-size: .8rem; }
+:global(html[data-theme='light']) .buyLink:hover { background: rgba(0,0,0,.04); }
 .comicError { margin-top: 14px; color: #d7746b; font-size: .72rem; line-height: 1.5; }
 .detailArrow { position: absolute; top: 50%; z-index: 2; display: grid; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; background: rgba(12,12,11,.9); color: #f1f1ed; cursor: pointer; place-items: center; transform: translateY(-50%); transition: background 180ms ease, transform 180ms ease; }
 .detailArrow:hover { background: #f1f1ed; color: #111; }
@@ -194,10 +252,16 @@
   .universeTabs button { min-height: 104px; padding: 18px 16px; }
   .universeTabs strong { font-size: clamp(2.7rem, 14vw, 4rem); }
   .universeTabs small { display: none; }
+  .trackHead { grid-template-columns: auto minmax(0, 1fr); gap: 14px; }
+  .trackHead small { grid-column: 2; align-self: start; }
+  .toolbar { grid-template-columns: 1fr; align-items: stretch; gap: 0; padding-block: 12px; }
+  .searchField input { padding-right: 26px; border-bottom-color: var(--line); }
+  .categories { justify-content: flex-start; padding-block: 12px 2px; }
   .filters { gap: 18px; overflow-x: auto; scrollbar-width: none; }
   .filters::-webkit-scrollbar { display: none; }
   .filters > span { display: none; }
   .filters .addComicButton { margin-left: auto; white-space: nowrap; }
+  .filters .addComicButton ~ .addComicButton { margin-left: 0; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 42px 14px; padding-top: 34px; }
   .coverStatus { align-items: flex-start; flex-direction: column; }
   .detailBackdrop { padding: 18px; }

@@ -1,10 +1,11 @@
 import { comics, type Comic } from '@/data/comics';
+import { comicOrder } from '@/data/comicOrder';
 import { getWritingDatabase, isWritingConfigured } from '@/lib/mongodb';
 
 /** Fields the author can change from the comics page. */
 export const editableFields = [
   'title', 'description', 'year', 'category', 'creators',
-  'writers', 'artists', 'collects', 'cover',
+  'writers', 'artists', 'collects', 'cover', 'link', 'series',
 ] as const;
 
 type ComicRecord = Comic & {
@@ -29,13 +30,20 @@ export async function getComics(): Promise<Comic[]> {
       if (record.status) overrides.status = record.status;
       for (const field of editableFields) {
         const value = record[field];
-        if (typeof value === 'string' && value) overrides[field] = value;
+        // Accept an empty string, which clears a field, and accept a number.
+        if (value !== undefined && value !== null) overrides[field] = value;
       }
+      if (typeof record.readingOrder === 'number') overrides.readingOrder = record.readingOrder;
+      if (typeof record.readingTrack === 'string') overrides.readingTrack = record.readingTrack;
       return { ...comic, ...overrides };
     });
     const custom = records
       .filter((record) => record.custom)
-      .map(({ _id: _ignored, custom: _custom, updatedAt: _updatedAt, ...comic }) => comic);
+      .map(({ _id: _ignored, custom: _custom, updatedAt: _updatedAt, ...comic }) => ({
+        ...comic,
+        // A comic added by hand still belongs in the reading order.
+        ...(comic.readingOrder === undefined ? comicOrder[comic.id] ?? {} : {}),
+      }));
     return [...seeded, ...custom];
   } catch {
     return comics;

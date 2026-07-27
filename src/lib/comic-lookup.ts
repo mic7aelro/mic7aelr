@@ -82,18 +82,30 @@ function coverFor(isbn: string) {
 
 /**
  * Return a cover address that shows a real image.
- * Open Library answers with a blank image and status 200 when it holds no
- * cover, so this asks for `default=false` to get status 404 instead.
+ * Amazon answers quickly and holds a cover for a recent release, so it comes
+ * first. Open Library answers with a blank image and status 200 when it holds
+ * no cover, and that check costs several seconds, so it runs only when Amazon
+ * cannot serve the ISBN.
  */
 export async function resolveCover(isbn: string) {
   if (!isbn) return '';
+  const amazon = amazonCover(isbn);
+  if (amazon) return amazon;
+
   try {
-    const response = await fetch(`${COVER_URL}/${isbn}-L.jpg?default=false`, { method: 'HEAD' });
+    // Bound the wait, because a slow reply must not stall a batch.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2_500);
+    const response = await fetch(`${COVER_URL}/${isbn}-L.jpg?default=false`, {
+      method: 'HEAD',
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
     if (response.ok) return coverFor(isbn);
   } catch {
-    // Fall through to the Amazon cover.
+    // Fall through and report no cover.
   }
-  return amazonCover(isbn);
+  return '';
 }
 
 export async function searchComics(query: string): Promise<ComicCandidate[]> {
@@ -117,14 +129,26 @@ export async function searchComics(query: string): Promise<ComicCandidate[]> {
       authors: authors.slice(0, 3).join(', '),
       year: doc.first_publish_year ? String(doc.first_publish_year) : '',
       publisher: publishers[0] || '',
-      cover: coverFor(isbn),
+      cover: amazonCover(isbn) || coverFor(isbn),
     }];
   });
 }
 
+/** Convert a 978 ISBN-13 to the matching ISBN-10. */
+export function toIsbn10(isbn: string) {
+  if (isbn.length === 10) return isbn;
+  if (!/^978[0-9]{10}$/.test(isbn)) return '';
+  const core = isbn.slice(3, 12);
+  let total = 0;
+  for (let index = 0; index < 9; index += 1) total += Number(core[index]) * (10 - index);
+  const check = (11 - (total % 11)) % 11;
+  return core + (check === 10 ? 'X' : String(check));
+}
+
 export function amazonCover(isbn: string) {
   // Amazon indexes the cover by ISBN-10.
-  return isbn.length === 10 ? `${AMAZON_COVER_URL}/${isbn}.01.LZZZZZZZ.jpg` : '';
+  const isbn10 = toIsbn10(isbn);
+  return isbn10 ? `${AMAZON_COVER_URL}/${isbn10}.01.LZZZZZZZ.jpg` : '';
 }
 
 export async function lookupByIsbn(isbn: string): Promise<ComicLookup | null> {

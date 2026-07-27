@@ -18,7 +18,6 @@ export default async function WritingLayout({ children }: { children: React.Reac
         <div className={styles.brandGroup}><Link className={styles.brand} href="/">mic7aelr</Link><Link className={styles.writingHome} href="/writing">Writing</Link></div>
         <nav className={styles.nav} aria-label="Writing navigation">
           <Link href="/#work">Work</Link>
-          <Link href="/comics">Comics</Link>
         </nav>
         <div className={styles.headerActions}>
           <ThemeToggle className={styles.themeToggle} />

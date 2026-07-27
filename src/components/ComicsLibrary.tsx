@@ -6,10 +6,25 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { type Comic } from '@/data/comics';
+import { readingTracks } from '@/data/comicOrder';
 import styles from './ComicsLibrary.module.css';
 
 type Filter = 'all' | 'read' | 'unread' | 'owned' | 'wishlist';
 type Universe = 'dc' | 'marvel';
+
+const trackNotes = new Map(
+  Object.values(readingTracks).flat().map((track) => [track.name, track.note]),
+);
+const trackNote = (name: string) => trackNotes.get(name) ?? '';
+
+/** A search on the publisher site. Neither publisher offers a keyless link
+ *  to one collected edition, so the link runs a search for the title. */
+function publisherLink(comic: Comic) {
+  const query = encodeURIComponent(comic.title);
+  return comic.universe === 'marvel'
+    ? `https://www.marvel.com/search?query=${query}`
+    : `https://www.dc.com/search?q=${query}`;
+}
 
 const filters: { id: Filter; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -28,14 +43,21 @@ type ComicCandidate = {
   cover: string;
 };
 
+type BulkCandidate = {
+  link: string; isbn: string; title: string; year: string;
+  writers: string; artists: string; cover: string; found: boolean; note: string;
+  keep: boolean;
+};
+
 type Draft = {
   title: string; description: string; year: string; category: string;
-  writers: string; artists: string; collects: string; cover: string;
+  writers: string; artists: string; collects: string; cover: string; link: string;
+  universe: Universe;
 };
 
 const emptyDraft: Draft = {
   title: '', description: '', year: '', category: '',
-  writers: '', artists: '', collects: '', cover: '',
+  writers: '', artists: '', collects: '', cover: '', link: '', universe: 'dc',
 };
 
 type ComicsLibraryProps = {
@@ -48,6 +70,9 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [library, setLibrary] = useState(initialComics);
   const [universe, setUniverse] = useState<Universe>('dc');
   const [filter, setFilter] = useState<Filter>('all');
+  const [category, setCategory] = useState('all');
+  const [search, setSearch] = useState('');
+  const [byOrder, setByOrder] = useState(false);
   const [selectedComic, setSelectedComic] = useState<Comic | null>(null);
   const [addingComic, setAddingComic] = useState(false);
   const [savingComic, setSavingComic] = useState(false);
@@ -63,12 +88,20 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [lookupNote, setLookupNote] = useState('');
   const [draft, setDraft] = useState(emptyDraft);
   const [editingComic, setEditingComic] = useState<Comic | null>(null);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkLinks, setBulkLinks] = useState('');
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkSaving, setBulkSaving] = useState(false);
+  const [bulkError, setBulkError] = useState('');
+  const [bulkCandidates, setBulkCandidates] = useState<BulkCandidate[]>([]);
+  const [bulkUniverse, setBulkUniverse] = useState<Universe>('dc');
+  const [bulkStatus, setBulkStatus] = useState<'owned' | 'wishlist'>('owned');
   const [signingIn, setSigningIn] = useState(false);
   const [signInPending, setSignInPending] = useState(false);
   const [signInError, setSignInError] = useState('');
 
   useEffect(() => {
-    if (!selectedComic && !addingComic && !signingIn && !editingComic) return;
+    if (!selectedComic && !addingComic && !signingIn && !editingComic && !bulkOpen) return;
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -77,6 +110,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         setAddingComic(false);
         setSigningIn(false);
         setEditingComic(null);
+        setBulkOpen(false);
       }
     };
 
@@ -87,20 +121,77 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', closeOnEscape);
     };
-  }, [addingComic, editingComic, selectedComic, signingIn]);
+  }, [addingComic, bulkOpen, editingComic, selectedComic, signingIn]);
+
+  const seriesTotals = useMemo(() => {
+    const totals = new Map<string, number>();
+    for (const comic of library) {
+      if (!comic.series) continue;
+      totals.set(comic.series, (totals.get(comic.series) ?? 0) + 1);
+    }
+    return totals;
+  }, [library]);
+
+  const categories = useMemo(() => {
+    const seen = new Map<string, number>();
+    for (const comic of library) {
+      if ((comic.universe ?? 'dc') !== universe) continue;
+      seen.set(comic.category, (seen.get(comic.category) ?? 0) + 1);
+    }
+    return [...seen.entries()].sort((left, right) => right[1] - left[1]);
+  }, [library, universe]);
+
+  const selectUniverse = (next: Universe) => {
+    setUniverse(next);
+    setCategory('all');
+  };
 
   const universeComics = useMemo(
     () => library.filter((comic) => (comic.universe ?? 'dc') === universe),
     [library, universe],
   );
 
-  const visibleComics = useMemo(() => universeComics.filter((comic) => {
-    if (filter === 'read') return comic.read;
-    if (filter === 'unread') return !comic.read;
-    if (filter === 'owned') return comic.status === 'owned';
-    if (filter === 'wishlist') return comic.status === 'wishlist';
-    return true;
-  }), [filter, universeComics]);
+  const visibleComics = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return universeComics.filter((comic) => {
+      if (category !== 'all' && comic.category !== category) return false;
+      if (term) {
+        const haystack = [comic.title, comic.creators, comic.writers, comic.artists, comic.collects]
+          .filter(Boolean).join(' ').toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+      if (filter === 'read') return comic.read;
+      if (filter === 'unread') return !comic.read;
+      if (filter === 'owned') return comic.status === 'owned';
+      if (filter === 'wishlist') return comic.status === 'wishlist';
+      return true;
+    });
+  }, [category, filter, search, universeComics]);
+
+  const orderedComics = useMemo(
+    () => visibleComics.filter((comic) => typeof comic.readingOrder === 'number')
+      .sort((left, right) => (left.readingOrder ?? 0) - (right.readingOrder ?? 0)),
+    [visibleComics],
+  );
+  const tracks = useMemo(() => {
+    const grouped = new Map<string, Comic[]>();
+    for (const comic of orderedComics) {
+      const name = comic.readingTrack || 'Reading order';
+      if (!grouped.has(name)) grouped.set(name, []);
+      grouped.get(name)!.push(comic);
+    }
+    return [...grouped.entries()];
+  }, [orderedComics]);
+
+  const wheneverComics = useMemo(
+    () => visibleComics.filter((comic) => typeof comic.readingOrder !== 'number'),
+    [visibleComics],
+  );
+  // The modal steps through the list in the order shown on screen.
+  const orderedVisible = useMemo(
+    () => byOrder ? [...orderedComics, ...wheneverComics] : visibleComics,
+    [byOrder, orderedComics, visibleComics, wheneverComics],
+  );
 
   const readCount = universeComics.filter((comic) => comic.read).length;
   const ownedCount = universeComics.filter((comic) => comic.status === 'owned').length;
@@ -108,7 +199,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const dcCount = library.filter((comic) => (comic.universe ?? 'dc') === 'dc').length;
   const marvelCount = library.filter((comic) => comic.universe === 'marvel').length;
   const selectedIndex = selectedComic
-    ? visibleComics.findIndex((comic) => comic.id === selectedComic.id)
+    ? orderedVisible.findIndex((comic) => comic.id === selectedComic.id)
     : -1;
 
   const measureCover = (id: string) => (event: React.SyntheticEvent<HTMLImageElement>) => {
@@ -119,9 +210,9 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   };
 
   const selectAdjacentComic = (direction: -1 | 1) => {
-    if (selectedIndex < 0 || visibleComics.length < 2) return;
-    const nextIndex = (selectedIndex + direction + visibleComics.length) % visibleComics.length;
-    setSelectedComic(visibleComics[nextIndex]);
+    if (selectedIndex < 0 || orderedVisible.length < 2) return;
+    const nextIndex = (selectedIndex + direction + orderedVisible.length) % orderedVisible.length;
+    setSelectedComic(orderedVisible[nextIndex]);
   };
 
   const signIn = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -189,6 +280,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const runLookup = async () => {
     const query = lookupQuery.trim();
     if (!query || lookupBusy) return;
+    // Keep an Amazon link as the purchase link for this comic.
+    if (/^https:\/\//.test(query)) setDraft((current) => ({ ...current, link: current.link || query }));
     setLookupBusy(true);
     setLookupNote('');
     setLookupResults([]);
@@ -225,11 +318,64 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
   };
 
+  const runBulkLookup = async () => {
+    if (bulkBusy || !bulkLinks.trim()) return;
+    setBulkBusy(true);
+    setBulkError('');
+    setBulkCandidates([]);
+    const response = await fetch('/api/comics/bulk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ links: bulkLinks }),
+    });
+    const data = await response.json();
+    setBulkBusy(false);
+    if (!response.ok) {
+      setBulkError(data.error || 'The lookup failed.');
+      return;
+    }
+    setBulkCandidates((data.candidates as BulkCandidate[]).map((item) => ({ ...item, keep: true })));
+    if (data.skipped) setBulkError(`This form reads 20 links at a time. It skipped ${data.skipped}.`);
+  };
+
+  const saveBulk = async () => {
+    const chosen = bulkCandidates.filter((item) => item.keep && item.title.trim());
+    if (!chosen.length || bulkSaving) return;
+    setBulkSaving(true);
+    setBulkError('');
+    const added: Comic[] = [];
+    for (const item of chosen) {
+      const response = await fetch('/api/comics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: item.title, year: item.year, writers: item.writers, artists: item.artists,
+          cover: item.cover, link: item.link, universe: bulkUniverse, status: bulkStatus, read: false,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) added.push(data.comic);
+    }
+    setBulkSaving(false);
+    if (!added.length) {
+      setBulkError('No comic was saved.');
+      return;
+    }
+    setLibrary((current) => [...current, ...added]);
+    setUniverse(bulkUniverse);
+    setFilter('all');
+    setCategory('all');
+    setBulkOpen(false);
+    setBulkLinks('');
+    setBulkCandidates([]);
+  };
+
   const openEditor = (comic: Comic) => {
     setDraft({
       title: comic.title || '', description: comic.description || '', year: comic.year || '',
       category: comic.category || '', writers: comic.writers || '', artists: comic.artists || '',
-      collects: comic.collects || '', cover: comic.cover || '',
+      collects: comic.collects || '', cover: comic.cover || '', link: comic.link || '',
+      universe: (comic.universe ?? 'dc') as Universe,
     });
     setLookupQuery('');
     setLookupResults([]);
@@ -254,9 +400,10 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       setComicError(data.error || 'The comic could not be saved.');
       return;
     }
-    const apply = (comic: Comic) => comic.id === editingComic.id ? { ...comic, ...draft } : comic;
+    const saved: Partial<Comic> = { ...draft };
+    const apply = (comic: Comic) => comic.id === editingComic.id ? { ...comic, ...saved } : comic;
     setLibrary((current) => current.map(apply));
-    setSelectedComic((current) => current && current.id === editingComic.id ? { ...current, ...draft } : current);
+    setSelectedComic((current) => current && current.id === editingComic.id ? { ...current, ...saved } : current);
     setEditingComic(null);
     setDraft(emptyDraft);
   };
@@ -270,8 +417,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ...values,
         ...draft,
+        ...values,
         read: values.read === 'on',
       }),
     });
@@ -291,6 +438,63 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     setSelectedComic(data.comic);
   };
 
+  const renderCard = (comic: Comic, index: number) => {
+    const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
+    const showImage = !failedCovers[comic.id];
+    return (
+      <article className={styles.card} key={comic.id}>
+        <button
+          className={styles.cardButton}
+          type="button"
+          onClick={() => setSelectedComic(comic)}
+          aria-label={`Open details for ${comic.title}`}
+        >
+          <div className={styles.cover}>
+            {showImage ? (
+              <img
+                className={containCovers[comic.id] ? styles.containCover : undefined}
+                src={cover}
+                alt={`Cover of ${comic.title}`}
+                loading={index < 8 ? 'eager' : 'lazy'}
+                onLoad={measureCover(comic.id)}
+                onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
+              />
+            ) : (
+              <div className={styles.fallbackCover} aria-label={`Cover placeholder for ${comic.title}`}>
+                <span>{comic.universe === 'marvel' ? 'Marvel' : 'DC'}</span>
+                <strong>{comic.title}</strong>
+                <small>{comic.creators}</small>
+              </div>
+            )}
+            {byOrder && typeof comic.readingOrder === 'number' && (
+              <span className={styles.stepMark}>{index + 1}</span>
+            )}
+            <div className={styles.coverStatus}>
+              <span className={comic.read ? styles.read : styles.unread}>
+                {comic.read ? <Check weight="bold" /> : <Circle weight="regular" />}
+                {comic.read ? 'Read' : 'Unread'}
+              </span>
+              <span className={comic.status === 'wishlist' ? styles.wishlist : styles.owned}>
+                {comic.status === 'wishlist' && <BookmarkSimple weight="fill" />}
+                {comic.status === 'wishlist' ? 'Wishlist' : 'Owned'}
+              </span>
+            </div>
+          </div>
+          <div className={styles.cardCopy}>
+            <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
+            {comic.series && comic.order ? (
+              <span className={styles.seriesTag}>
+                {comic.series} · {comic.order} of {seriesTotals.get(comic.series) ?? comic.order}
+              </span>
+            ) : null}
+            <h2>{comic.title}</h2>
+            {comic.creators && <span>{comic.creators}</span>}
+          </div>
+        </button>
+      </article>
+    );
+  };
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -299,8 +503,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <span className={styles.sectionLabel}>Comics</span>
         </div>
         <nav className={styles.headerNav} aria-label="Comics navigation">
-          <Link href="/#work">Work</Link>
-          <Link href="/writing">Writing</Link>
           <Link href="/discovery">Discovery</Link>
         </nav>
         <div className={styles.headerActions}>
@@ -327,6 +529,22 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <div><dt>Owned</dt><dd>{ownedCount}</dd></div>
               <div><dt>Wishlist</dt><dd>{wishlistCount}</dd></div>
             </dl>
+            <div className={styles.progress}>
+              <div className={styles.progressHead}>
+                <span>Reading progress</span>
+                <strong>{readCount} of {universeComics.length}</strong>
+              </div>
+              <div
+                className={styles.progressTrack}
+                role="progressbar"
+                aria-valuenow={readCount}
+                aria-valuemin={0}
+                aria-valuemax={universeComics.length}
+                aria-label={`Read ${readCount} of ${universeComics.length} books`}
+              >
+                <span style={{ width: `${universeComics.length ? (readCount / universeComics.length) * 100 : 0}%` }} />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -334,7 +552,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <button
             className={universe === 'dc' ? styles.universeActive : undefined}
             type="button"
-            onClick={() => setUniverse('dc')}
+            onClick={() => selectUniverse('dc')}
             aria-pressed={universe === 'dc'}
           >
             <span>Comics / 01</span>
@@ -344,7 +562,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
           <button
             className={universe === 'marvel' ? styles.universeActive : undefined}
             type="button"
-            onClick={() => setUniverse('marvel')}
+            onClick={() => selectUniverse('marvel')}
             aria-pressed={universe === 'marvel'}
           >
             <span>Comics / 02</span>
@@ -371,59 +589,101 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               Add comic
             </button>
           )}
+          {authenticated && (
+            <button className={styles.addComicButton} type="button" onClick={() => { setBulkError(''); setBulkOpen(true); }}>
+              Add several
+            </button>
+          )}
           <span>{visibleComics.length} books</span>
         </nav>
 
-        <div className={styles.grid}>
-          {visibleComics.map((comic, index) => {
-            const cover = comic.cover || `/images/comics/${comic.id}.jpg`;
-            const showImage = !failedCovers[comic.id];
-            return (
-              <article className={styles.card} key={comic.id}>
-                <button
-                  className={styles.cardButton}
-                  type="button"
-                  onClick={() => setSelectedComic(comic)}
-                  aria-label={`Open details for ${comic.title}`}
-                >
-                  <div className={styles.cover}>
-                    {showImage ? (
-                      <img
-                        className={containCovers[comic.id] ? styles.containCover : undefined}
-                        src={cover}
-                        alt={`Cover of ${comic.title}`}
-                        loading={index < 8 ? 'eager' : 'lazy'}
-                        onLoad={measureCover(comic.id)}
-                        onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
-                      />
-                    ) : (
-                      <div className={styles.fallbackCover} aria-label={`Cover placeholder for ${comic.title}`}>
-                        <span>{comic.universe === 'marvel' ? 'Marvel' : 'DC'}</span>
-                        <strong>{comic.title}</strong>
-                        <small>{comic.creators}</small>
-                      </div>
-                    )}
-                    <div className={styles.coverStatus}>
-                      <span className={comic.read ? styles.read : styles.unread}>
-                        {comic.read ? <Check weight="bold" /> : <Circle weight="regular" />}
-                        {comic.read ? 'Read' : 'Unread'}
-                      </span>
-                      <span className={comic.status === 'wishlist' ? styles.wishlist : styles.owned}>
-                        {comic.status === 'wishlist' && <BookmarkSimple weight="fill" />}
-                        {comic.status === 'wishlist' ? 'Wishlist' : 'Owned'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className={styles.cardCopy}>
-                    <p>{comic.category}{comic.year ? ` / ${comic.year}` : ''}</p>
-                    <h2>{comic.title}</h2>
-                    {comic.creators && <span>{comic.creators}</span>}
-                  </div>
-                </button>
-              </article>
-            );
-          })}
+        <div className={styles.toolbar}>
+          <div className={styles.searchField}>
+            <input
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search a title, a writer, or an artist"
+              aria-label="Search the comics"
+            />
+            {search && (
+              <button type="button" onClick={() => setSearch('')} aria-label="Clear the search">
+                <X weight="regular" />
+              </button>
+            )}
+          </div>
+          <nav className={styles.categories} aria-label="Filter by category">
+            <button
+              type="button"
+              className={byOrder ? styles.categoryActive : undefined}
+              aria-pressed={byOrder}
+              onClick={() => setByOrder((current) => !current)}
+            >
+              Reading order
+            </button>
+            <button
+              type="button"
+              className={category === 'all' ? styles.categoryActive : undefined}
+              aria-pressed={category === 'all'}
+              onClick={() => setCategory('all')}
+            >
+              All categories
+            </button>
+            {categories.map(([name, total]) => (
+              <button
+                key={name}
+                type="button"
+                className={category === name ? styles.categoryActive : undefined}
+                aria-pressed={category === name}
+                onClick={() => setCategory(name)}
+              >
+                {name} <small>{total}</small>
+              </button>
+            ))}
+          </nav>
         </div>
+
+        {visibleComics.length === 0 && (
+          <p className={styles.emptyResult}>No comic matches the current filters.</p>
+        )}
+
+        {!byOrder && (
+          <div className={styles.grid}>
+            {visibleComics.map((comic, index) => renderCard(comic, index))}
+          </div>
+        )}
+
+        {byOrder && tracks.map(([name, books], trackIndex) => (
+          <section className={styles.track} key={name}>
+            <div className={styles.trackHead}>
+              <span className={styles.trackNumber}>{String(trackIndex + 1).padStart(2, '0')}</span>
+              <div>
+                <h2>{name}</h2>
+                <p>{trackNote(name)}</p>
+              </div>
+              <small>{books.length} books</small>
+            </div>
+            <div className={styles.grid}>
+              {books.map((comic, index) => renderCard(comic, index))}
+            </div>
+          </section>
+        ))}
+
+        {byOrder && wheneverComics.length > 0 && (
+          <section className={styles.track}>
+            <div className={styles.trackHead}>
+              <span className={styles.trackNumber}>—</span>
+              <div>
+                <h2>Read whenever</h2>
+                <p>These books stand alone. Read any of them at any time.</p>
+              </div>
+              <small>{wheneverComics.length} books</small>
+            </div>
+            <div className={styles.grid}>
+              {wheneverComics.map((comic, index) => renderCard(comic, index))}
+            </div>
+          </section>
+        )}
       </main>
 
       {selectedComic && (
@@ -445,7 +705,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               type="button"
               onClick={() => selectAdjacentComic(-1)}
               aria-label="Open previous comic"
-              disabled={visibleComics.length < 2}
+              disabled={orderedVisible.length < 2}
             >
               <CaretLeft weight="regular" />
             </button>
@@ -454,7 +714,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               type="button"
               onClick={() => selectAdjacentComic(1)}
               aria-label="Open next comic"
-              disabled={visibleComics.length < 2}
+              disabled={orderedVisible.length < 2}
             >
               <CaretRight weight="regular" />
             </button>
@@ -521,6 +781,17 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                       <dd>{selectedComic.artists}</dd>
                     </div>
                   )}
+                  {selectedComic.series && (
+                    <div>
+                      <dt>Series</dt>
+                      <dd>
+                        {selectedComic.series}
+                        {selectedComic.order
+                          ? ` · Book ${selectedComic.order} of ${seriesTotals.get(selectedComic.series) ?? selectedComic.order}`
+                          : ''}
+                      </dd>
+                    </div>
+                  )}
                   {selectedComic.collects && (
                     <div className={styles.detailCollection}>
                       <dt>Collects</dt>
@@ -542,6 +813,24 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                     </dd>
                   </div>
                 </dl>
+                <a
+                  className={styles.buyLink}
+                  href={publisherLink(selectedComic)}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  {selectedComic.universe === 'marvel' ? 'Marvel.com' : 'DC.com'}
+                </a>
+                {selectedComic.link && (
+                  <a
+                    className={styles.buyLink}
+                    href={selectedComic.link}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    Where to buy
+                  </a>
+                )}
                 {authenticated && (
                   <div className={styles.ownerControls}>
                     <p>Owner controls</p>
@@ -651,6 +940,16 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
               <label>
                 Collects
                 <input value={draft.collects} onChange={setField('collects')} maxLength={600} placeholder="Batman #404-407" />
+              </label>
+              <label>
+                Purchase link
+                <input
+                  value={draft.link}
+                  onChange={setField('link')}
+                  maxLength={500}
+                  inputMode="url"
+                  placeholder="https://www.amazon.com/dp/..."
+                />
               </label>
               {draft.cover && (
                 <div className={styles.lookupCover}>
@@ -827,6 +1126,16 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 Collects
                 <input value={draft.collects} onChange={setField('collects')} maxLength={600} placeholder="Batman #404-407" />
               </label>
+              <label>
+                Purchase link
+                <input
+                  value={draft.link}
+                  onChange={setField('link')}
+                  maxLength={500}
+                  inputMode="url"
+                  placeholder="https://www.amazon.com/dp/..."
+                />
+              </label>
               {draft.cover && (
                 <div className={styles.lookupCover}>
                   <img src={draft.cover} alt="Cover found by the lookup" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />
@@ -836,6 +1145,18 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                   </div>
                 </div>
               )}
+              <div className={styles.addComicOptions}>
+                <label>
+                  Publisher
+                  <select
+                    value={draft.universe}
+                    onChange={(event) => setDraft((current) => ({ ...current, universe: event.target.value as Universe }))}
+                  >
+                    <option value="dc">DC</option>
+                    <option value="marvel">Marvel</option>
+                  </select>
+                </label>
+              </div>
               {draft.cover && (
                 <div className={styles.lookupCover}>
                   <img src={draft.cover} alt="Cover for this comic" onError={() => setDraft((current) => ({ ...current, cover: '' }))} />
@@ -850,6 +1171,121 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 {savingComic ? 'Saving\u2026' : 'Save changes'}
               </button>
             </form>
+          </section>
+        </div>
+      )}
+
+      {bulkOpen && (
+        <div
+          className={styles.detailBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setBulkOpen(false);
+          }}
+        >
+          <section
+            className={`${styles.detailPanel} ${styles.addComicPanel}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bulk-add-title"
+          >
+            <header className={styles.detailHeader}>
+              <span>Add several</span>
+              <button type="button" onClick={() => setBulkOpen(false)} aria-label="Close the bulk add form">
+                <X weight="regular" />
+              </button>
+            </header>
+            <div className={styles.addComicForm} data-lenis-prevent>
+              <div>
+                <p className={styles.detailMeta}>Several collected editions</p>
+                <h2 id="bulk-add-title">Add several.</h2>
+                <p>Paste up to 20 Amazon links or ISBNs, one per line. Check each title before you save.</p>
+              </div>
+              <label>
+                Links
+                <textarea
+                  value={bulkLinks}
+                  onChange={(event) => setBulkLinks(event.target.value)}
+                  rows={5}
+                  maxLength={6000}
+                  placeholder={'https://www.amazon.com/dp/1401207529\nhttps://www.amazon.com/dp/0785130098'}
+                />
+              </label>
+              <div className={styles.addComicOptions}>
+                <label>
+                  Publisher
+                  <select value={bulkUniverse} onChange={(event) => setBulkUniverse(event.target.value as Universe)}>
+                    <option value="dc">DC</option>
+                    <option value="marvel">Marvel</option>
+                  </select>
+                </label>
+                <label>
+                  Collection
+                  <select value={bulkStatus} onChange={(event) => setBulkStatus(event.target.value as 'owned' | 'wishlist')}>
+                    <option value="owned">Owned</option>
+                    <option value="wishlist">Wishlist</option>
+                  </select>
+                </label>
+              </div>
+              <button
+                className={styles.createComicButton}
+                type="button"
+                onClick={() => void runBulkLookup()}
+                disabled={bulkBusy || !bulkLinks.trim()}
+              >
+                {bulkBusy ? 'Looking up\u2026' : 'Look up the links'}
+              </button>
+
+              {bulkCandidates.length > 0 && (
+                <ul className={styles.bulkList}>
+                  {bulkCandidates.map((item, index) => (
+                    <li key={`${item.isbn || item.link}-${index}`} className={item.keep ? undefined : styles.bulkSkipped}>
+                      <label className={styles.bulkKeep}>
+                        <input
+                          type="checkbox"
+                          checked={item.keep}
+                          onChange={(event) => setBulkCandidates((current) => current.map((entry, position) =>
+                            position === index ? { ...entry, keep: event.target.checked } : entry))}
+                          aria-label={`Include ${item.title || item.link}`}
+                        />
+                      </label>
+                      {item.cover
+                        ? <img src={item.cover} alt="" loading="lazy" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} />
+                        : <span className={styles.bulkNoCover} aria-hidden="true" />}
+                      <div className={styles.bulkFields}>
+                        <input
+                          value={item.title}
+                          onChange={(event) => setBulkCandidates((current) => current.map((entry, position) =>
+                            position === index ? { ...entry, title: event.target.value } : entry))}
+                          placeholder="Enter the title"
+                          aria-label="Comic title"
+                        />
+                        <small>
+                          {[item.year, item.writers].filter(Boolean).join(' / ') || item.link}
+                          {item.note ? ` — ${item.note}` : ''}
+                        </small>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {bulkError && <p className={styles.comicError}>{bulkError}</p>}
+
+              {bulkCandidates.length > 0 && (
+                <button
+                  className={styles.createComicButton}
+                  type="button"
+                  onClick={() => void saveBulk()}
+                  disabled={bulkSaving || !bulkCandidates.some((item) => item.keep && item.title.trim())}
+                >
+                  {bulkSaving ? 'Saving\u2026' : (() => {
+                    const total = bulkCandidates.filter((item) => item.keep && item.title.trim()).length;
+                    return `Add ${total} ${total === 1 ? 'comic' : 'comics'}`;
+                  })()}
+                </button>
+              )}
+            </div>
           </section>
         </div>
       )}
