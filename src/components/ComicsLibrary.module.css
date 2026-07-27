@@ -58,7 +58,9 @@
 .universeTabs button + button { border-left: 1px solid var(--line); }
 .universeTabs button:hover { background: rgba(255,255,255,.025); color: var(--ink); }
 .universeTabs span, .universeTabs small { font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.universeTabs small { align-self: end; justify-self: end; }
+/* Put the count in the wordmark column so its right edge lines up with the
+   wordmark instead of stopping in the column gap. */
+.universeTabs small { grid-column: 2; align-self: end; justify-self: end; }
 .universeTabs strong { align-self: end; font-family: var(--font-cormorant), serif; font-size: clamp(3rem, 5vw, 5rem); font-weight: 400; letter-spacing: -.05em; line-height: .75; }
 .universeTabs .universeActive { background: var(--ink); color: var(--background); }
 .universeTabs .universeActive:hover { background: var(--ink); color: var(--background); }
