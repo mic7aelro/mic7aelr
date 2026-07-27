@@ -23,6 +23,13 @@ export type Comic = {
   series?: string;
   /** The position of this book inside the run, counting from 1. */
   order?: number;
+  /** The slug of a writing post that reviews this book. */
+  review?: string;
+  /** Scores from 0 to 10. See src/lib/comic-rating.ts for the weights. */
+  storyRating?: number;
+  artRating?: number;
+  colorsRating?: number;
+  pacingRating?: number;
 };
 
 const comicCatalog: Comic[] = [

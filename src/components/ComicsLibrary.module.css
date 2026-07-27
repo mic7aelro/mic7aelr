@@ -97,6 +97,19 @@
 .categories .categoryActive { border-color: var(--ink); background: var(--ink); color: var(--background); }
 
 .emptyResult { padding: 52px 0 0; color: var(--muted); font-size: .86rem; }
+.ratingEditor { display: grid; gap: 15px; padding: 17px; border: 1px solid var(--line); }
+.ratingEditor legend { padding: 0 7px; color: var(--quiet); font-size: .58rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+.ratingGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.ratingAggregate { display: flex; justify-content: space-between; align-items: baseline; padding-top: 13px; border-top: 1px solid var(--line); }
+.ratingAggregate span { color: var(--quiet); font-size: .58rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+.ratingAggregate strong { font-family: var(--font-cormorant), serif; font-size: 2.1rem; font-weight: 500; line-height: 1; }
+.ratingAggregate small { margin-left: 3px; color: var(--muted); font-size: .7rem; }
+.ratingValue strong { font-family: var(--font-cormorant), serif; font-size: 1.9rem; font-weight: 500; line-height: 1; }
+.ratingValue small { margin-left: 2px; color: var(--muted); font-size: .68rem; }
+.ratingValue span { display: block; margin-top: 5px; color: var(--quiet); font-size: .62rem; letter-spacing: .04em; }
+.cardCopy .scoreTag { display: inline-block; margin-top: 9px; margin-right: 7px; padding: 3px 7px; border: 1px solid var(--ink); color: var(--ink); font-size: .55rem; font-weight: 700; letter-spacing: .06em; }
+.cardCopy .scoreTag small { font-size: .5rem; opacity: .6; }
+
 .bulkList { display: grid; max-height: 320px; gap: 4px; overflow-y: auto; overscroll-behavior: contain; margin: 0; padding: 0; border: 1px solid var(--line); list-style: none; }
 .bulkList li { display: grid; grid-template-columns: auto 34px minmax(0, 1fr); align-items: center; gap: 11px; padding: 9px 11px; }
 .bulkList li + li { border-top: 1px solid var(--line); }
@@ -256,6 +269,7 @@
   .detailNext { right: 18px; }
   .detailBody { padding-bottom: 82px; }
   .addComicOptions { grid-template-columns: 1fr; }
+  .ratingGrid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 420px) {
