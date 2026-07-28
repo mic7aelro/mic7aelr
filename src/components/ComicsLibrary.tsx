@@ -459,7 +459,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 className={containCovers[comic.id] ? styles.containCover : undefined}
                 src={cover}
                 alt={`Cover of ${comic.title}`}
-                loading={index < 8 ? 'eager' : 'lazy'}
+                decoding="async"
                 onLoad={measureCover(comic.id)}
                 onError={() => setFailedCovers((current) => ({ ...current, [comic.id]: true }))}
               />
