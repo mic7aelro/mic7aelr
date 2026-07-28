@@ -294,7 +294,9 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
       return;
     }
     if (data.kind === 'book') {
-      applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
+      // The server explains a partial result, such as a title it could not find.
+      applyBook(data.book, data.note
+        || 'Filled the empty fields from Open Library. Check every value before you save.');
       return;
     }
     if (!data.results.length) {
@@ -316,7 +318,8 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         'Filled from the search result. Check every value before you save.');
       return;
     }
-    applyBook(data.book, 'Filled the empty fields from Open Library. Check every value before you save.');
+    applyBook(data.book, data.note
+      || 'Filled the empty fields from Open Library. Check every value before you save.');
   };
 
   const runBulkLookup = async () => {
