@@ -28,6 +28,7 @@ export const readingTracks: Record<'dc' | 'marvel', ReadingTrack[]> = {
         'dark-victory',
         'killing-joke',
         'death-in-family',
+        'batman-the-cult',
         'lonely-place-dying',
         'hush',
         'under-red-hood',
@@ -47,6 +48,11 @@ export const readingTracks: Record<'dc' | 'marvel', ReadingTrack[]> = {
         'batman-who-laughs',
         'death-metal',
       ],
+    },
+    {
+      name: 'Snyder and Capullo Batman',
+      note: 'The New 52 run, starting with the Court of Owls.',
+      ids: ['batman-vol-1-the-court-of-owls', 'batman-vol-2-the-city-of-owls'],
     },
     {
       name: 'Batman/Superman: World’s Finest',
@@ -104,6 +110,21 @@ export const readingTracks: Record<'dc' | 'marvel', ReadingTrack[]> = {
         'secret-wars-2015',
         'one-world-under-doom',
       ],
+    },
+    {
+      name: 'The Hulk saga',
+      note: 'The exile of the Hulk and the war that follows when he returns.',
+      ids: ['planet-hulk', 'hulk-world-war-hulk'],
+    },
+    {
+      name: 'X-Men landmarks',
+      note: 'The defining X-Men stories, in the order they were published.',
+      ids: ['x-men-dark-phoenix-saga', 'x-men-days-of-future-past', 'house-of-x-powers-of-x'],
+    },
+    {
+      name: 'The Silver Surfer',
+      note: 'The Slott and Allred run, then the story that follows it.',
+      ids: ['silver-surfer-slott-omnibus', 'silver-surfer-black'],
     },
     {
       name: 'Miles Morales by Ziglar',
