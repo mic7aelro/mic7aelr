@@ -4,7 +4,10 @@ export interface Project {
   description: string;
   tags: string[];
   year: string;
+  image: string;
+  imageAlt: string;
   url?: string;
+  /** Omitted when the client's repository is private. */
   github?: string;
 }
 

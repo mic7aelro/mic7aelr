@@ -106,33 +106,42 @@ export function AboutScene() {
   );
 }
 
+/**
+ * Both projects share one scene. `.projectGrid` splits the row into columns
+ * and each `.project` becomes a self-contained card, so the work scene still
+ * fits the deck's 100dvh budget.
+ */
 export function WorkScene() {
-  const project = PROJECTS[0];
-
   return (
     <section className={`${styles.work} ${styles.scene}`} id="work" data-scene>
       <div className={styles.workHeading} data-reveal><p>Selected work</p></div>
-      <article className={styles.project} data-reveal>
-        <a className={styles.projectVisual} href={project.url} target="_blank" rel="noreferrer">
-          <Image
-            src="/images/projects/obsidian-marla.jpg"
-            alt="Marla McLeod in a black hood and sunglasses"
-            fill
-            sizes="(max-width: 767px) calc(100vw - 32px), 390px"
-          />
-        </a>
-        <div className={styles.projectContent}>
-          <div className={styles.projectName}><h3>{project.title}</h3><span>{project.year}</span></div>
-          <p>{project.description}</p>
-          <ul aria-label="Project technologies">
-            {project.tags.slice(0, 5).map((tag) => <li key={tag}>{tag}</li>)}
-          </ul>
-          <div className={styles.projectLinks}>
-            <a href={project.url} target="_blank" rel="noreferrer">Live site</a>
-            <a href={project.github} target="_blank" rel="noreferrer">GitHub</a>
-          </div>
-        </div>
-      </article>
+      <div className={styles.projectGrid}>
+        {PROJECTS.map((project) => (
+          <article className={styles.project} key={project.id} data-reveal>
+            <a className={styles.projectVisual} href={project.url} target="_blank" rel="noreferrer">
+              <Image
+                src={project.image}
+                alt={project.imageAlt}
+                fill
+                sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1200px) 44vw, 520px"
+              />
+            </a>
+            <div className={styles.projectContent}>
+              <div className={styles.projectName}><h3>{project.title}</h3><span>{project.year}</span></div>
+              <p>{project.description}</p>
+              <ul aria-label="Project technologies">
+                {project.tags.slice(0, 5).map((tag) => <li key={tag}>{tag}</li>)}
+              </ul>
+              <div className={styles.projectLinks}>
+                <a href={project.url} target="_blank" rel="noreferrer">Live site</a>
+                {project.github && (
+                  <a href={project.github} target="_blank" rel="noreferrer">GitHub</a>
+                )}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }

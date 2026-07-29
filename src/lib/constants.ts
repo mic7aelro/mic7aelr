@@ -38,7 +38,20 @@ export const PROJECTS: Project[] = [
       'Luxury fashion portfolio for stylist and creative director Marla McLeod. Full admin portal with image curation, collection management, and inquiry/event tracking.',
     tags: ['Next.js', 'MongoDB', 'TypeScript', 'Iron-session', 'GSAP', 'Tailwind CSS v4'],
     year: '2026',
+    image: '/images/projects/obsidian-marla.jpg',
+    imageAlt: 'Marla McLeod in a black hood and sunglasses',
     url: 'https://www.obsidianbymarla.com/',
     github: 'https://github.com/mic7aelro/obsidianbymarla/',
+  },
+  {
+    id: 'project-02',
+    title: 'Mel Events Co.',
+    description:
+      'Wedding and event coordination studio in South Florida. Built from the client\'s brand book, with a purpose-built inquiry pipeline: the contact form writes through Resend, and custom Cloudflare email routing carries every inquiry to a live inbox on a domain that had been dark since 2025.',
+    tags: ['Next.js 16', 'TypeScript', 'Resend', 'Cloudflare DNS', 'Motion', 'Tailwind CSS v4'],
+    year: '2026',
+    image: '/images/projects/mel-events.jpg',
+    imageAlt: 'Melanie Mule, owner and lead coordinator of Mel Events Co.',
+    url: 'https://meleventsco.com/',
   },
 ];
