@@ -59,8 +59,6 @@
 }
 .brand { font-family: var(--font-dm-sans), sans-serif; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.08em; text-transform: lowercase; }
 .brandGroup { display: flex; align-items: center; gap: 16px; }
-.writingHome { border-left: 1px solid var(--line); color: var(--muted); padding-left: 16px; font-size: .68rem; }
-.writingHome:hover { color: var(--ink); }
 .navLinks { display: flex; gap: 38px; }
 .navActions { display: flex; justify-self: end; align-items: center; gap: 16px; }
 .themeToggle { display: grid; width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: #8b8b8b; place-items: center; transition: background 200ms ease, color 200ms ease; }
@@ -295,7 +293,6 @@
   .navLinks { display: none; }
   .navActions .socialLink { display: none; }
   .brandGroup { gap: 10px; }
-  .writingHome { padding-left: 10px; }
   .hero { min-height: auto; grid-template-columns: 1fr; padding-block: 56px 72px !important; }
   .hero h1 { font-size: clamp(4.25rem, 22vw, 7.2rem); }
   .lastName, .heroCopy, .heroActions { margin-left: 0; }

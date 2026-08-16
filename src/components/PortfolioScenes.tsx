@@ -25,7 +25,6 @@ export function PortfolioNavigation() {
     <nav className={styles.nav} data-nav aria-label="Primary navigation">
       <div className={styles.brandGroup}>
         <a className={styles.brand} href="#top" aria-label="mic7aelr, home">mic7aelr</a>
-        <a className={styles.writingHome} href="/writing">Writing</a>
       </div>
       <div className={styles.navLinks}>
         <a href="#about">About</a>

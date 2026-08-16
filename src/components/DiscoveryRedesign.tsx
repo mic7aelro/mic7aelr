@@ -26,6 +26,7 @@ export function DiscoveryRedesign() {
         </div>
         <nav className={styles.headerNav} aria-label="Discovery navigation">
           <Link href="/comics">Comics</Link>
+          <Link href="/writing">Writing</Link>
         </nav>
         <div className={styles.headerActions}>
           <ThemeToggle className={styles.themeToggle} />
