@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { WritingIndex } from '@/types/writing';
+import { useOtpLogin } from '@/lib/useOtpLogin';
 import styles from '@/app/writing/Writing.module.css';
 
 type WorkspaceSnapshot = { group: Record<string, string>; area: Record<string, string>; post: Record<string, string>; editPost: Record<string, string> };
@@ -38,6 +39,38 @@ class RequestError extends Error {
   constructor(message: string, readonly status: number, readonly statusText: string) {
     super(message);
   }
+}
+
+function WritingLogin({ styles }: { styles: Record<string, string> }) {
+  const { step, pending, error, requestCode, verifyCode } = useOtpLogin(() => window.location.assign('/writing'));
+
+  return (
+    <main className={styles.admin}><div className={styles.login}>
+      <h1>Author login</h1>
+      {step === 'request' ? (
+        <>
+          <p className={styles.panelIntro}>Send a one-time code to the author&rsquo;s email.</p>
+          <form className={styles.form} onSubmit={(event) => { event.preventDefault(); void requestCode(); }}>
+            <button className={styles.button} type="submit" disabled={pending}>{pending ? 'Sending…' : 'Email me a code'}</button>
+            {error && <p className={styles.error}>{error}</p>}
+          </form>
+        </>
+      ) : (
+        <>
+          <p className={styles.panelIntro}>Enter the 6-digit code sent to the author&rsquo;s email. The code expires in 10 minutes.</p>
+          <form className={styles.form} onSubmit={(event) => {
+            event.preventDefault();
+            const code = new FormData(event.currentTarget).get('code');
+            if (typeof code === 'string') void verifyCode(code);
+          }}>
+            <label>Code<input className={styles.field} name="code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" required autoFocus /></label>
+            <button className={styles.button} type="submit" disabled={pending}>{pending ? 'Verifying…' : 'Sign in'}</button>
+            {error && <p className={styles.error}>{error}</p>}
+          </form>
+        </>
+      )}
+    </div></main>
+  );
 }
 
 export function WritingAdmin({ initialAuthenticated, initialIndex = emptyIndex, embedded = false }: { initialAuthenticated: boolean; initialIndex?: WritingIndex; embedded?: boolean }) {
@@ -197,22 +230,7 @@ export function WritingAdmin({ initialAuthenticated, initialIndex = emptyIndex, 
     }
   };
 
-  if (!authenticated) return (
-    <main className={styles.admin}><div className={styles.login}>
-      <h1>Author login</h1>
-      <p className={styles.panelIntro}>Use the private credentials stored in your server environment.</p>
-      <form className={styles.form} onSubmit={async (event) => {
-        event.preventDefault(); setMessage('Signing in...');
-        try { const values = Object.fromEntries(new FormData(event.currentTarget)); await send('/api/writing/auth', 'POST', values); window.location.assign('/writing'); }
-        catch (error) { setMessage(error instanceof Error ? error.message : 'Sign-in failed.'); }
-      }}>
-        <label>Username<input className={styles.field} name="username" autoComplete="username" required /></label>
-        <label>Password<input className={styles.field} name="password" type="password" autoComplete="current-password" required /></label>
-        <button className={styles.button} type="submit">Sign in</button>
-        {message && <p className={styles.error}>{message}</p>}
-      </form>
-    </div></main>
-  );
+  if (!authenticated) return <WritingLogin styles={styles} />;
 
   const selectedPost = index.posts.find((post) => post.id === selectedPostId);
   const selectedGroup = index.groups.find((group) => group.id === selectedGroupId);

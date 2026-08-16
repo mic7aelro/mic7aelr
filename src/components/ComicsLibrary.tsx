@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { type Comic } from '@/data/comics';
 import { readingTracks } from '@/data/comicOrder';
+import { useOtpLogin } from '@/lib/useOtpLogin';
 import styles from './ComicsLibrary.module.css';
 
 type Filter = 'all' | 'read' | 'unread' | 'owned' | 'wishlist';
@@ -98,8 +99,10 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
   const [bulkUniverse, setBulkUniverse] = useState<Universe>('dc');
   const [bulkStatus, setBulkStatus] = useState<'owned' | 'wishlist'>('owned');
   const [signingIn, setSigningIn] = useState(false);
-  const [signInPending, setSignInPending] = useState(false);
-  const [signInError, setSignInError] = useState('');
+  const { step: signInStep, pending: signInPending, error: signInError, requestCode: requestSignInCode, verifyCode: verifySignInCode } = useOtpLogin(() => {
+    setSigningIn(false);
+    router.refresh();
+  });
 
   useEffect(() => {
     if (!selectedComic && !addingComic && !signingIn && !editingComic && !bulkOpen) return;
@@ -214,26 +217,6 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
     if (selectedIndex < 0 || orderedVisible.length < 2) return;
     const nextIndex = (selectedIndex + direction + orderedVisible.length) % orderedVisible.length;
     setSelectedComic(orderedVisible[nextIndex]);
-  };
-
-  const signIn = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSignInPending(true);
-    setSignInError('');
-    const values = Object.fromEntries(new FormData(event.currentTarget));
-    const response = await fetch('/api/writing/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(values),
-    });
-    const data = await response.json();
-    setSignInPending(false);
-    if (!response.ok) {
-      setSignInError(data.error || 'The sign-in failed.');
-      return;
-    }
-    setSigningIn(false);
-    router.refresh();
   };
 
   const signOut = async () => {
@@ -508,13 +491,14 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         </div>
         <nav className={styles.headerNav} aria-label="Comics navigation">
           <Link href="/discovery">Discovery</Link>
+          <Link href="/writing">Writing</Link>
         </nav>
         <div className={styles.headerActions}>
           <ThemeToggle className={styles.themeToggle} />
           {authenticated ? (
             <button className={styles.authButton} type="button" onClick={signOut}>Sign out</button>
           ) : (
-            <button className={styles.authButton} type="button" onClick={() => { setSignInError(''); setSigningIn(true); }}>Author login</button>
+            <button className={styles.authButton} type="button" onClick={() => setSigningIn(true)}>Author login</button>
           )}
           <Link className={styles.portfolioLink} href="/">Portfolio</Link>
         </div>
@@ -1013,25 +997,43 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
                 <X weight="regular" />
               </button>
             </header>
-            <form className={styles.addComicForm} onSubmit={signIn} data-lenis-prevent>
-              <div>
-                <p className={styles.detailMeta}>One login for the whole site</p>
-                <h2 id="comics-login-title">Author login.</h2>
-                <p>Use the credentials stored in the server environment. The session stays active on the comics pages and the writing pages.</p>
-              </div>
-              <label>
-                Username
-                <input name="username" autoComplete="username" required maxLength={100} autoFocus />
-              </label>
-              <label>
-                Password
-                <input name="password" type="password" autoComplete="current-password" required maxLength={300} />
-              </label>
-              {signInError && <p className={styles.comicError}>{signInError}</p>}
-              <button className={styles.createComicButton} type="submit" disabled={signInPending}>
-                {signInPending ? 'Signing in…' : 'Sign in'}
-              </button>
-            </form>
+            {signInStep === 'request' ? (
+              <form className={styles.addComicForm} onSubmit={(event) => { event.preventDefault(); void requestSignInCode(); }} data-lenis-prevent>
+                <div>
+                  <p className={styles.detailMeta}>One login for the whole site</p>
+                  <h2 id="comics-login-title">Author login.</h2>
+                  <p>Send a one-time code to the author&rsquo;s email. The session stays active on the comics pages and the writing pages.</p>
+                </div>
+                {signInError && <p className={styles.comicError}>{signInError}</p>}
+                <button className={styles.createComicButton} type="submit" disabled={signInPending}>
+                  {signInPending ? 'Sending…' : 'Email me a code'}
+                </button>
+              </form>
+            ) : (
+              <form
+                className={styles.addComicForm}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const code = new FormData(event.currentTarget).get('code');
+                  if (typeof code === 'string') void verifySignInCode(code);
+                }}
+                data-lenis-prevent
+              >
+                <div>
+                  <p className={styles.detailMeta}>One login for the whole site</p>
+                  <h2 id="comics-login-title">Enter the code.</h2>
+                  <p>Enter the 6-digit code sent to the author&rsquo;s email. The code expires in 10 minutes.</p>
+                </div>
+                <label>
+                  Code
+                  <input name="code" inputMode="numeric" pattern="[0-9]*" maxLength={6} autoComplete="one-time-code" required autoFocus />
+                </label>
+                {signInError && <p className={styles.comicError}>{signInError}</p>}
+                <button className={styles.createComicButton} type="submit" disabled={signInPending}>
+                  {signInPending ? 'Verifying…' : 'Sign in'}
+                </button>
+              </form>
+            )}
           </section>
         </div>
       )}

@@ -87,7 +87,7 @@ export const readingTracks: Record<'dc' | 'marvel', ReadingTrack[]> = {
     {
       name: 'The Starlin Infinity saga',
       note: 'Jim Starlin’s cosmic run, from the gathering of the gems onward.',
-      ids: ['thanos-quest', 'infinity-gauntlet', 'infinity-war', 'infinity-crusade', 'infinity-entity'],
+      ids: ['thanos-quest', 'infinity-gauntlet', 'infinity-war', 'infinity-crusade-1', 'infinity-crusade-2', 'infinity-entity'],
     },
     {
       name: 'The modern event line',

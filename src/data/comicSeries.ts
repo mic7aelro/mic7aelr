@@ -42,7 +42,8 @@ export const comicSeries: Record<string, ComicSeries> = {
   'thanos-quest': { series: 'Starlin Infinity Saga', order: 1 },
   'infinity-gauntlet': { series: 'Starlin Infinity Saga', order: 2 },
   'infinity-war': { series: 'Starlin Infinity Saga', order: 3 },
-  'infinity-crusade': { series: 'Starlin Infinity Saga', order: 4 },
+  'infinity-crusade-1': { series: 'Starlin Infinity Saga', order: 4 },
+  'infinity-crusade-2': { series: 'Starlin Infinity Saga', order: 5 },
 
   'fantastic-four-hickman-1': { series: 'Fantastic Four by Hickman', order: 1 },
   'fantastic-four-hickman-2': { series: 'Fantastic Four by Hickman', order: 2 },

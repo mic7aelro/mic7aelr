@@ -392,12 +392,19 @@ export const comicDetails: Record<string, ComicDetails> = {
     artists: 'Ron Lim and Al Milgrom',
     collects: 'Infinity War #1-6.',
   },
-  'infinity-crusade': {
-    description: 'A powerful new figure gathers heroes around a mission that tests faith, free will, and cosmic balance.',
+  'infinity-crusade-1': {
+    description: 'A powerful new figure gathers Earth’s heroes around a mission that tests their faith and free will.',
     year: '1993',
     writers: 'Jim Starlin',
-    artists: 'Ron Lim and Al Milgrom',
-    collects: 'Infinity Crusade #1-6.',
+    artists: 'Ron Lim, Tom Raney, Angel Medina and Tom Grindberg',
+    collects: 'Infinity Crusade #1-3, Warlock Chronicles #1-3, and Warlock and the Infinity Watch #18-19.',
+  },
+  'infinity-crusade-2': {
+    description: 'The heroes turn against the mission as its true cost to free will and cosmic balance becomes clear.',
+    year: '1993',
+    writers: 'Jim Starlin',
+    artists: 'Ron Lim, Tom Raney and Kris Renkewitz',
+    collects: 'Infinity Crusade #4-6, Warlock Chronicles #4-5, and Warlock and the Infinity Watch #20-22.',
   },
   annihilation: {
     description: 'Marvel’s spacefaring heroes form an uneasy alliance when a destructive wave crosses the universe.',
