@@ -67,7 +67,7 @@ export function HeroScene() {
           <p className={styles.heroCopy} data-hero-copy>Full-stack, systems, and the space between. Building things quickly that work for the long haul.</p>
           <div className={styles.heroActions} data-hero-copy>
             <a href="#work">View selected work</a>
-            <a href="mailto:mic7aelro@gmail.com">Email me</a>
+            <a href="mailto:michael@mic7aelr.com">Email me</a>
           </div>
         </div>
         <div className={styles.heroPortrait} data-hero-image>
@@ -244,7 +244,7 @@ export function ContactScene(props: ArtworkSceneProps) {
         <div className={styles.contactIntro} data-reveal data-contact-content>
           <h2>Have something you want to build?</h2>
           <p>Tell me what you are imagining and I&apos;ll help make it a reality.</p>
-          <a href="mailto:mic7aelro@gmail.com">mic7aelro@gmail.com</a>
+          <a href="mailto:michael@mic7aelr.com">michael@mic7aelr.com</a>
         </div>
         <ContactForm />
       </section>

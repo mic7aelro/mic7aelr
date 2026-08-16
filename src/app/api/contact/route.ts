@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
   const { error } = await resend.emails.send({
     from: 'Portfolio Contact <donotreply@mic7aelr.com>',
-    to: 'michael@mic7aelr.com',
+    to: 'info@mic7aelr.com',
     replyTo: email,
     subject: `[Portfolio] ${inquiry_type} - ${name}`,
     html: notifyHtml,
