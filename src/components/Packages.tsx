@@ -24,7 +24,7 @@ const packages: Package[] = [
       'Deploy to your domain',
     ],
     bestFor: 'A landing page, a portfolio, or an announcement site.',
-    price: 'From $1,500',
+    price: 'From $800',
     timeline: '1–2 weeks',
   },
   {
@@ -38,7 +38,7 @@ const packages: Package[] = [
       'Integrations with the tools you already use',
     ],
     bestFor: 'A product that stores data and does more than display information.',
-    price: 'From $5,000',
+    price: 'From $3,000',
     timeline: '3–6 weeks',
   },
   {
@@ -52,7 +52,7 @@ const packages: Package[] = [
       'Priority turnaround on requests',
     ],
     bestFor: 'A founder who needs a technical partner, not a one-off project.',
-    price: 'Custom retainer',
+    price: 'From $1,500/mo',
     timeline: 'Ongoing',
   },
 ];
