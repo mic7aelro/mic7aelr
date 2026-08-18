@@ -38,7 +38,7 @@ const packages: Package[] = [
       'Integrations with the tools you already use',
     ],
     bestFor: 'A product that stores data and does more than display information.',
-    price: 'From $3,000',
+    price: 'From $2,500',
     timeline: '3–6 weeks',
   },
   {
