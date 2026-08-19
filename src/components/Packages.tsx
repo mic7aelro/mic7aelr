@@ -44,15 +44,15 @@ const packages: Package[] = [
   {
     number: '03',
     name: 'The Partnership',
-    pitch: 'Ongoing engineering, on call.',
+    pitch: 'Support after launch, priced simply.',
     includes: [
-      'Dedicated hours every month',
-      'Direct access, no account managers',
-      'Architecture, features, and fixes as you grow',
-      'Priority turnaround on requests',
+      'Monthly maintenance and monitoring',
+      'Small fixes and content updates included',
+      'Extra feature work billed at $40/hr',
+      'Priority response when something breaks',
     ],
-    bestFor: 'A founder who needs a technical partner, not a one-off project.',
-    price: 'From $1,500/mo',
+    bestFor: 'A live site or app that needs someone watching it, not a full-time hire.',
+    price: 'From $100/mo',
     timeline: 'Ongoing',
   },
 ];
