@@ -22,7 +22,7 @@ const packages: Package[] = [
     includes: [
       'Custom design, built in code',
       'A responsive layout for every screen',
-      'One round of revisions',
+      'Two rounds of revisions',
       'Deploy to your domain',
       'Hosting set up for you, billed to your own account',
       '30 days of free bug fixes after launch',
