@@ -10,6 +10,7 @@ type Package = {
   bestFor: string;
   price: string;
   timeline: string;
+  note?: string;
 };
 
 const packages: Package[] = [
@@ -22,9 +23,9 @@ const packages: Package[] = [
       'A responsive layout for every screen',
       'One round of revisions',
       'Deploy to your domain',
-      'Hosting included — the site stays online, no extra fees',
+      'Hosting set up on your own account — no markup from me',
       '30 days of free bug fixes after launch',
-      'A 5-year domain registration included, if you need one',
+      'A 3-year domain registration included, if you need one',
     ],
     bestFor: 'A landing page, a portfolio, or an announcement site.',
     price: 'From $800',
@@ -39,13 +40,14 @@ const packages: Package[] = [
       'User accounts and authentication',
       'Admin tools to manage your content',
       'Integrations with the tools you already use',
-      'Hosting included — the site stays online, no extra fees',
+      'Hosting set up on your own account — no markup from me',
       '30 days of free bug fixes after launch',
-      'A 5-year domain registration included, if you need one',
+      'A 3-year domain registration included, if you need one',
     ],
     bestFor: 'A product that stores data and does more than display information.',
     price: 'From $2,500',
     timeline: '2–4 weeks',
+    note: 'Storage beyond standard use is scoped per project, typically under a Partnership plan.',
   },
   {
     number: '03',
@@ -116,6 +118,7 @@ export function Packages() {
                   <strong>{pkg.timeline}</strong>
                 </div>
               </div>
+              {pkg.note && <p className={styles.cardNote}>{pkg.note}</p>}
             </article>
           ))}
         </section>

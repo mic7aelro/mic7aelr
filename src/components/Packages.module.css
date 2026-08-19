@@ -154,6 +154,8 @@
 .cardLabel { color: var(--quiet); font-family: var(--font-dm-sans), sans-serif; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .cardFooter strong { font-family: var(--font-cormorant), serif; font-size: 1.55rem; font-weight: 400; }
 
+.cardNote { margin-top: 16px; color: var(--quiet); font-size: .76rem; line-height: 1.6; font-style: italic; }
+
 .cta {
   display: flex;
   flex-direction: column;
