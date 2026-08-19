@@ -39,7 +39,7 @@ const packages: Package[] = [
     ],
     bestFor: 'A product that stores data and does more than display information.',
     price: 'From $2,500',
-    timeline: '3–6 weeks',
+    timeline: '2–4 weeks',
   },
   {
     number: '03',
