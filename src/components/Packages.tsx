@@ -11,6 +11,7 @@ type Package = {
   price: string;
   timeline: string;
   note?: string;
+  slug?: string;
 };
 
 const packages: Package[] = [
@@ -60,6 +61,7 @@ const packages: Package[] = [
       'Priority response when something breaks',
     ],
     bestFor: 'A live site or app that needs someone watching it, not a full-time hire.',
+    slug: 'partnership',
     price: 'From $100/mo',
     timeline: 'Ongoing',
   },
@@ -93,7 +95,7 @@ export function Packages() {
 
         <section className={styles.grid}>
           {packages.map((pkg) => (
-            <article className={styles.card} key={pkg.number}>
+            <article className={styles.card} key={pkg.number} id={pkg.slug}>
               <span className={styles.cardNumber}>{pkg.number}</span>
               <h2 className={styles.cardName}>{pkg.name}</h2>
               <p className={styles.cardPitch}>{pkg.pitch}</p>
@@ -118,7 +120,16 @@ export function Packages() {
                   <strong>{pkg.timeline}</strong>
                 </div>
               </div>
-              {pkg.note && <p className={styles.cardNote}>{pkg.note}</p>}
+              {pkg.note && (
+                <p className={styles.cardNote}>
+                  {pkg.note.split('Partnership').map((part, index, parts) => (
+                    <span key={index}>
+                      {part}
+                      {index < parts.length - 1 && <a className={styles.cardNoteLink} href="#partnership">Partnership</a>}
+                    </span>
+                  ))}
+                </p>
+              )}
             </article>
           ))}
         </section>
