@@ -62,7 +62,7 @@ const packages: Package[] = [
     ],
     bestFor: 'A live site or app that needs someone watching it, not a full-time hire.',
     slug: 'partnership',
-    price: 'From $100/mo',
+    price: 'From $50/mo',
     timeline: 'Ongoing',
   },
 ];
@@ -108,6 +108,16 @@ export function Packages() {
               <div className={styles.cardBlock}>
                 <h3>Best for</h3>
                 <p>{pkg.bestFor}</p>
+                {pkg.note && (
+                  <p className={styles.cardNote}>
+                    {pkg.note.split('Partnership').map((part, index, parts) => (
+                      <span key={index}>
+                        {part}
+                        {index < parts.length - 1 && <a className={styles.cardNoteLink} href="#partnership">Partnership</a>}
+                      </span>
+                    ))}
+                  </p>
+                )}
               </div>
 
               <div className={styles.cardFooter}>
@@ -120,16 +130,6 @@ export function Packages() {
                   <strong>{pkg.timeline}</strong>
                 </div>
               </div>
-              {pkg.note && (
-                <p className={styles.cardNote}>
-                  {pkg.note.split('Partnership').map((part, index, parts) => (
-                    <span key={index}>
-                      {part}
-                      {index < parts.length - 1 && <a className={styles.cardNoteLink} href="#partnership">Partnership</a>}
-                    </span>
-                  ))}
-                </p>
-              )}
             </article>
           ))}
         </section>
