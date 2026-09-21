@@ -48,3 +48,4 @@ Use ASD-STE100 Simplified Technical English for documentation, interface copy, c
 
 - Never commit API keys, tokens, or `.env*` files containing secrets.
 - The contact API may rely on external service credentials; document required variable names without exposing their values.
+- The `/api/ponder/*` routes read `TYPESAFE_API_KEY` to call Jev. The `/ponder` password gate reads `PONDER_PASSWORD`. Keep both on the server and never add a `NEXT_PUBLIC_` prefix.
