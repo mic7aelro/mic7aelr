@@ -77,3 +77,30 @@ Without `TYPESAFE_API_KEY`, the solver still works. It uses the shortest option 
 Each solve makes up to 10 requests to Jev. The API route allows 10 solves each minute for each address.
 
 Run `npm test` to check the simulator, the algorithm tables, and the solver.
+
+### Bulk Labeler
+
+The `/ponder/bulk-labeler` route labels the rows of a spreadsheet with categories that you choose. Jev picks one category for each row and reports a probability for every category. A file with a column of true labels also gets an accuracy check, a calibration table, and a table of coverage against accuracy.
+
+- `src/lib/jev-batch.ts` asks Jev about many items in one request. It names every question by item position and reads answers by name. It asks again, alone, about any item that has a missing answer.
+- `src/lib/bulk-label.ts` reads categories, builds the questions, and estimates the size of a run.
+- `src/lib/bulk-metrics.ts` computes accuracy, calibration, and coverage.
+- `src/lib/csv.ts` reads and writes CSV files.
+- `public/samples/arxiv-abstracts.csv` holds 120 real arXiv abstracts with their fields. arXiv metadata is released under CC0.
+
+The page sends a file in groups of 200 rows. Each request to `/api/ponder/bulk` takes up to 500 rows. The server allows 60,000 rows each hour for each address, and the page allows 20,000 rows in one run. The route needs the Ponder password and `TYPESAFE_API_KEY`. It adds no new variable.
+
+**What batching does.** Many items in one request run faster, but the answers change a little. A test on 120 real arXiv abstracts, with the field as the true label, gave these results:
+
+| Items in a request | Agreement with one-at-a-time answers | Accuracy | Speed |
+| --- | --- | --- | --- |
+| 1 | 100% | 82% | 11 items a second |
+| 5 | 98% | 79% | 36 items a second |
+| 10 | 95% | 78% | 60 items a second |
+| 20 | 93% | 77% | 93 items a second |
+| 40 | 90% | 77% | 129 items a second |
+
+Batching saves few tokens on real text, because the text is most of the tokens. It saves requests. A test found no limit on questions in one request up to 800, so the token size of a request is the practical limit. The page defaults to 10 rows in a request.
+
+**Cost.** The page shows two figures: an estimate before the run, and the token count that Jev reports after each request. It converts tokens to dollars at the list price of $0.042 for a million input tokens. That price comes from public pages and is not checked against a bill. Compare the token count with your TypeSafe billing page.
+

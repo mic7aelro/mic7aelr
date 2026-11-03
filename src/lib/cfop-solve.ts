@@ -60,7 +60,12 @@ export interface ScoreQuestion {
   criteria: string[];
 }
 
-export type Question = ChoiceQuestion | ScoreQuestion;
+export interface NoulQuestion {
+  type: 'noul';
+  instructions: string;
+}
+
+export type Question = ChoiceQuestion | ScoreQuestion | NoulQuestion;
 
 export interface DecisionRequest {
   /** Name of the decision point, for logs and for tests. */
@@ -71,7 +76,9 @@ export interface DecisionRequest {
 
 export type Answer =
   | { type: 'choice'; choice: string; probabilities: Record<string, number>; confidence: number }
-  | { type: 'score'; score: number; confidence: number };
+  | { type: 'score'; score: number; confidence: number }
+  /** Probability from 0 to 1 that the statement is true. */
+  | { type: 'noul'; noul: number };
 
 export type Decider = (request: DecisionRequest) => Promise<Record<string, Answer> | null>;
 

@@ -17,6 +17,18 @@ function Thumb({ kind }: { kind: PonderThumb }) {
       </div>
     );
   }
+  if (kind === 'table') {
+    return (
+      <div className={styles.thumbTable} aria-hidden="true">
+        {['positive', 'negative', 'positive', 'mixed'].map((label, row) => (
+          <div key={row}>
+            <span className={styles.thumbLine} />
+            <span className={styles.thumbChip}>{label}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
   return (
     <div className={styles.thumbDial} aria-hidden="true">
       <div className={styles.thumbBar}>
