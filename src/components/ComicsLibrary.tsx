@@ -492,6 +492,7 @@ export function ComicsLibrary({ initialComics, authenticated }: ComicsLibraryPro
         <nav className={styles.headerNav} aria-label="Comics navigation">
           <Link href="/discovery">Discovery</Link>
           <Link href="/writing">Writing</Link>
+          <Link href="/routine">Routine</Link>
         </nav>
         <div className={styles.headerActions}>
           <ThemeToggle className={styles.themeToggle} />
