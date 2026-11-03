@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -13,6 +14,7 @@ import {
   PRODUCTS,
   WHY,
   byDay,
+  imageFor,
   stepsFor,
   type Period,
 } from '@/data/routine';
@@ -42,6 +44,20 @@ function writeChecks(day: number, checks: Checks) {
   try {
     window.localStorage.setItem(storageKey(day), JSON.stringify(checks));
   } catch {}
+}
+
+// Product packshot, or a letter tile when no packshot exists.
+function Thumb({ product, label, size }: { product: string; label: string; size: 'step' | 'row' }) {
+  const src = imageFor(product);
+  const className = `${styles.thumb} ${size === 'row' ? styles.thumbRow : ''}`;
+  if (!src) {
+    return <span className={`${className} ${styles.thumbEmpty}`} aria-hidden="true">{label.charAt(0)}</span>;
+  }
+  return (
+    <span className={className}>
+      <Image src={src} alt="" width={160} height={160} sizes={size === 'row' ? '96px' : '52px'} />
+    </span>
+  );
 }
 
 export function Routine() {
@@ -203,16 +219,18 @@ export function Routine() {
                             n += 1;
                             const tag = step.tag ? byDay(step.tag, day) : '';
                             const on = Boolean(checks[step.id]);
+                            const product = byDay(step.product, day);
                             return (
                               <li key={step.id}>
                                 <label className={`${styles.step} ${on ? styles.checked : ''} ${step.slot ? styles.slot : ''}`}>
                                   <span className={styles.n}>{pad(n)}</span>
+                                  <Thumb product={step.slot ? '' : product} label={step.name} size="step" />
                                   <span className={styles.body}>
                                     <span className={styles.what}>
                                       <span className={styles.label}>{step.name}</span>
                                       {tag ? <span className={styles.tag}>{tag}</span> : null}
                                     </span>
-                                    <span className={styles.product}>{byDay(step.product, day)}</span>
+                                    <span className={styles.product}>{product}</span>
                                     {step.how ? (
                                       <details className={styles.how} onClick={onDetailsClick}>
                                         <summary>How to</summary>
@@ -267,7 +285,8 @@ export function Routine() {
                 <div className={styles.rows}>
                   {group.items.map((product) => (
                     <article className={styles.row} key={product.name}>
-                      <div>
+                      <Thumb product={product.name} label={product.name} size="row" />
+                      <div className={styles.rowText}>
                         <span className={`${styles.label} ${styles.role}`}>{product.role}</span>
                         <h3>{product.name}</h3>
                         <p>{product.text}</p>

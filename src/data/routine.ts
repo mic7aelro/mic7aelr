@@ -143,6 +143,30 @@ export const WHY = [
   ['Backups stay on the shelf.', 'Use Cetaphil when the CeraVe runs out. Use the Glycolic Toner on a recovery night only, never with salicylic acid or retinal.'],
 ];
 
+// Packshots in public/images/routine, keyed by product name. Products without a clean packshot show a letter tile.
+const IMAGES: Record<string, string> = {
+  'Oral-B iO Series 2': 'oralb-io-series-2',
+  'HiSmile V34 Colour Corrector Serum': 'hismile-v34',
+  'quip Water Flosser': 'quip-water-flosser',
+  'Native Coconut + Vanilla': 'native-coconut-vanilla',
+  'Sol de Janeiro Body Mist 68': 'sol-de-janeiro-68',
+  'CeraVe Balancing Air Foam Cleanser': 'cerave-air-foam',
+  'The Ordinary Saccharomyces Ferment 30% Milky Toner': 'the-ordinary-milky-toner',
+  'The Ordinary Salicylic Acid 2%': 'the-ordinary-salicylic',
+  'e.l.f. SKIN Vitamin C + E + Ferulic Serum': 'elf-vitamin-c',
+  'The Ordinary Hyaluronic Acid 2% + B5': 'the-ordinary-hyaluronic',
+  'The INKEY List Caffeine Eye Cream': 'inkey-caffeine',
+  'innisfree Green Tea Seed Hyaluronic Cream': 'innisfree-green-tea-cream',
+  'Naked Sundays SPF 50+': 'naked-sundays-spf',
+  'The Ordinary Glycolic Acid 7% Exfoliating Toner': 'the-ordinary-glycolic',
+};
+
+// A step product such as "Oral-B iO Series 2 + Sensodyne Extra Whitening" uses the image of its first product.
+export function imageFor(product: string) {
+  const name = Object.keys(IMAGES).find((key) => product.startsWith(key));
+  return name ? `/images/routine/${IMAGES[name]}.jpg` : null;
+}
+
 export const byDay = <T,>(value: ByDay<T>, day: number): T =>
   typeof value === 'function' ? (value as (d: number) => T)(day) : value;
 
