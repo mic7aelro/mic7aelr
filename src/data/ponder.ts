@@ -1,6 +1,6 @@
 /** Projects that appear on /ponder. Add one item here and one route to add a project. */
 export type PonderCategory = 'games' | 'tools';
-export type PonderThumb = 'cube' | 'dial';
+export type PonderThumb = 'cube' | 'dial' | 'table';
 
 export interface PonderProject {
   slug: string;
@@ -29,5 +29,12 @@ export const PONDER_PROJECTS: PonderProject[] = [
     pitch: 'Write one clue for a hidden target. Jev guesses where it lands. Star Wars, Marvel, and DC.',
     category: 'games',
     thumb: 'dial',
+  },
+  {
+    slug: 'bulk-labeler',
+    title: 'Bulk Labeler',
+    pitch: 'Upload a spreadsheet. Jev labels thousands of rows for a few cents and checks its own accuracy.',
+    category: 'tools',
+    thumb: 'table',
   },
 ];

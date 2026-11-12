@@ -10,7 +10,7 @@ import type { Answer, Decider, DecisionRequest } from './cfop-solve';
 
 const ENDPOINT = 'https://api.typesafe.ai/v1/systemone';
 const MODEL = 'jev-latest';
-const TIMEOUT_MS = 15_000;
+const DEFAULT_TIMEOUT_MS = 30_000;
 
 interface RawAnswer {
   type?: string;
@@ -18,6 +18,7 @@ interface RawAnswer {
   probabilities?: Record<string, number> | number[];
   confidence?: number;
   score?: number;
+  noul?: number;
 }
 
 /**
@@ -32,13 +33,21 @@ function toAnswer(raw: RawAnswer): Answer | null {
   if (typeof raw.score === 'number') {
     return { type: 'score', score: raw.score, confidence: raw.confidence ?? 0 };
   }
+  if (typeof raw.noul === 'number') return { type: 'noul', noul: raw.noul };
   return null;
 }
 
 const RETRIES = 3;
 const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-export function createJevDecider(apiKey: string): Decider {
+export interface JevOptions {
+  /** Called after each successful request with the token counts that Jev reports. */
+  onUsage?: (usage: { inputTokens: number; outputTokens: number }) => void;
+  timeoutMs?: number;
+}
+
+export function createJevDecider(apiKey: string, options: JevOptions = {}): Decider {
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   return async (request: DecisionRequest) => {
     let response: Response | undefined;
     for (let attempt = 0; attempt <= RETRIES; attempt += 1) {
@@ -46,7 +55,7 @@ export function createJevDecider(apiKey: string): Decider {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: MODEL, state: request.state, questions: request.questions }),
-        signal: AbortSignal.timeout(TIMEOUT_MS),
+        signal: AbortSignal.timeout(timeoutMs),
       });
       // Retry a rate limit or a server error. Wait longer each time.
       const retryable = response.status === 429 || response.status >= 500;
@@ -56,7 +65,11 @@ export function createJevDecider(apiKey: string): Decider {
     if (!response || !response.ok) {
       throw new Error(`Jev returned status ${response?.status ?? 'unknown'} at the ${request.stage} step.`);
     }
-    const body = (await response.json()) as { answers?: Record<string, RawAnswer> };
+    const body = (await response.json()) as {
+      answers?: Record<string, RawAnswer>;
+      usage?: { input_tokens?: number; output_tokens?: number };
+    };
+    options.onUsage?.({ inputTokens: body.usage?.input_tokens ?? 0, outputTokens: body.usage?.output_tokens ?? 0 });
     if (!body.answers) return null;
     const answers: Record<string, Answer> = {};
     for (const [key, raw] of Object.entries(body.answers)) {
