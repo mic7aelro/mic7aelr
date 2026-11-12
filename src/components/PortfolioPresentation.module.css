@@ -91,6 +91,8 @@
 :global(html[data-theme='light']) .projectVisual { background: #deded8; }
 :global(html[data-theme='light']) .heroFigure img,
 :global(html[data-theme='light']) .projectVisual img { border-color: #c5c5bf; }
+:global(html[data-theme='light']) .projectVisual.projectLogo img { filter: brightness(0) invert(.12); }
+:global(html[data-theme='light']) .projectVisual.projectLogo:hover img { filter: brightness(0); }
 :global(html[data-theme='light']) .form label { color: #656560; }
 :global(html[data-theme='light']) .form :is(input, select, textarea) { border-color: #bdbdb7; }
 :global(html[data-theme='light']) .form select { color-scheme: light; }
@@ -152,6 +154,9 @@
 .projectVisual img { object-position: center 36%; }
 .projectVisual img { border: 1px solid #30302e; border-radius: 5px; transition: transform 750ms cubic-bezier(.16, 1, .3, 1), filter 500ms ease; }
 .projectVisual:hover img { transform: scale(1.025); filter: grayscale(.5) contrast(1.05); }
+/* Logo tiles show the brand mark in the page ink color. The hover rule keeps the mark visible. */
+.projectVisual.projectLogo img { padding: clamp(36px, 16%, 76px); object-fit: contain; object-position: center; filter: brightness(0) invert(.88); }
+.projectVisual.projectLogo:hover img { filter: brightness(0) invert(1); }
 .projectContent { display: flex; flex-direction: column; justify-content: space-between; padding-block: 5px; }
 .projectName { display: flex; flex-direction: column-reverse; gap: 16px; align-items: flex-start; }
 .projectName h3 { max-width: 780px; font-family: var(--font-cormorant), serif; font-size: clamp(2.4rem, 3.4vw, 3.6rem); font-weight: 300; letter-spacing: -0.04em; line-height: 0.95; }
@@ -160,17 +165,19 @@
 .projectContent ul { display: grid; grid-template-columns: repeat(2, max-content); gap: 10px 26px; list-style: none; color: var(--quiet); font-size: 0.66rem; letter-spacing: 0.07em; text-transform: uppercase; }
 .projectLinks { display: flex; gap: 26px; }
 
-.skills { display: grid; grid-template-columns: .66fr 1.34fr; column-gap: clamp(48px, 7vw, 110px); row-gap: 0; padding-block: 0 !important; }
+.skills { display: grid; grid-template-columns: minmax(0, .66fr) minmax(0, 1.34fr); column-gap: clamp(48px, 7vw, 110px); row-gap: 0; padding-block: 0 !important; }
 .skillsHeading { max-width: 500px; }
 .skillsHeading h2 span { display: block; }
 .skillsHeading, .skillGroups { margin-top: clamp(100px, 13vw, 170px); }
 .skillsStatement { max-width: 440px; margin-top: 28px; color: var(--muted); font-size: clamp(0.8rem, 1vw, 0.9rem); line-height: 1.7; }
-.skillGroups { display: grid; grid-template-columns: 1fr 1fr; column-gap: 38px; }
+.skillGroups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 38px; }
 .skillGroups article { padding-block: 15px; border-bottom: 1px solid var(--line); }
 .skillGroups article:nth-last-of-type(-n + 2) { border-bottom: 0; }
 .skillGroups h3 { margin-bottom: 7px; color: var(--ink); font-family: var(--font-dm-sans), sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 .skillSummary { max-width: 400px; color: var(--muted); font-size: 0.76rem; line-height: 1.45; }
 .skillItems { margin-top: 7px; color: var(--quiet); font-size: 0.59rem; font-weight: 600; letter-spacing: 0.025em; line-height: 1.5; text-transform: uppercase; }
+/* Each tool name stays on one line, so a line break falls only between names. */
+.skillItem { white-space: nowrap; }
 .skillsMarquee { grid-column: 1 / -1; width: 100%; margin: 0; overflow: hidden; border-block: 1px solid var(--line); padding-block: 4px; mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent); }
 .skillsMarqueeTop { visibility: visible; }
 .skillsMarqueeTop .marqueeTrack { animation-direction: reverse; }
@@ -248,20 +255,25 @@
   .contact { align-items: center; }
   .about { align-content: center; align-items: start; padding-block: clamp(64px, 7vh, 92px) !important; }
   .sectionTitle { align-self: start; padding-top: 0; }
-  .work { display: grid; grid-template-rows: auto minmax(0, 1fr); align-content: center; padding-block: clamp(76px, 9vh, 108px) clamp(40px, 4.5vh, 64px) !important; }
+  .work { display: grid; grid-template-rows: auto auto; align-content: center; padding-block: clamp(76px, 9vh, 108px) clamp(40px, 4.5vh, 64px) !important; }
   .workHeading { align-self: end; margin-bottom: clamp(22px, 2.6vh, 32px); }
-  .projectGrid { grid-template-columns: 1fr; align-content: center; gap: clamp(64px, 9vh, 130px); }
-  .project { grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.56fr); gap: clamp(30px, 3.4vw, 64px); align-items: center; }
-  .project:nth-child(even) { grid-template-columns: minmax(240px, 0.56fr) minmax(0, 1.5fr); }
-  .projectVisual { width: 100%; height: clamp(190px, 30dvh, 330px); margin-right: 0; }
-  .projectContent { align-self: center; justify-content: flex-start; gap: clamp(13px, 1.7vh, 21px); }
+  .projectGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; gap: clamp(28px, 2.8vw, 52px); }
+  .project, .project:nth-child(even) { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: clamp(18px, 2.6vh, 30px); align-items: stretch; }
+  .project > .projectVisual, .project:nth-child(even) > .projectVisual { grid-column: 1; grid-row: 1; }
+  .project > .projectContent, .project:nth-child(even) > .projectContent { grid-column: 1; grid-row: 2; align-items: flex-start; text-align: left; }
+  .project:nth-child(even) .projectName { align-items: flex-start; }
+  .project:nth-child(even) .projectContent ul { justify-content: start; }
+  .project:nth-child(even) .projectContent li:last-child:nth-child(odd) { grid-column: auto; }
+  .project:nth-child(even) .projectLinks { justify-content: flex-start; }
+  .projectVisual { width: 100%; height: clamp(170px, 28dvh, 320px); margin-right: 0; }
+  .projectContent { justify-content: flex-start; gap: clamp(12px, 1.6vh, 18px); padding-block: 0; }
+  .projectLinks { margin-top: auto; padding-top: clamp(2px, .6vh, 8px); }
   .projectName h3 { font-size: clamp(1.95rem, 2.45vw, 2.8rem); }
   .projectContent > p { font-size: clamp(0.8rem, 0.86vw, 0.9rem); line-height: 1.55; }
-  .skills { grid-template-rows: 1fr; align-items: center; }
+  .skills { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); grid-template-rows: 1fr; align-items: center; }
   .skillsHeading h2 { font-size: clamp(3.25rem, 3.4vw, 3.8rem); line-height: 1.04; }
   .skillsHeading h2 span { white-space: nowrap; }
   .skillsHeading, .skillGroups { align-self: center; margin-top: 0; }
-  .skillItems { white-space: nowrap; }
   .contact { min-height: 100dvh; padding-block: clamp(64px, 8vh, 100px) !important; }
   .finalScene .footer {
     position: absolute;
@@ -277,11 +289,27 @@
   :global(html[data-theme='light']) .nav::before { background: linear-gradient(90deg, transparent 4%, rgba(255, 255, 255, .72) 24%, transparent 52%); }
 }
 
+/* Short desktop windows: shrink the project visuals so all three cards fit below the fixed nav. */
+@media (min-width: 901px) and (max-height: 760px) {
+  .work { padding-block: 84px 28px !important; }
+  .workHeading { margin-bottom: 18px; }
+  .projectVisual { height: clamp(120px, 21dvh, 170px); }
+  .project, .project:nth-child(even) { gap: 14px; }
+  .projectContent { gap: 10px; }
+}
+
 @media (max-width: 900px) {
   .hero { grid-template-columns: minmax(0, 1fr) 320px; gap: 34px; }
-  .project { grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.7fr); }
-  .project:nth-child(even) { grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr); }
-  .projectVisual { height: clamp(280px, 34vw, 380px); }
+  .project, .project:nth-child(even) { grid-template-columns: 1fr; }
+  .project:nth-child(even) > .projectContent { align-items: flex-start; text-align: left; }
+  .project:nth-child(even) .projectName { align-items: flex-start; }
+  .project:nth-child(even) .projectContent ul { justify-content: start; }
+  .project:nth-child(even) .projectContent li:last-child:nth-child(odd) { grid-column: auto; }
+  .project:nth-child(even) .projectLinks { justify-content: flex-start; }
+  .project > .projectContent, .project:nth-child(even) > .projectContent { grid-column: 1; grid-row: 2; }
+  .project > .projectVisual, .project:nth-child(even) > .projectVisual { grid-column: 1; grid-row: 1; }
+  .projectVisual { height: auto; aspect-ratio: 16 / 10; }
+  .projectContent { gap: 26px; }
   .artScene { position: relative; min-height: 100svh; visibility: visible; opacity: 1; pointer-events: auto; }
 }
 
@@ -304,14 +332,7 @@
   .aboutColumns { grid-template-columns: 1fr; }
   .aboutColumns { gap: 22px; }
   .projectGrid { gap: 72px; }
-  .project, .project:nth-child(even) { grid-template-columns: 1fr; }
-  .project:nth-child(even) > .projectContent { align-items: flex-start; text-align: left; }
-  .project:nth-child(even) .projectName { align-items: flex-start; }
-  .project:nth-child(even) .projectContent ul { justify-content: start; }
-  .project:nth-child(even) .projectLinks { justify-content: flex-start; }
-  .project > .projectContent, .project:nth-child(even) > .projectContent { grid-column: 1; grid-row: 2; }
-  .project > .projectVisual, .project:nth-child(even) > .projectVisual { grid-column: 1; grid-row: 1; }
-  .projectVisual { height: auto; margin-right: 0; aspect-ratio: 4 / 3; }
+  .projectVisual { aspect-ratio: 4 / 3; }
   .projectContent { gap: 34px; }
   .projectName h3 { font-size: clamp(2.4rem, 11vw, 3.4rem); }
   .projectContent ul { grid-template-columns: 1fr 1fr; }

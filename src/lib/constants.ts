@@ -9,24 +9,24 @@ export const ABOUT_TEXT = [
 
 export const SKILLS: SkillCategory[] = [
   {
-    label: 'Agentic Systems',
+    label: 'Agentic Engineering',
     summary: 'Orchestrate models, tools, and review in reliable workflows.',
-    items: ['LangGraph', 'MCP', 'Agent Orchestration', 'Tool Calling', 'Claude Code', 'OpenAI Codex'],
+    items: ['Claude Code', 'OpenAI Codex', 'MCP', 'LangGraph', 'Tool Calling', 'LLM APIs'],
   },
   {
-    label: 'AI Product Engineering',
-    summary: 'Turn model capabilities into complete, usable products.',
-    items: ['TypeScript', 'React', 'Next.js', 'FastAPI', 'GraphQL', 'LLM APIs', '.NET'],
+    label: 'Frontend',
+    summary: 'Build fast, accessible interfaces with motion and 3D.',
+    items: ['TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'GSAP', 'Motion', 'Three.js'],
   },
   {
-    label: 'Distributed Systems & Data',
-    summary: 'Design reliable APIs, data stores, identity, and event flows.',
-    items: ['PostgreSQL', 'MongoDB', 'REST APIs', 'Event-Driven Systems', 'Auth'],
+    label: 'Backend & Data',
+    summary: 'Design APIs, data models, auth, and email delivery.',
+    items: ['Node.js', 'REST APIs', 'GraphQL', 'FastAPI', '.NET', 'PostgreSQL', 'Neon', 'Supabase', 'MongoDB', 'Resend'],
   },
   {
-    label: 'Cloud Platform & Delivery',
-    summary: 'Deploy, automate, and operate reliable systems in the cloud.',
-    items: ['AWS', 'ECS', 'Lambda', 'S3', 'Azure', 'Docker', 'CI/CD', 'GitHub Actions'],
+    label: 'Platform & Delivery',
+    summary: 'Deploy, automate, and operate systems in the cloud.',
+    items: ['Vercel', 'AWS', 'Lambda', 'ECS', 'S3', 'Azure', 'Cloudflare', 'Docker', 'GitHub Actions', 'Vitest'],
   },
 ];
 
@@ -35,8 +35,8 @@ export const PROJECTS: Project[] = [
     id: 'project-01',
     title: 'Obsidian by Marla',
     description:
-      'Luxury fashion portfolio for stylist and creative director Marla McLeod. Full admin portal with image curation, collection management, and inquiry/event tracking.',
-    tags: ['Next.js', 'MongoDB', 'TypeScript', 'Iron-session', 'GSAP', 'Tailwind CSS v4'],
+      'Fashion portfolio for stylist and creative director Marla McLeod. An admin portal manages image uploads, collections, inquiries, and events.',
+    tags: ['Next.js', 'TypeScript', 'MongoDB', 'Vercel Blob', 'Resend', 'GSAP'],
     year: '2026',
     image: '/images/projects/obsidian-marla.jpg',
     imageAlt: 'Marla McLeod in a black hood and sunglasses',
@@ -47,11 +47,24 @@ export const PROJECTS: Project[] = [
     id: 'project-02',
     title: 'Mel Events Co.',
     description:
-      'Wedding and event coordination studio in South Florida. Built from the client\'s brand book, with a purpose-built inquiry pipeline: the contact form writes through Resend, and custom Cloudflare email routing carries every inquiry to a live inbox on a domain that had been dark since 2025.',
-    tags: ['Next.js 16', 'TypeScript', 'Resend', 'Cloudflare DNS', 'Motion', 'Tailwind CSS v4'],
+      'Wedding and event studio in South Florida, built from the client\'s brand book. An admin inbox tracks inquiries, sends proposals, and threads email replies through Resend.',
+    tags: ['Next.js', 'TypeScript', 'MongoDB', 'Resend', 'Motion', 'Tailwind CSS'],
     year: '2026',
-    image: '/images/projects/mel-events.jpg',
-    imageAlt: 'Melanie Mule, owner and lead coordinator of Mel Events Co.',
+    image: '/images/projects/mel-events-logo.png',
+    imageAlt: 'Mel Events Co. logo',
+    visual: 'logo',
     url: 'https://meleventsco.com/',
+  },
+  {
+    id: 'project-03',
+    title: 'Justus Resolutions',
+    description:
+      'Mediation and arbitration practice in Georgia. Attorneys request a date with a neutral, and an admin portal approves each request and books it through Calendly.',
+    tags: ['Next.js', 'TypeScript', 'Neon Postgres', 'Resend', 'Calendly API', 'Tailwind CSS'],
+    year: '2026',
+    image: '/images/projects/justus-resolutions-logo.png',
+    imageAlt: 'Justus Resolutions logo',
+    visual: 'logo',
+    url: 'https://justusresolutions.com/',
   },
 ];

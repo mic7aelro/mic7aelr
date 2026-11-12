@@ -106,9 +106,9 @@ export function AboutScene() {
 }
 
 /**
- * Both projects share one scene. `.projectGrid` splits the row into columns
- * and each `.project` becomes a self-contained card, so the work scene still
- * fits the deck's 100dvh budget.
+ * All projects share one scene. On desktop, `.projectGrid` puts the projects
+ * in columns and each `.project` becomes a card with the visual on top, so the
+ * work scene fits the deck's 100dvh budget.
  */
 export function WorkScene() {
   return (
@@ -117,19 +117,24 @@ export function WorkScene() {
       <div className={styles.projectGrid}>
         {PROJECTS.map((project) => (
           <article className={styles.project} key={project.id} data-reveal>
-            <a className={styles.projectVisual} href={project.url} target="_blank" rel="noreferrer">
+            <a
+              className={`${styles.projectVisual} ${project.visual === 'logo' ? styles.projectLogo : ''}`}
+              href={project.url}
+              target="_blank"
+              rel="noreferrer"
+            >
               <Image
                 src={project.image}
                 alt={project.imageAlt}
                 fill
-                sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1200px) 44vw, 520px"
+                sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 900px) calc(100vw - 48px), (max-width: 1200px) 34vw, 440px"
               />
             </a>
             <div className={styles.projectContent}>
               <div className={styles.projectName}><h3>{project.title}</h3><span>{project.year}</span></div>
               <p>{project.description}</p>
               <ul aria-label="Project technologies">
-                {project.tags.slice(0, 5).map((tag) => <li key={tag}>{tag}</li>)}
+                {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
               </ul>
               <div className={styles.projectLinks}>
                 <a href={project.url} target="_blank" rel="noreferrer">Live site</a>
@@ -176,7 +181,14 @@ export function SkillsScene() {
           <article key={group.label}>
             <h3>{group.label}</h3>
             <p className={styles.skillSummary}>{group.summary}</p>
-            <p className={styles.skillItems}>{group.items.join(' / ')}</p>
+            <p className={styles.skillItems}>
+              {group.items.map((item, index) => (
+                <span key={item}>
+                  {index > 0 && ' / '}
+                  <span className={styles.skillItem}>{item}</span>
+                </span>
+              ))}
+            </p>
           </article>
         ))}
         <SkillsMarquee />

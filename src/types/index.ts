@@ -6,6 +6,8 @@ export interface Project {
   year: string;
   image: string;
   imageAlt: string;
+  /** `logo` shows a brand mark on a plain tile instead of a cropped photo. */
+  visual?: 'photo' | 'logo';
   url?: string;
   /** Omitted when the client's repository is private. */
   github?: string;
